@@ -1,12 +1,18 @@
 part of 'voice_recognition_bloc.dart';
 
-abstract class VoiceRecognitionState extends Equatable {
-  final bool isRecognizing = false;
-  final Stream<dynamic> onResult = VoskFlutterPlugin.onResult();
-  VoiceRecognitionState();
+class VoiceRecognitionBaseState extends Equatable {
+  bool isRecognizing;
+  VoiceRecognitionBaseState(this.isRecognizing);
 
   @override
   List<Object> get props => [isRecognizing];
 }
 
-class VoiceRecognitionInitial extends VoiceRecognitionState {}
+class VoiceRecognitionState extends VoiceRecognitionBaseState {
+  final Stream<dynamic> onResult = VoskFlutterPlugin.onResult();
+  VoiceRecognitionState(bool isRecognizing) : super(isRecognizing);
+  VoiceRecognitionState.initial() : super(false);
+
+  @override
+  List<Object> get props => [isRecognizing, onResult];
+}

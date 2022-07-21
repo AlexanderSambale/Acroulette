@@ -1,11 +1,7 @@
 part of 'voice_recognition_bloc.dart';
 
-abstract class VoiceRecognitionEvent extends Equatable {
-  const VoiceRecognitionEvent();
-
-  @override
-  List<Object> get props => [];
-}
+@immutable
+abstract class VoiceRecognitionEvent {}
 
 class VoiceRecognitionStart extends VoiceRecognitionEvent {}
 

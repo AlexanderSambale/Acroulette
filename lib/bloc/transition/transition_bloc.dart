@@ -40,6 +40,8 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
       emit(TransitionState(
           state.figures, state.index, TransitionStatus.current));
     });
+    on<SubscribeTransitionStreamEvent>((event, emit) {});
+    on<UnSubscribeTransitionStreamEvent>((event, emit) {});
   }
 
   final rng = Random();
