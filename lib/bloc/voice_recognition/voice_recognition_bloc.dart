@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:flutter/services.dart';
 import 'package:equatable/equatable.dart';
 import 'package:vosk_flutter_plugin/vosk_flutter_plugin.dart';
 
@@ -9,15 +10,20 @@ part 'voice_recognition_state.dart';
 class VoiceRecognitionBloc
     extends Bloc<VoiceRecognitionEvent, VoiceRecognitionState> {
   VoiceRecognitionBloc() : super(VoiceRecognitionState.initial()) {
+    Future<void> initModel() async {
+      ByteData modelZip = await rootBundle
+          .load('assets/models/vosk-model-small-en-us-0.15.zip');
+      await VoskFlutterPlugin.initModel(modelZip);
+    }
+
     on<VoiceRecognitionStart>((event, emit) {
+      initModel();
       VoskFlutterPlugin.start();
-      state.isRecognizing = true;
-      emit(state);
+      emit(state.copyWith(isRecognizing: true));
     });
     on<VoiceRecognitionStop>((event, emit) {
       VoskFlutterPlugin.stop();
-      state.isRecognizing = false;
-      emit(state);
+      emit(state.copyWith(isRecognizing: false));
     });
   }
 }

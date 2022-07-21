@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'simple_bloc_observer.dart';
+import 'bloc/voice_recognition/voice_recognition_bloc.dart';
 
 const figures = ["bird", "star", "bat", "triangle", "backbird", "reversebird"];
 
 void main() {
-  runApp(MyApp());
+  BlocOverrides.runZoned(
+    () => runApp(MyApp()),
+    blocObserver: SimpleBlocObserver(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -118,16 +126,32 @@ class _MyHomePageState extends State<MyHomePage> {
               'Next Position',
             ),
             Text(figures[_index]),
-            Container(
-                padding: EdgeInsets.only(top: 50.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildButtonColumn(Colors.green, Colors.greenAccent,
-                          Icons.play_arrow, 'PLAY', _speak),
-                      _buildButtonColumn(Colors.red, Colors.redAccent,
-                          Icons.stop, 'STOP', _stop),
-                    ]))
+            BlocProvider(
+              create: (_) => VoiceRecognitionBloc(),
+              child: Builder(
+                  builder: (BuildContext context) => Container(
+                      padding: EdgeInsets.only(top: 50.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildButtonColumn(
+                                Colors.green,
+                                Colors.greenAccent,
+                                Icons.play_arrow,
+                                'PLAY',
+                                () => context
+                                    .read<VoiceRecognitionBloc>()
+                                    .add(VoiceRecognitionStart())),
+                            _buildButtonColumn(
+                                Colors.red,
+                                Colors.redAccent,
+                                Icons.stop,
+                                'STOP',
+                                () => context
+                                    .read<VoiceRecognitionBloc>()
+                                    .add(VoiceRecognitionStop())),
+                          ]))),
+            ),
           ],
         ),
       ),

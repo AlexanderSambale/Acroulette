@@ -13,6 +13,12 @@ class VoiceRecognitionState extends VoiceRecognitionBaseState {
   VoiceRecognitionState(bool isRecognizing) : super(isRecognizing);
   VoiceRecognitionState.initial() : super(false);
 
+  VoiceRecognitionState copyWith({
+    required bool isRecognizing,
+  }) {
+    return VoiceRecognitionState(isRecognizing);
+  }
+
   @override
   List<Object> get props => [isRecognizing, onResult];
 }
