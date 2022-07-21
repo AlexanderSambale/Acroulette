@@ -11,9 +11,10 @@ const figures = ["bird", "star", "bat", "triangle", "backbird", "reversebird"];
 class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
   TransitionBloc() : super(const TransitionState.initial()) {
     on<NewTransitionEvent>((event, emit) {
-      state.figures.add(getRandomFigure());
-      emit(TransitionState(
-          state.figures, state.index + 1, TransitionStatus.create));
+      final figures = List<String>.empty(growable: true);
+      figures.addAll(state.figures);
+      figures.add(getRandomFigure());
+      emit(TransitionState(figures, state.index + 1, TransitionStatus.create));
     });
     on<NextTransitionEvent>((event, emit) {
       if (state.index + 1 < state.figures.length) {

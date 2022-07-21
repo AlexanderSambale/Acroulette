@@ -1,6 +1,5 @@
 part of 'transition_bloc.dart';
 
-@immutable
 abstract class TransitionEvent {}
 
 /// Go to the next figure in a list
