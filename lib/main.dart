@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flutter_tts/flutter_tts.dart';
 
 const figures = ["bird", "star", "bat", "triangle", "backbird", "reversebird"];
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  late FlutterTts flutterTts;
+
+  MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -51,6 +54,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late FlutterTts flutterTts;
+
+  @override
+  initState() {
+    super.initState();
+    initTts();
+  }
+
+  initTts() {
+    flutterTts = FlutterTts();
+  }
+
   int _index = 0;
   var rng = Random();
 
@@ -102,7 +117,17 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'Next Position',
             ),
-            Text(figures[_index])
+            Text(figures[_index]),
+            Container(
+                padding: EdgeInsets.only(top: 50.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildButtonColumn(Colors.green, Colors.greenAccent,
+                          Icons.play_arrow, 'PLAY', _speak),
+                      _buildButtonColumn(Colors.red, Colors.redAccent,
+                          Icons.stop, 'STOP', _stop),
+                    ]))
           ],
         ),
       ),
@@ -112,5 +137,42 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Column _buildButtonColumn(Color color, Color splashColor, IconData icon,
+      String label, Function func) {
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+              icon: Icon(icon),
+              color: color,
+              splashColor: splashColor,
+              onPressed: () => func()),
+          Container(
+              margin: const EdgeInsets.only(top: 8.0),
+              child: Text(label,
+                  style: TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w400,
+                      color: color)))
+        ]);
+  }
+
+  Future _speak() async {
+    double volume = 0.5;
+    double pitch = 1.0;
+    double rate = 0.5;
+    await flutterTts.setVolume(volume);
+    await flutterTts.setSpeechRate(rate);
+    await flutterTts.setPitch(pitch);
+
+    await flutterTts.speak("This is a test");
+  }
+
+  Future _stop() async {
+/*     var result = await flutterTts.stop();
+    if (result == 1) setState(() => ttsState = TtsState.stopped); */
   }
 }
