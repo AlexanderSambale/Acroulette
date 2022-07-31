@@ -6,7 +6,20 @@ import 'dart:math';
 part 'transition_event.dart';
 part 'transition_state.dart';
 
-const figures = ["bird", "star", "bat", "triangle", "backbird", "reversebird"];
+const figures = [
+  "bird",
+  "star",
+  "bat",
+  "triangle",
+  "backbird",
+  "reversebird",
+  "throne",
+  "chair",
+  "fallen leaf",
+  "side star",
+  "vishnus couch",
+  "high flying whale"
+];
 
 class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
   TransitionBloc() : super(const TransitionState.initial()) {
