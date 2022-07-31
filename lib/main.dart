@@ -4,8 +4,8 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/acroulette/acroulette_bloc.dart';
 import 'simple_bloc_observer.dart';
-import 'bloc/voice_recognition/voice_recognition_bloc.dart';
 
 const figures = ["bird", "star", "bat", "triangle", "backbird", "reversebird"];
 
@@ -72,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   initTts() {
     flutterTts = FlutterTts();
+    _setAwaitOptions();
   }
 
   int _index = 0;
@@ -127,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(figures[_index]),
             BlocProvider(
-              create: (_) => VoiceRecognitionBloc(),
+              create: (_) => AcrouletteBloc(flutterTts),
               child: Builder(
                   builder: (BuildContext context) => Container(
                       padding: EdgeInsets.only(top: 50.0),
@@ -140,16 +141,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Icons.play_arrow,
                                 'PLAY',
                                 () => context
-                                    .read<VoiceRecognitionBloc>()
-                                    .add(VoiceRecognitionStart())),
+                                    .read<AcrouletteBloc>()
+                                    .add(AcrouletteStart())),
                             _buildButtonColumn(
                                 Colors.red,
                                 Colors.redAccent,
                                 Icons.stop,
                                 'STOP',
                                 () => context
-                                    .read<VoiceRecognitionBloc>()
-                                    .add(VoiceRecognitionStop())),
+                                    .read<AcrouletteBloc>()
+                                    .add(AcrouletteStop())),
                           ]))),
             ),
           ],
@@ -198,5 +199,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Future _stop() async {
 /*     var result = await flutterTts.stop();
     if (result == 1) setState(() => ttsState = TtsState.stopped); */
+  }
+
+  Future _setAwaitOptions() async {
+    await flutterTts.awaitSpeakCompletion(true);
   }
 }

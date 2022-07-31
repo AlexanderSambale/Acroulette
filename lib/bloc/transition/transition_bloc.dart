@@ -51,4 +51,8 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
     final newFigureIndex = rng.nextInt(figures.length);
     return figures[newFigureIndex];
   }
+
+  String currentFigure() {
+    return state.figures[state.index];
+  }
 }

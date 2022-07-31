@@ -19,6 +19,7 @@ class VoiceRecognitionBloc
     on<VoiceRecognitionStart>((event, emit) {
       initModel();
       VoskFlutterPlugin.start();
+      VoskFlutterPlugin.onResult().listen(event.onData);
       emit(state.copyWith(isRecognizing: true));
     });
     on<VoiceRecognitionStop>((event, emit) {
