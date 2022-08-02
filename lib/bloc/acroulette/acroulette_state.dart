@@ -8,8 +8,10 @@ abstract class BaseAcrouletteState extends Equatable {
   List<Object> get props => [];
 }
 
-/// If index is -1, we have an empty list of figures
+class AcrouletteInitialState extends BaseAcrouletteState {}
 
-class AcrouletteState extends BaseAcrouletteState {
-  const AcrouletteState() : super();
-}
+class AcrouletteStartState extends BaseAcrouletteState {}
+
+class AcrouletteStopState extends BaseAcrouletteState {}
+
+class AcrouletteRecognizeCommandState extends BaseAcrouletteState {}

@@ -8,7 +8,7 @@ void main() {
     late TransitionBloc transitionBloc;
 
     setUp(() {
-      transitionBloc = TransitionBloc();
+      transitionBloc = TransitionBloc(() => {});
     });
 
     test('initial state index is -1', () {

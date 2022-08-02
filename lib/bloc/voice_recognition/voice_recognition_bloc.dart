@@ -16,9 +16,9 @@ class VoiceRecognitionBloc
       await VoskFlutterPlugin.initModel(modelZip);
     }
 
-    on<VoiceRecognitionStart>((event, emit) {
-      initModel();
-      VoskFlutterPlugin.start();
+    on<VoiceRecognitionStart>((event, emit) async {
+      await initModel();
+      await VoskFlutterPlugin.start();
       VoskFlutterPlugin.onResult().listen(event.onData);
       emit(state.copyWith(isRecognizing: true));
     });
