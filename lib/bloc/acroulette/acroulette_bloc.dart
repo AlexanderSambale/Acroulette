@@ -13,15 +13,24 @@ part 'acroulette_state.dart';
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   AcrouletteBloc(this.flutterTts) : super(AcrouletteInitialState()) {
     voiceRecognitionBloc = VoiceRecognitionBloc();
+
     on<AcrouletteStart>((event, emit) {
-      voiceRecognitionBloc.add(VoiceRecognitionStart(onData));
-      emit(AcrouletteStartState());
+      voiceRecognitionBloc.add(
+          VoiceRecognitionStart(onData, onInitiated, onRecognitionStarted));
+      emit(AcrouletteInitModel());
     });
-    on<AcrouletteStop>((event, emit) {
-      voiceRecognitionBloc.add(VoiceRecognitionStop());
+    on<AcrouletteInitModelEvent>((event, emit) {
+      emit(AcrouletteModelInitiatedState());
+    });
+    on<AcrouletteStartVoiceRecognitionEvent>((event, emit) {
+      emit(AcrouletteVoiceRecognitionStartedState());
     });
     on<AcrouletteRecognizeCommand>(
         (event, emit) => {recognizeCommand(event.command)});
+    on<AcrouletteStop>((event, emit) {
+      voiceRecognitionBloc.add(VoiceRecognitionStop());
+      emit(AcrouletteInitialState());
+    });
   }
 
   late final transitionBloc = TransitionBloc(onTransitionChange);
@@ -44,6 +53,14 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
   void onData(dynamic event) {
     add(AcrouletteRecognizeCommand(event));
+  }
+
+  void onInitiated() {
+    add(AcrouletteInitModelEvent());
+  }
+
+  void onRecognitionStarted() {
+    add(AcrouletteStartVoiceRecognitionEvent());
   }
 
   void recognizeCommand(String command) {

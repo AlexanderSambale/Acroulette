@@ -25,10 +25,10 @@ void main() {
     });
 
     blocTest<AcrouletteBloc, BaseAcrouletteState>(
-      'emits [AcrouletteStartState()] when AcrouletteStart is added',
+      'emits [AcrouletteInitModel()] when AcrouletteStart is added',
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteStart()),
-      expect: () => [AcrouletteStartState()],
+      expect: () => [AcrouletteInitModel()],
     );
   });
 
@@ -54,7 +54,7 @@ void main() {
     });
 
     test('AcrouletteStart', () async {
-      expect(acrouletteBloc.state, AcrouletteStartState());
+      expect(acrouletteBloc.state, AcrouletteInitModel());
       expect(acrouletteBloc.voiceRecognitionBloc.state,
           const VoiceRecognitionState(false));
       await Future.delayed(const Duration(seconds: 2), () {});

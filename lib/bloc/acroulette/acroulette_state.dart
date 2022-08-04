@@ -10,7 +10,11 @@ abstract class BaseAcrouletteState extends Equatable {
 
 class AcrouletteInitialState extends BaseAcrouletteState {}
 
-class AcrouletteStartState extends BaseAcrouletteState {}
+class AcrouletteInitModel extends BaseAcrouletteState {}
+
+class AcrouletteModelInitiatedState extends BaseAcrouletteState {}
+
+class AcrouletteVoiceRecognitionStartedState extends BaseAcrouletteState {}
 
 class AcrouletteStopState extends BaseAcrouletteState {}
 

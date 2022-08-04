@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/acroulette/acroulette_bloc.dart';
 import 'simple_bloc_observer.dart';
-
-const figures = ["bird", "star", "bat", "triangle", "backbird", "reversebird"];
 
 void main() {
   BlocOverrides.runZoned(
@@ -74,20 +71,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _setAwaitOptions();
   }
 
-  int _index = 0;
-  var rng = Random();
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _index = rng.nextInt(figures.length);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -122,36 +105,56 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Next Position',
-            ),
-            Text(figures[_index]),
             BlocProvider(
               create: (_) => AcrouletteBloc(flutterTts),
-              child: Builder(
-                  builder: (BuildContext context) => Container(
-                      padding: EdgeInsets.only(top: 50.0),
-                      child: Row(
+              child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
+                  buildWhen: (previous, current) {
+                return true;
+              }, builder: (BuildContext context, state) {
+                String text;
+                switch (state.runtimeType) {
+                  case AcrouletteInitModel:
+                    text = "Loading languagemodel!";
+                    break;
+                  case AcrouletteModelInitiatedState:
+                    text = "Starting voice recognition!";
+                    break;
+                  case AcrouletteVoiceRecognitionStartedState:
+                  case AcrouletteRecognizeCommandState:
+                    text = "Listening to voice commands!";
+                    break;
+                  default:
+                    text = "Click the play button to start the game!";
+                }
+                return Container(
+                    padding: EdgeInsets.only(top: 50.0),
+                    child: Column(children: [
+                      Text(text),
+                      Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _buildButtonColumn(
-                                Colors.green,
-                                Colors.greenAccent,
-                                Icons.play_arrow,
-                                'PLAY',
-                                () => context
-                                    .read<AcrouletteBloc>()
-                                    .add(AcrouletteStart())),
-                            _buildButtonColumn(
-                                Colors.red,
-                                Colors.redAccent,
-                                Icons.stop,
-                                'STOP',
-                                () => context
-                                    .read<AcrouletteBloc>()
-                                    .add(AcrouletteStop())),
-                          ]))),
-            ),
+                            if (state.runtimeType == AcrouletteInitialState)
+                              _buildButtonColumn(
+                                  Colors.green,
+                                  Colors.greenAccent,
+                                  Icons.play_arrow,
+                                  'PLAY',
+                                  () => context
+                                      .read<AcrouletteBloc>()
+                                      .add(AcrouletteStart()))
+                            else
+                              _buildButtonColumn(
+                                  Colors.red,
+                                  Colors.redAccent,
+                                  Icons.stop,
+                                  'STOP',
+                                  () => context
+                                      .read<AcrouletteBloc>()
+                                      .add(AcrouletteStop())),
+                          ]),
+                    ]));
+              }),
+            )
           ],
         ),
       ),
