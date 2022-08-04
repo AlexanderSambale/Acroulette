@@ -29,10 +29,15 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   final ttsBloc = TtsBloc();
   final FlutterTts flutterTts;
   RegExp rNextPosition = RegExp(r"next position");
-  RegExp rNewPosition = RegExp(r"new position");
+  RegExp rNewPosition = RegExp(r"random position");
+  RegExp rPreviousPosition = RegExp(r"previous position");
+  RegExp rCurrentPosition = RegExp(r"current position");
 
   void onTransitionChange(TransitionStatus status) {
-    if (status == TransitionStatus.created) {
+    if (status == TransitionStatus.created ||
+        status == TransitionStatus.next ||
+        status == TransitionStatus.current ||
+        status == TransitionStatus.previous) {
       _speak(transitionBloc.currentFigure());
     }
   }
@@ -44,13 +49,22 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   void recognizeCommand(String command) {
     final Map<String, dynamic> commandMapped = jsonDecode(command);
     final text = commandMapped["text"];
-    print(text);
+
     if (rNewPosition.hasMatch(text)) {
       transitionBloc.add(NewTransitionEvent());
+      return;
     }
     if (rNextPosition.hasMatch(text)) {
       transitionBloc.add(NextTransitionEvent());
-      _speak(transitionBloc.currentFigure());
+      return;
+    }
+    if (rPreviousPosition.hasMatch(text)) {
+      transitionBloc.add(PreviousTransitionEvent());
+      return;
+    }
+    if (rCurrentPosition.hasMatch(text)) {
+      transitionBloc.add(CurrentTransitionEvent());
+      return;
     }
   }
 

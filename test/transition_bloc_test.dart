@@ -25,7 +25,7 @@ void main() {
       act: (bloc) => bloc.add(NewTransitionEvent()),
       expect: () => [
         isA<TransitionState>().having((bloc) => bloc.index, 'index', 0).having(
-            (bloc) => bloc.status, 'TransitionStatus', TransitionStatus.create)
+            (bloc) => bloc.status, 'TransitionStatus', TransitionStatus.created)
       ],
     );
   });

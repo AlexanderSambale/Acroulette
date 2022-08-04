@@ -27,15 +27,18 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
     on<NewTransitionEvent>((event, emit) {
       final newFigures = List<String>.empty(growable: true);
       newFigures.addAll(state.figures);
+      int index = newFigures.length;
       newFigures.add(getRandomFigure());
       emit(TransitionState(
-          newFigures, state.index + 1, TransitionStatus.create));
+          newFigures, index, TransitionStatus.changingStateProps));
       emit(TransitionState(newFigures, state.index, TransitionStatus.created));
     });
     on<NextTransitionEvent>((event, emit) {
       if (state.index + 1 < state.figures.length) {
-        emit(TransitionState(
-            state.figures, state.index + 1, TransitionStatus.next));
+        emit(TransitionState(state.figures, state.index + 1,
+            TransitionStatus.changingStateProps));
+        emit(
+            TransitionState(state.figures, state.index, TransitionStatus.next));
       } else {
         /// no next figure is available
         emit(TransitionState(
@@ -44,8 +47,10 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
     });
     on<PreviousTransitionEvent>((event, emit) {
       if (state.index > 0) {
+        emit(TransitionState(state.figures, state.index - 1,
+            TransitionStatus.changingStateProps));
         emit(TransitionState(
-            state.figures, state.index - 1, TransitionStatus.previous));
+            state.figures, state.index, TransitionStatus.previous));
       } else {
         /// no previous figure is available
         emit(TransitionState(

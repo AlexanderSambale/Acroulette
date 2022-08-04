@@ -1,7 +1,7 @@
 part of 'transition_bloc.dart';
 
 enum TransitionStatus {
-  create,
+  changingStateProps,
   created,
   initial,
   next,
