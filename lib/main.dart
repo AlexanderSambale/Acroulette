@@ -133,17 +133,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     text = "Click the play button to start the game!";
                 }
                 return Container(
-                    padding: EdgeInsets.only(top: 50.0),
+                    padding: const EdgeInsets.only(top: 50.0),
                     child: Column(children: [
                       Text(text,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 36.0, fontWeight: FontWeight.w400)),
+                          textAlign: TextAlign.center, style: displayTextStyle),
                       if (figure != "")
                         Text(figure,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 36.0, fontWeight: FontWeight.w400)),
+                            style: displayTextStyle),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -200,3 +197,6 @@ class _MyHomePageState extends State<MyHomePage> {
     await flutterTts.awaitSpeakCompletion(true);
   }
 }
+
+TextStyle displayTextStyle =
+    const TextStyle(fontSize: 36.0, fontWeight: FontWeight.w400);
