@@ -135,8 +135,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Container(
                     padding: EdgeInsets.only(top: 50.0),
                     child: Column(children: [
-                      Text(text),
-                      if (figure != "") Text(figure),
+                      Text(text,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 36.0, fontWeight: FontWeight.w400)),
+                      if (figure != "")
+                        Text(figure,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 36.0, fontWeight: FontWeight.w400)),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -175,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-              icon: Icon(icon),
+              icon: Icon(icon, size: 36.0),
               color: color,
               splashColor: splashColor,
               onPressed: () => func()),
@@ -183,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
               margin: const EdgeInsets.only(top: 8.0),
               child: Text(label,
                   style: TextStyle(
-                      fontSize: 12.0,
+                      fontSize: 36.0,
                       fontWeight: FontWeight.w400,
                       color: color)))
         ]);
