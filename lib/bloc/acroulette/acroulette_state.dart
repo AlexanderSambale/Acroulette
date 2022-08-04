@@ -18,4 +18,15 @@ class AcrouletteVoiceRecognitionStartedState extends BaseAcrouletteState {}
 
 class AcrouletteStopState extends BaseAcrouletteState {}
 
-class AcrouletteRecognizeCommandState extends BaseAcrouletteState {}
+class AcrouletteRecognizeCommandState extends BaseAcrouletteState {
+  @override
+  bool operator ==(Object other) => identical(this, other);
+}
+
+class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
+  final String currentFigure;
+  const AcrouletteCommandRecognizedState(this.currentFigure);
+
+  @override
+  bool operator ==(Object other) => identical(this, other);
+}

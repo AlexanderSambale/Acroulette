@@ -112,12 +112,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 return true;
               }, builder: (BuildContext context, state) {
                 String text;
+                String figure = "";
                 switch (state.runtimeType) {
                   case AcrouletteInitModel:
                     text = "Loading languagemodel!";
                     break;
                   case AcrouletteModelInitiatedState:
                     text = "Starting voice recognition!";
+                    break;
+                  case AcrouletteCommandRecognizedState:
+                    figure = (state as AcrouletteCommandRecognizedState)
+                        .currentFigure;
+                    text = "Listening to voice commands!";
                     break;
                   case AcrouletteVoiceRecognitionStartedState:
                   case AcrouletteRecognizeCommandState:
@@ -130,6 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: EdgeInsets.only(top: 50.0),
                     child: Column(children: [
                       Text(text),
+                      if (figure != "") Text(figure),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
