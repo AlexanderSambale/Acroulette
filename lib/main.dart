@@ -155,11 +155,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -182,22 +177,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       fontWeight: FontWeight.w400,
                       color: color)))
         ]);
-  }
-
-  Future _speak() async {
-    double volume = 0.5;
-    double pitch = 1.0;
-    double rate = 0.5;
-    await flutterTts.setVolume(volume);
-    await flutterTts.setSpeechRate(rate);
-    await flutterTts.setPitch(pitch);
-
-    await flutterTts.speak("This is a test");
-  }
-
-  Future _stop() async {
-/*     var result = await flutterTts.stop();
-    if (result == 1) setState(() => ttsState = TtsState.stopped); */
   }
 
   Future _setAwaitOptions() async {
