@@ -1,6 +1,14 @@
 part of 'transition_bloc.dart';
 
-enum TransitionStatus { create, initial, next, previous, nomove, current }
+enum TransitionStatus {
+  create,
+  created,
+  initial,
+  next,
+  previous,
+  nomove,
+  current
+}
 
 @immutable
 abstract class BaseTransitionState extends Equatable {

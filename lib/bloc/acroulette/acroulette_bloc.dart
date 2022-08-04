@@ -32,7 +32,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   RegExp rNewPosition = RegExp(r"new position");
 
   void onTransitionChange(TransitionStatus status) {
-    if (status == TransitionStatus.create) {
+    if (status == TransitionStatus.created) {
       _speak(transitionBloc.currentFigure());
     }
   }

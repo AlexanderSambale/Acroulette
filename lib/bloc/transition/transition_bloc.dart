@@ -30,6 +30,7 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
       newFigures.add(getRandomFigure());
       emit(TransitionState(
           newFigures, state.index + 1, TransitionStatus.create));
+      emit(TransitionState(newFigures, state.index, TransitionStatus.created));
     });
     on<NextTransitionEvent>((event, emit) {
       if (state.index + 1 < state.figures.length) {
