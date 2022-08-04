@@ -1,12 +1,11 @@
+import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-import '../lib/bloc/acroulette/acroulette_bloc.dart';
-
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 
 import 'acroulette_bloc_test.mocks.dart';
 
@@ -26,7 +25,7 @@ void main() {
     });
 
     blocTest<AcrouletteBloc, BaseAcrouletteState>(
-      'emits [AcrouletteStartState()] when CounterIncrementPressed is added',
+      'emits [AcrouletteStartState()] when AcrouletteStart is added',
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteStart()),
       expect: () => [AcrouletteStartState()],
@@ -37,14 +36,30 @@ void main() {
     late AcrouletteBloc acrouletteBloc;
 
     setUp(() {
+      const MethodChannel('vosk_flutter_plugin')
+          .setMockMethodCallHandler((MethodCall methodCall) async {
+        switch (methodCall.method) {
+          case 'onPartial':
+            return Stream.fromIterable(["{text: 'next position'}"]);
+          case 'initModel':
+          case 'start':
+          case 'stop':
+          default:
+            return 'OK';
+        }
+      });
+
       acrouletteBloc = AcrouletteBloc(MockFlutterTts());
       acrouletteBloc.add(AcrouletteStart());
     });
 
-    test('AcrouletteStart', () {
+    test('AcrouletteStart', () async {
       expect(acrouletteBloc.state, AcrouletteStartState());
       expect(acrouletteBloc.voiceRecognitionBloc.state,
-          VoiceRecognitionState(true));
+          const VoiceRecognitionState(false));
+      await Future.delayed(const Duration(seconds: 2), () {});
+      expect(acrouletteBloc.voiceRecognitionBloc.state,
+          const VoiceRecognitionState(true));
     });
   });
 }

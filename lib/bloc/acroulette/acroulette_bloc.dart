@@ -12,6 +12,7 @@ part 'acroulette_state.dart';
 
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   AcrouletteBloc(this.flutterTts) : super(AcrouletteInitialState()) {
+    voiceRecognitionBloc = VoiceRecognitionBloc();
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(VoiceRecognitionStart(onData));
       emit(AcrouletteStartState());
@@ -24,17 +25,16 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   }
 
   late final transitionBloc = TransitionBloc(onTransitionChange);
-  final voiceRecognitionBloc = VoiceRecognitionBloc();
+  late VoiceRecognitionBloc voiceRecognitionBloc;
   final ttsBloc = TtsBloc();
   final FlutterTts flutterTts;
-  RegExp rNextPosition = new RegExp(r"next position");
-  RegExp rNewPosition = new RegExp(r"new position");
+  RegExp rNextPosition = RegExp(r"next position");
+  RegExp rNewPosition = RegExp(r"new position");
 
-  void onTransitionChange() {
-    print("test");
-/*     if (transitionBloc.state.status == TransitionStatus.create) {
+  void onTransitionChange(TransitionStatus status) {
+    if (status == TransitionStatus.create) {
       _speak(transitionBloc.currentFigure());
-    } */
+    }
   }
 
   void onData(dynamic event) {

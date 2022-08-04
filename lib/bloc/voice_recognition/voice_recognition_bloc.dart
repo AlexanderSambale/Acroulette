@@ -9,7 +9,7 @@ part 'voice_recognition_state.dart';
 
 class VoiceRecognitionBloc
     extends Bloc<VoiceRecognitionEvent, VoiceRecognitionState> {
-  VoiceRecognitionBloc() : super(VoiceRecognitionState.initial()) {
+  VoiceRecognitionBloc() : super(const VoiceRecognitionState.initial()) {
     Future<void> initModel() async {
       ByteData modelZip = await rootBundle
           .load('assets/models/vosk-model-small-en-us-0.15.zip');

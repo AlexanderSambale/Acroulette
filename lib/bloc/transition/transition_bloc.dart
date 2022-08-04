@@ -25,10 +25,11 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
   TransitionBloc(this.externalOnChange)
       : super(const TransitionState.initial()) {
     on<NewTransitionEvent>((event, emit) {
-      final figures = List<String>.empty(growable: true);
-      figures.addAll(state.figures);
-      figures.add(getRandomFigure());
-      emit(TransitionState(figures, state.index + 1, TransitionStatus.create));
+      final newFigures = List<String>.empty(growable: true);
+      newFigures.addAll(state.figures);
+      newFigures.add(getRandomFigure());
+      emit(TransitionState(
+          newFigures, state.index + 1, TransitionStatus.create));
     });
     on<NextTransitionEvent>((event, emit) {
       if (state.index + 1 < state.figures.length) {
@@ -55,17 +56,15 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
       emit(TransitionState(
           state.figures, state.index, TransitionStatus.current));
     });
-    on<SubscribeTransitionStreamEvent>((event, emit) {});
-    on<UnSubscribeTransitionStreamEvent>((event, emit) {});
   }
 
   @override
   void onChange(Change<TransitionState> change) {
     super.onChange(change);
-    externalOnChange();
+    externalOnChange(change.nextState.status);
   }
 
-  final void Function() externalOnChange;
+  final void Function(TransitionStatus status) externalOnChange;
   final rng = Random();
 
   String getRandomFigure() {
