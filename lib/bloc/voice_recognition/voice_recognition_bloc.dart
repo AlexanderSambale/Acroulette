@@ -9,16 +9,13 @@ part 'voice_recognition_state.dart';
 
 class VoiceRecognitionBloc
     extends Bloc<VoiceRecognitionEvent, VoiceRecognitionState> {
-  VoiceRecognitionBloc() : super(const VoiceRecognitionState.initial()) {
-    Future<void> initModel() async {
-      ByteData modelZip = await rootBundle
-          .load('assets/models/vosk-model-small-en-us-0.15.zip');
-      await VoskFlutterPlugin.initModel(modelZip);
-    }
+  final void Function() onInitiated;
+
+  VoiceRecognitionBloc(this.onInitiated)
+      : super(const VoiceRecognitionState.initial()) {
+    initModel(onInitiated);
 
     on<VoiceRecognitionStart>((event, emit) async {
-      await initModel();
-      event.onInitiated();
       await VoskFlutterPlugin.start();
       event.onRecognitionStarted();
       VoskFlutterPlugin.onResult().listen(event.onData);
@@ -28,5 +25,12 @@ class VoiceRecognitionBloc
       VoskFlutterPlugin.stop();
       emit(state.copyWith(isRecognizing: false));
     });
+  }
+
+  Future<void> initModel(void Function() onInitiated) async {
+    ByteData modelZip =
+        await rootBundle.load('assets/models/vosk-model-small-en-us-0.15.zip');
+    await VoskFlutterPlugin.initModel(modelZip);
+    onInitiated();
   }
 }

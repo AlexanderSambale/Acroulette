@@ -12,7 +12,7 @@ part 'acroulette_state.dart';
 
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   AcrouletteBloc(this.flutterTts) : super(AcrouletteInitialState()) {
-    voiceRecognitionBloc = VoiceRecognitionBloc();
+    voiceRecognitionBloc = VoiceRecognitionBloc(onInitiated);
 
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(

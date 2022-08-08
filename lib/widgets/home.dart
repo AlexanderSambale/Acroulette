@@ -74,6 +74,35 @@ class _HomeState extends State<Home> {
               default:
                 text = "Click the play button to start the game!";
             }
+            Column button;
+            switch (state.runtimeType) {
+              case AcrouletteInitialState:
+              case AcrouletteInitModel:
+                button = _buildButtonColumn(
+                    Colors.amber,
+                    Colors.amberAccent,
+                    Icons.launch,
+                    'Initialize Model',
+                    () =>
+                        context.read<AcrouletteBloc>().add(AcrouletteStart()));
+                break;
+              case AcrouletteModelInitiatedState:
+                button = _buildButtonColumn(
+                    Colors.green,
+                    Colors.greenAccent,
+                    Icons.play_arrow,
+                    'PLAY',
+                    () =>
+                        context.read<AcrouletteBloc>().add(AcrouletteStart()));
+                break;
+              default:
+                button = _buildButtonColumn(
+                    Colors.red,
+                    Colors.redAccent,
+                    Icons.stop,
+                    'STOP',
+                    () => context.read<AcrouletteBloc>().add(AcrouletteStop()));
+            }
             return Container(
                 padding: const EdgeInsets.only(top: 50.0),
                 child: Column(children: [
@@ -84,26 +113,7 @@ class _HomeState extends State<Home> {
                         textAlign: TextAlign.center, style: displayTextStyle),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        if (state.runtimeType == AcrouletteInitialState)
-                          _buildButtonColumn(
-                              Colors.green,
-                              Colors.greenAccent,
-                              Icons.play_arrow,
-                              'PLAY',
-                              () => context
-                                  .read<AcrouletteBloc>()
-                                  .add(AcrouletteStart()))
-                        else
-                          _buildButtonColumn(
-                              Colors.red,
-                              Colors.redAccent,
-                              Icons.stop,
-                              'STOP',
-                              () => context
-                                  .read<AcrouletteBloc>()
-                                  .add(AcrouletteStop())),
-                      ]),
+                      children: [button]),
                 ]));
           }),
         )
