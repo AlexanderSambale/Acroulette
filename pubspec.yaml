@@ -41,6 +41,7 @@ dependencies:
       url: https://github.com/alphacep/vosk-flutter.git
       ref: master
   flutter_tts: ^3.5.0
+  objectbox: ^1.6.0
 
 dev_dependencies:
   flutter_test:
