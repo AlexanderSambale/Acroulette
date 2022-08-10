@@ -5,11 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-import 'package:mockito/annotations.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'acroulette_bloc_test.mocks.dart';
+class MockFlutterTts extends Mock implements FlutterTts {}
 
-@GenerateMocks([FlutterTts])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
