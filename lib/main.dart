@@ -1,3 +1,4 @@
+import 'package:acroulette/objectboxstore.dart';
 import 'package:acroulette/widgets/flows.dart';
 import 'package:acroulette/widgets/home.dart';
 import 'package:acroulette/widgets/positions.dart';
@@ -8,7 +9,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'simple_bloc_observer.dart';
 
-void main() {
+late ObjectBox objectbox;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  objectbox = await ObjectBox.create();
+
   BlocOverrides.runZoned(
     () => runApp(MyApp()),
     blocObserver: SimpleBlocObserver(),
