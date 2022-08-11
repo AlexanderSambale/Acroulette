@@ -1,3 +1,6 @@
+import 'package:acroulette/constants/commands.dart';
+import 'package:acroulette/main.dart';
+import 'package:acroulette/widgets/formWidgets/text_settings_form_field.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatefulWidget {
@@ -16,62 +19,16 @@ class _SettingsState extends State<Settings> {
       key: _formKey,
       child: ListView(
         children: <Widget>[
-          Text('next position'),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'next position',
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Text('new position'),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'new position',
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Text('previous position'),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'previous position',
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Text('current position'),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'current position',
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
+          ...TextSettingsFormField(NEW_POSITION),
+          ...TextSettingsFormField(NEXT_POSITION),
+          ...TextSettingsFormField(PREVIOUS_POSITION),
+          ...TextSettingsFormField(CURRENT_POSITION),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: ElevatedButton(
               onPressed: () {
-                // Validate will return true if the form is valid, or false if
-                // the form is invalid.
                 if (_formKey.currentState!.validate()) {
-                  // Process data.
+                  _formKey.currentState!.save();
                 }
               },
               child: const Text('Submit'),
