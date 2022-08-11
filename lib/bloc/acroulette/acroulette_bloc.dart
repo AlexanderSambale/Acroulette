@@ -19,10 +19,12 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       : super(AcrouletteInitialState()) {
     voiceRecognitionBloc = VoiceRecognitionBloc(onInitiated);
     settingsMap = SettingsPair.toMap(settings);
-    rNextPosition = RegExp(settingsMap[NEXT_POSITION]!);
-    rNewPosition = RegExp(settingsMap[NEXT_POSITION]!);
-    rPreviousPosition = RegExp(settingsMap[NEXT_POSITION]!);
-    rCurrentPosition = RegExp(settingsMap[NEXT_POSITION]!);
+    rNextPosition = RegExp(settingsMap[NEXT_POSITION] ?? NEXT_POSITION);
+    rNewPosition = RegExp(settingsMap[NEW_POSITION] ?? NEW_POSITION);
+    rPreviousPosition =
+        RegExp(settingsMap[PREVIOUS_POSITION] ?? PREVIOUS_POSITION);
+    rCurrentPosition =
+        RegExp(settingsMap[CURRENT_POSITION] ?? CURRENT_POSITION);
 
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(
