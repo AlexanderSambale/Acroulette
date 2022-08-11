@@ -4,6 +4,7 @@ import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/commands.dart';
+import 'package:acroulette/main.dart';
 import 'package:acroulette/models/SettingsPair.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -25,6 +26,12 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
         RegExp(settingsMap[PREVIOUS_POSITION] ?? PREVIOUS_POSITION);
     rCurrentPosition =
         RegExp(settingsMap[CURRENT_POSITION] ?? CURRENT_POSITION);
+    transitionBloc = TransitionBloc(
+        onTransitionChange,
+        objectbox.positionBox
+            .getAll()
+            .map<String>((element) => element.name)
+            .toList());
 
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(
@@ -47,7 +54,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     });
   }
 
-  late final transitionBloc = TransitionBloc(onTransitionChange);
+  late final TransitionBloc transitionBloc;
   late VoiceRecognitionBloc voiceRecognitionBloc;
   final ttsBloc = TtsBloc();
   final FlutterTts flutterTts;

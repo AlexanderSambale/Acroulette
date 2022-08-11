@@ -6,23 +6,8 @@ import 'dart:math';
 part 'transition_event.dart';
 part 'transition_state.dart';
 
-const figures = [
-  "bird",
-  "star",
-  "bat",
-  "triangle",
-  "backbird",
-  "reversebird",
-  "throne",
-  "chair",
-  "fallen leaf",
-  "side star",
-  "vishnus couch",
-  "high flying whale"
-];
-
 class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
-  TransitionBloc(this.externalOnChange)
+  TransitionBloc(this.externalOnChange, this.possibleFigures)
       : super(const TransitionState.initial()) {
     on<NewTransitionEvent>((event, emit) {
       final newFigures = List<String>.empty(growable: true);
@@ -72,10 +57,11 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
 
   final void Function(TransitionStatus status) externalOnChange;
   final rng = Random();
+  late final List<String> possibleFigures;
 
   String getRandomFigure() {
-    final newFigureIndex = rng.nextInt(figures.length);
-    return figures[newFigureIndex];
+    final newFigureIndex = rng.nextInt(possibleFigures.length);
+    return possibleFigures[newFigureIndex];
   }
 
   String currentFigure() {
