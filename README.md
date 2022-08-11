@@ -20,3 +20,9 @@ samples, guidance on mobile development, and a full API reference.
 ```bash
 flutter pub run build_runner build
 ```
+
+### Build apk
+
+```bash
+flutter build apk
+```
