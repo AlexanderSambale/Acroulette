@@ -1,6 +1,10 @@
+import 'dart:collection';
+
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
+import 'package:acroulette/constants/commands.dart';
+import 'package:acroulette/models/SettingsPair.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -11,8 +15,14 @@ part 'acroulette_event.dart';
 part 'acroulette_state.dart';
 
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
-  AcrouletteBloc(this.flutterTts) : super(AcrouletteInitialState()) {
+  AcrouletteBloc(this.flutterTts, List<SettingsPair> settings)
+      : super(AcrouletteInitialState()) {
     voiceRecognitionBloc = VoiceRecognitionBloc(onInitiated);
+    settingsMap = SettingsPair.toMap(settings);
+    rNextPosition = RegExp(settingsMap[NEXT_POSITION]!);
+    rNewPosition = RegExp(settingsMap[NEXT_POSITION]!);
+    rPreviousPosition = RegExp(settingsMap[NEXT_POSITION]!);
+    rCurrentPosition = RegExp(settingsMap[NEXT_POSITION]!);
 
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(
@@ -39,10 +49,12 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   late VoiceRecognitionBloc voiceRecognitionBloc;
   final ttsBloc = TtsBloc();
   final FlutterTts flutterTts;
-  RegExp rNextPosition = RegExp(r"next position");
-  RegExp rNewPosition = RegExp(r"random position");
-  RegExp rPreviousPosition = RegExp(r"previous position");
-  RegExp rCurrentPosition = RegExp(r"current position");
+  late HashMap<String, String> settingsMap;
+
+  late RegExp rNextPosition;
+  late RegExp rNewPosition;
+  late RegExp rPreviousPosition;
+  late RegExp rCurrentPosition;
 
   void onTransitionChange(TransitionStatus status) {
     if (status == TransitionStatus.created ||
