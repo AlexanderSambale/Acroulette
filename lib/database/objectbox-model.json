@@ -4,41 +4,74 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:7327161207654298855",
-      "lastPropertyId": "5:4388722772892588306",
-      "name": "Commands",
+      "id": "1:294092838756484895",
+      "lastPropertyId": "3:5387017440270661829",
+      "name": "Flow",
       "properties": [
         {
-          "id": "1:8525843944900129759",
+          "id": "1:3664347940758664793",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:6517928272619359927",
-          "name": "nextCommand",
+          "id": "2:5868802983347226571",
+          "name": "name",
           "type": 9
         },
         {
-          "id": "3:3054171547043420960",
-          "name": "newCommand",
+          "id": "3:5387017440270661829",
+          "name": "positions",
+          "type": 30
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:5934292188996918374",
+      "lastPropertyId": "2:5280662716302155883",
+      "name": "Position",
+      "properties": [
+        {
+          "id": "1:6119571697108678528",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5280662716302155883",
+          "name": "name",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:1897023444700848635",
+      "lastPropertyId": "3:7893660069898483754",
+      "name": "SettingsPair",
+      "properties": [
+        {
+          "id": "1:3945900891002202379",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:423016612067942192",
+          "name": "key",
           "type": 9
         },
         {
-          "id": "4:4414719292105897764",
-          "name": "previousCommand",
-          "type": 9
-        },
-        {
-          "id": "5:4388722772892588306",
-          "name": "currentCommand",
+          "id": "3:7893660069898483754",
+          "name": "value",
           "type": 9
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "1:7327161207654298855",
+  "lastEntityId": "3:1897023444700848635",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
