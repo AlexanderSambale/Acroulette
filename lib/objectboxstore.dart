@@ -17,13 +17,13 @@ class ObjectBox {
       List<Position> figures = [
         "bird",
         "star",
-        "bat",
+        "stradle bat",
         "triangle",
         "backbird",
         "reversebird",
         "throne",
         "chair",
-        "fallen leaf",
+        "folded leaf",
         "side star",
         "vishnus couch",
         "high flying whale"
