@@ -10,31 +10,34 @@ class Node<T> {
   final LinkedHashSet<Node<T>> children;
   T? value;
 
-  T? getValue() {
-    return value;
-  }
-
-  setValue(T? newValue) {
-    value = newValue;
-  }
-
-  Node(this.children) {
-    if (children.isEmpty) {
-      isLeaf = true;
-    } else {
-      isLeaf = false;
-    }
-  }
+  Node(this.children, this.isLeaf, this.value);
+  Node.createLeaf(this.value)
+      : isLeaf = true,
+        children = LinkedHashSet<Node<T>>(
+            equals: (n0, n1) => n0 == n1, hashCode: (n2) => n2.hashCode);
 
   addNode(Node<T> node) {
     children.add(node);
-    isLeaf = false;
+  }
+
+  addAll(LinkedHashSet<Node<T>> nodes) {
+    children.addAll(nodes);
   }
 
   removeNode(Node<T> node) {
     children.remove(node);
-    if (children.isEmpty) {
-      isLeaf = true;
-    }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Node<T> &&
+          runtimeType == other.runtimeType &&
+          isLeaf == other.isLeaf &&
+          value == other.value &&
+          children == other.children;
+
+  @override
+  int get hashCode =>
+      Object.hash(isLeaf.hashCode, children.hashCode, value.hashCode);
 }
