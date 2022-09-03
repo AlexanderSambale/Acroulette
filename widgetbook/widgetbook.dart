@@ -1,4 +1,4 @@
-import 'package:acroulette/components/postureCategoryItem/PostureCategoryItem.dart';
+import 'package:acroulette/components/postureCategoryItem/posture_category_item.dart';
 import 'package:acroulette/components/postureListItem/posture_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
