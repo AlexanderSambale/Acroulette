@@ -54,7 +54,16 @@ class HotReload extends StatelessWidget {
                   useCases: [
                     WidgetbookUseCase(
                         name: 'Default',
-                        builder: (context) => PostureListItem()),
+                        builder: (context) => PostureListItem(
+                              isSwitched: context.knobs.boolean(
+                                label: 'isSwitched',
+                                initialValue: false,
+                              ),
+                              postureLabel: context.knobs.text(
+                                label: 'Label',
+                                initialValue: 'Posture1',
+                              ),
+                            )),
                   ],
                 ),
                 WidgetbookComponent(
@@ -83,7 +92,16 @@ class HotReload extends StatelessWidget {
                   useCases: [
                     WidgetbookUseCase(
                         name: 'Default',
-                        builder: (context) => PostureListItem()),
+                        builder: (context) => PostureListItem(
+                              isSwitched: context.knobs.boolean(
+                                label: 'isSwitched',
+                                initialValue: false,
+                              ),
+                              postureLabel: context.knobs.text(
+                                label: 'Label',
+                                initialValue: 'Category',
+                              ),
+                            )),
                   ],
                 ),
                 WidgetbookComponent(
@@ -91,7 +109,16 @@ class HotReload extends StatelessWidget {
                   useCases: [
                     WidgetbookUseCase(
                         name: 'Default',
-                        builder: (context) => PostureListItem()),
+                        builder: (context) => PostureListItem(
+                              isSwitched: context.knobs.boolean(
+                                label: 'isSwitched',
+                                initialValue: false,
+                              ),
+                              postureLabel: context.knobs.text(
+                                label: 'Label',
+                                initialValue: 'Category',
+                              ),
+                            )),
                   ],
                 ),
               ],

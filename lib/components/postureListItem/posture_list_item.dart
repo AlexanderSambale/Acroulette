@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
-class PostureListItem extends StatefulWidget {
-  const PostureListItem({Key? key}) : super(key: key);
+class PostureListItem extends StatelessWidget {
+  const PostureListItem(
+      {super.key, required this.isSwitched, required this.postureLabel});
 
-  @override
-  State<PostureListItem> createState() => PostureListItemState();
-}
-
-class PostureListItemState extends State<PostureListItem> {
-  bool isSwitched = false;
+  final bool isSwitched;
+  final String postureLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -16,20 +13,12 @@ class PostureListItemState extends State<PostureListItem> {
         height: 50,
         child: Row(
           children: [
-            const Center(child: Text('Entry A')),
-            Switch(
-                value: isSwitched,
-                onChanged: (value) {
-                  setState(() {
-                    isSwitched = value;
-                  });
-                }),
+            Center(child: Text(postureLabel)),
+            Switch(value: isSwitched, onChanged: (value) {}),
             IconButton(
               icon: const Icon(Icons.delete),
               tooltip: 'Delete position',
-              onPressed: () {
-                setState(() {});
-              },
+              onPressed: () {},
             )
           ],
         ));
