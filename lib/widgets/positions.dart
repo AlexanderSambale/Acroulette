@@ -1,3 +1,4 @@
+import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/main.dart';
 import 'package:acroulette/models/position.dart';
 import 'package:flutter/material.dart';
@@ -18,18 +19,19 @@ class _PositionsState extends State<Positions> {
         key: _formKey,
         child: ListView(
           children: <Widget>[
-            Text("Positions"),
-            Text("New Position"),
+            const Text("Positions"),
+            const Text("New Position"),
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Add position here",
               ),
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
                 }
-                if (objectbox.getPosition(value) != null)
+                if (objectbox.getPosition(value) != null) {
                   return 'Position $value already exists!';
+                }
                 return null;
               },
               onSaved: (newValue) =>
@@ -46,6 +48,14 @@ class _PositionsState extends State<Positions> {
                 child: const Text('Submit'),
               ),
             ),
+/*             StreamBuilder(
+              stream: objectbox.positionBox
+                  .query(Position_.name.notEquals(""))
+                  .watch(),
+              builder: (context, snapshot) => ListView(children: <Widget>[
+                Text("test"),
+              ]),
+            ) */
           ],
         ));
   }
