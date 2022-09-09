@@ -24,6 +24,11 @@ class PostureCategoryItem extends StatelessWidget {
             ),
             Center(child: Text(categoryLabel)),
             const Spacer(),
+            IconButton(
+              icon: const Icon(Icons.add_circle_rounded),
+              tooltip: 'Add position',
+              onPressed: () {},
+            ),
             Switch(value: isSwitched, onChanged: (value) {}),
             IconButton(
               icon: const Icon(Icons.delete),
