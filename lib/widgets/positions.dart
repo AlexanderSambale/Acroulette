@@ -1,5 +1,6 @@
-import 'package:acroulette/database/objectbox.g.dart';
+import 'package:acroulette/components/posture_tree/posture_tree.dart';
 import 'package:acroulette/main.dart';
+import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/position.dart';
 import 'package:flutter/material.dart';
 
@@ -48,14 +49,11 @@ class _PositionsState extends State<Positions> {
                 child: const Text('Submit'),
               ),
             ),
-/*             StreamBuilder(
-              stream: objectbox.positionBox
-                  .query(Position_.name.notEquals(""))
-                  .watch(),
-              builder: (context, snapshot) => ListView(children: <Widget>[
-                Text("test"),
-              ]),
-            ) */
+            StreamBuilder(
+                stream: objectbox.watchAcroPositionTree(),
+                builder: (context, snapshot) => snapshot.hasData
+                    ? PostureTree(tree: snapshot.data as Node)
+                    : Container())
           ],
         ));
   }

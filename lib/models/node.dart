@@ -1,43 +1,27 @@
-import 'dart:collection';
-
+import 'package:acroulette/models/acro_node.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class Node<T> {
+class Node {
   int id = 0;
 
-  late bool isLeaf;
-  final LinkedHashSet<Node<T>> children;
-  T? value;
+  bool get isLeaf => children.isEmpty;
+  ToMany<Node> children = ToMany<Node>();
+  ToOne<AcroNode> value = ToOne<AcroNode>();
+  bool isExpanded;
 
-  Node(this.children, this.isLeaf, this.value);
-  Node.createLeaf(this.value)
-      : isLeaf = true,
-        children = LinkedHashSet<Node<T>>(
-            equals: (n0, n1) => n0 == n1, hashCode: (n2) => n2.hashCode);
+  Node(this.children, this.value, {this.isExpanded = true});
+  Node.createLeaf(this.value, {this.isExpanded = true});
 
-  addNode(Node<T> node) {
+  addNode(Node node) {
     children.add(node);
   }
 
-  addAll(LinkedHashSet<Node<T>> nodes) {
+  addAll(List<Node> nodes) {
     children.addAll(nodes);
   }
 
-  removeNode(Node<T> node) {
+  removeNode(Node node) {
     children.remove(node);
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Node<T> &&
-          runtimeType == other.runtimeType &&
-          isLeaf == other.isLeaf &&
-          value == other.value &&
-          children == other.children;
-
-  @override
-  int get hashCode =>
-      Object.hash(isLeaf.hashCode, children.hashCode, value.hashCode);
 }

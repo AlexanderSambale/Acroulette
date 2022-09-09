@@ -1,47 +1,44 @@
-import 'dart:collection';
-
 import 'package:acroulette/components/posture_tree/posture_category_item.dart';
 import 'package:acroulette/components/posture_tree/posture_list_item.dart';
 import 'package:acroulette/components/posture_tree/posture_tree.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:flutter/material.dart';
+import 'package:objectbox/objectbox.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 var onSwitch = (bool isOn) => {};
 var delete = () => {};
 
-Node<AcroNode> createSimpleTree(
+Node createSimpleTree(
     {String rootName = 'root',
     String leaf1Name = 'leaf1',
     String leaf2Name = 'leaf2',
     String leaf3Name = 'leaf3'}) {
-  LinkedHashSet<Node<AcroNode>> children = LinkedHashSet<Node<AcroNode>>(
-      equals: (n0, n1) => n0 == n1, hashCode: (n2) => n2.hashCode);
-
-  children.add(
-      Node.createLeaf(AcroNode(leaf1Name, true, leaf1Name, onSwitch, delete)));
-  children.add(
-      Node.createLeaf(AcroNode(leaf2Name, false, leaf2Name, onSwitch, delete)));
-  children.add(
-      Node.createLeaf(AcroNode(leaf3Name, true, leaf3Name, onSwitch, delete)));
-
-  Node<AcroNode> simpleTree = Node(
-      children, false, AcroNode(rootName, true, rootName, onSwitch, delete));
-  return simpleTree;
+  Node leaf1 = Node.createLeaf(ToOne<AcroNode>());
+  leaf1.value.target = AcroNode(true, leaf1Name);
+  Node leaf2 = Node.createLeaf(ToOne<AcroNode>());
+  leaf2.value.target = AcroNode(false, leaf2Name);
+  Node leaf3 = Node.createLeaf(ToOne<AcroNode>());
+  leaf3.value.target = AcroNode(true, leaf3Name);
+  AcroNode rootAcroNode = AcroNode(true, rootName);
+  Node category = Node(ToMany<Node>(), ToOne<AcroNode>());
+  category.isExpanded = false;
+  category.value.target = rootAcroNode;
+  category.addNode(leaf1);
+  category.addNode(leaf2);
+  category.addNode(leaf3);
+  return category;
 }
 
-Node<AcroNode> createComplexTree() {
-  LinkedHashSet<Node<AcroNode>> children = LinkedHashSet<Node<AcroNode>>(
-      equals: (n0, n1) => n0 == n1, hashCode: (n2) => n2.hashCode);
-
-  children.add(createSimpleTree(rootName: 'root1'));
-  children.add(createSimpleTree(rootName: 'root2'));
-  children.add(createSimpleTree(rootName: 'root3'));
-
-  Node<AcroNode> root =
-      Node(children, false, AcroNode('root', true, 'root', onSwitch, delete));
-
+Node createComplexTree() {
+  Node root = Node(ToMany<Node>(), ToOne<AcroNode>());
+  root.addNode(createSimpleTree(rootName: 'root1'));
+  root.addNode(createSimpleTree(rootName: 'root2'));
+  root.addNode(createSimpleTree(rootName: 'root3'));
+  root.isExpanded = true;
+  AcroNode rootAcroNode = AcroNode(true, 'root');
+  root.value.target = rootAcroNode;
   return root;
 }
 
