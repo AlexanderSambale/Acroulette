@@ -20,6 +20,7 @@ class PostureListItem extends StatelessWidget {
         child: Row(
           children: [
             Center(child: Text(postureLabel)),
+            const Spacer(),
             Switch(value: isSwitched, onChanged: onChanged),
             IconButton(
               icon: const Icon(Icons.delete),
