@@ -11,20 +11,38 @@ import 'package:widgetbook/widgetbook.dart';
 var onSwitch = (bool isOn) => {};
 var delete = () => {};
 
-createSimpleTree() {
+Node<AcroNode> createSimpleTree(
+    {String rootName = 'root',
+    String leaf1Name = 'leaf1',
+    String leaf2Name = 'leaf2',
+    String leaf3Name = 'leaf3'}) {
   LinkedHashSet<Node<AcroNode>> children = LinkedHashSet<Node<AcroNode>>(
       equals: (n0, n1) => n0 == n1, hashCode: (n2) => n2.hashCode);
 
-  children
-      .add(Node.createLeaf(AcroNode('leaf1', true, 'leaf1', onSwitch, delete)));
   children.add(
-      Node.createLeaf(AcroNode('leaf2', false, 'leaf2', onSwitch, delete)));
-  children
-      .add(Node.createLeaf(AcroNode('leaf3', true, 'leaf3', onSwitch, delete)));
+      Node.createLeaf(AcroNode(leaf1Name, true, leaf1Name, onSwitch, delete)));
+  children.add(
+      Node.createLeaf(AcroNode(leaf2Name, false, leaf2Name, onSwitch, delete)));
+  children.add(
+      Node.createLeaf(AcroNode(leaf3Name, true, leaf3Name, onSwitch, delete)));
 
-  Node<AcroNode> simpleTree =
-      Node(children, false, AcroNode('root', true, 'root', onSwitch, delete));
+  Node<AcroNode> simpleTree = Node(
+      children, false, AcroNode(rootName, true, rootName, onSwitch, delete));
   return simpleTree;
+}
+
+Node<AcroNode> createComplexTree() {
+  LinkedHashSet<Node<AcroNode>> children = LinkedHashSet<Node<AcroNode>>(
+      equals: (n0, n1) => n0 == n1, hashCode: (n2) => n2.hashCode);
+
+  children.add(createSimpleTree(rootName: 'root1'));
+  children.add(createSimpleTree(rootName: 'root2'));
+  children.add(createSimpleTree(rootName: 'root3'));
+
+  Node<AcroNode> root =
+      Node(children, false, AcroNode('root', true, 'root', onSwitch, delete));
+
+  return root;
 }
 
 class HotReload extends StatelessWidget {
@@ -117,9 +135,13 @@ class HotReload extends StatelessWidget {
                   name: 'PostureList',
                   useCases: [
                     WidgetbookUseCase(
-                        name: 'Default',
+                        name: 'SimpleTree',
                         builder: (context) =>
-                            PostureTree(tree: createSimpleTree()))
+                            PostureTree(tree: createSimpleTree())),
+                    WidgetbookUseCase(
+                        name: 'ComplexTree',
+                        builder: (context) =>
+                            PostureTree(tree: createComplexTree()))
                   ],
                 ),
               ],
