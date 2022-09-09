@@ -19,10 +19,11 @@ class PostureCategoryItem extends StatelessWidget {
           children: [
             IconButton(
               icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
-              tooltip: 'Delete position',
+              tooltip: isExpanded ? 'collapse' : 'expand',
               onPressed: () {},
             ),
             Center(child: Text(categoryLabel)),
+            const Spacer(),
             Switch(value: isSwitched, onChanged: (value) {}),
             IconButton(
               icon: const Icon(Icons.delete),
