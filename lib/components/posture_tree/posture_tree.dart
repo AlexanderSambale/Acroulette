@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:acroulette/components/posture_tree/posture_category_item.dart';
 import 'package:acroulette/components/posture_tree/posture_list_item.dart';
 import 'package:acroulette/models/acro_node.dart';
@@ -17,14 +15,17 @@ class PostureTree extends StatelessWidget {
       if (tree.value == null) {
         return Container();
       } else {
-        return PostureListItem(
-            isSwitched: tree.value!.isSwitched,
-            postureLabel: tree.value!.label,
-            onChanged: tree.value!.onSwitchChange,
-            delete: tree.value!.delete);
+        return Container(
+            margin: const EdgeInsets.only(left: 24),
+            child: PostureListItem(
+                isSwitched: tree.value!.isSwitched,
+                postureLabel: tree.value!.label,
+                onChanged: tree.value!.onSwitchChange,
+                delete: tree.value!.delete));
       }
     } else {
       return ListView.builder(
+          shrinkWrap: true,
           itemCount: tree.children.length + 1,
           itemBuilder: (context, index) {
             if (index == 0) {
@@ -33,7 +34,9 @@ class PostureTree extends StatelessWidget {
                   isSwitched: tree.value!.isSwitched,
                   isExpanded: true);
             } else {
-              return PostureTree(tree: tree.children.elementAt(index - 1));
+              return Container(
+                  margin: const EdgeInsets.only(left: 24),
+                  child: PostureTree(tree: tree.children.elementAt(index - 1)));
             }
           });
     }
