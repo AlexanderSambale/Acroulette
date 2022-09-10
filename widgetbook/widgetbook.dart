@@ -104,6 +104,8 @@ class HotReload extends StatelessWidget {
                               ),
                               onChanged: onSwitch,
                               delete: delete,
+                              enabled: context.knobs.boolean(
+                                  label: 'enabled', initialValue: true),
                             )),
                   ],
                 ),
