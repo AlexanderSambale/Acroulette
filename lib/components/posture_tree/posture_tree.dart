@@ -1,5 +1,6 @@
 import 'package:acroulette/components/posture_tree/posture_category_item.dart';
 import 'package:acroulette/components/posture_tree/posture_list_item.dart';
+import 'package:acroulette/main.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,11 @@ class PostureTree extends StatelessWidget {
           child: PostureListItem(
               isSwitched: tree.value.target!.isSwitched,
               postureLabel: tree.value.target!.label,
-              onChanged: (bool test) {},
+              onChanged: (bool switched) {
+                tree.value.target!.isSwitched = switched;
+                objectbox.putAcroNode(tree.value.target!);
+                objectbox.putNode(tree);
+              },
               delete: () {}));
     } else {
       return ListView.builder(

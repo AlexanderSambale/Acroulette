@@ -10,14 +10,16 @@ class ObjectBox {
 
   late final Box<SettingsPair> settingsBox;
   late final Box<Position> positionBox;
-  late final Box<Node> acroPositionTree;
+  late final Box<Node> nodeBox;
+  late final Box<AcroNode> acroNodeBox;
 
   ObjectBox._create(this.store) {
     settingsBox = Box<SettingsPair>(store);
     positionBox = Box<Position>(store);
-    acroPositionTree = Box<Node>(store);
+    nodeBox = Box<Node>(store);
+    acroNodeBox = Box<AcroNode>(store);
 
-    if (acroPositionTree.isEmpty()) {
+    if (nodeBox.isEmpty()) {
       ToMany<Node> children = ToMany<Node>();
       for (var element in [
         "bird",
@@ -35,11 +37,13 @@ class ObjectBox {
       ]) {
         ToOne<AcroNode> acroNode = ToOne<AcroNode>();
         acroNode.target = AcroNode(true, element);
+        acroNodeBox.put(acroNode.target!);
         children.add(Node.createLeaf(acroNode));
       }
       ToOne<AcroNode> acroNodeRoot = ToOne<AcroNode>();
       acroNodeRoot.target = AcroNode(true, 'Basic postures');
-      acroPositionTree.put(Node(children, acroNodeRoot));
+      acroNodeBox.put(acroNodeRoot.target!);
+      nodeBox.put(Node(children, acroNodeRoot));
     }
 
     if (positionBox.isEmpty()) {
@@ -91,6 +95,14 @@ class ObjectBox {
     }
   }
 
+  void putAcroNode(AcroNode acroNode) {
+    acroNodeBox.put(acroNode);
+  }
+
+  void putNode(Node node) {
+    nodeBox.put(node);
+  }
+
   String? getPosition(String positionName) {
     Query<Position> keyQuery =
         positionBox.query(Position_.name.equals(positionName)).build();
@@ -102,11 +114,11 @@ class ObjectBox {
     }
   }
 
-  Stream<Node> watchAcroPositionTree() {
-    final acroPositionTreeQuery = acroPositionTree.query();
+  Stream<Node> watchNodeBox() {
+    final nodeBoxQuery = nodeBox.query();
     // Build and watch the query,
     // set triggerImmediately to emit the query immediately on listen.
-    return acroPositionTreeQuery
+    return nodeBoxQuery
         .watch(triggerImmediately: true)
         .map((event) => event.find().first);
   }

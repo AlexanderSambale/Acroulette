@@ -50,7 +50,7 @@ class _PositionsState extends State<Positions> {
               ),
             ),
             StreamBuilder(
-                stream: objectbox.watchAcroPositionTree(),
+                stream: objectbox.watchNodeBox(),
                 builder: (context, snapshot) => snapshot.hasData
                     ? PostureTree(tree: snapshot.data as Node)
                     : Container())
