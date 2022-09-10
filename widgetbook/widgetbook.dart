@@ -121,6 +121,7 @@ class HotReload extends StatelessWidget {
                                 label: 'isExpanded',
                                 initialValue: false,
                               ),
+                              onChanged: (p0) {},
                               categoryLabel: context.knobs.text(
                                 label: 'Label',
                                 initialValue: 'Category',

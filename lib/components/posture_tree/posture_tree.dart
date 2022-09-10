@@ -32,6 +32,11 @@ class PostureTree extends StatelessWidget {
               return PostureCategoryItem(
                   categoryLabel: tree.value.target!.label,
                   isSwitched: tree.value.target!.isSwitched,
+                  onChanged: (bool switched) {
+                    tree.value.target!.isSwitched = switched;
+                    objectbox.putAcroNode(tree.value.target!);
+                    objectbox.putNode(tree);
+                  },
                   isExpanded: true);
             } else {
               return Container(

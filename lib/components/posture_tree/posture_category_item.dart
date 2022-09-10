@@ -5,11 +5,13 @@ class PostureCategoryItem extends StatelessWidget {
       {super.key,
       required this.isSwitched,
       required this.isExpanded,
+      required this.onChanged,
       required this.categoryLabel});
 
   final bool isSwitched;
   final bool isExpanded;
   final String categoryLabel;
+  final void Function(bool) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class PostureCategoryItem extends StatelessWidget {
               tooltip: 'Add position',
               onPressed: () {},
             ),
-            Switch(value: isSwitched, onChanged: (value) {}),
+            Switch(value: isSwitched, onChanged: onChanged),
             IconButton(
               icon: const Icon(Icons.delete),
               tooltip: 'Delete position',
