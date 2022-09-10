@@ -113,23 +113,26 @@ class HotReload extends StatelessWidget {
                   name: 'PostureCategoryItem',
                   useCases: [
                     WidgetbookUseCase(
-                        name: 'Default',
-                        builder: (context) => PostureCategoryItem(
-                              isSwitched: context.knobs.boolean(
-                                label: 'isSwitched',
-                                initialValue: false,
-                              ),
-                              isExpanded: context.knobs.boolean(
-                                label: 'isExpanded',
-                                initialValue: true,
-                              ),
-                              onChanged: (p0) {},
-                              toggleExpand: () {},
-                              categoryLabel: context.knobs.text(
-                                label: 'Label',
-                                initialValue: 'Category',
-                              ),
-                            )),
+                      name: 'Default',
+                      builder: (context) => PostureCategoryItem(
+                        isSwitched: context.knobs.boolean(
+                          label: 'isSwitched',
+                          initialValue: false,
+                        ),
+                        isExpanded: context.knobs.boolean(
+                          label: 'isExpanded',
+                          initialValue: true,
+                        ),
+                        onChanged: (p0) {},
+                        toggleExpand: () {},
+                        categoryLabel: context.knobs.text(
+                          label: 'Label',
+                          initialValue: 'Category',
+                        ),
+                        enabled: context.knobs
+                            .boolean(label: 'enabled', initialValue: true),
+                      ),
+                    ),
                   ],
                 ),
                 WidgetbookComponent(

@@ -7,16 +7,19 @@ class PostureCategoryItem extends StatelessWidget {
       required this.isExpanded,
       required this.onChanged,
       required this.toggleExpand,
-      required this.categoryLabel});
+      required this.categoryLabel,
+      this.enabled = true});
 
   final bool isSwitched;
   final bool isExpanded;
+  final bool enabled;
   final String categoryLabel;
   final void Function(bool) onChanged;
   final void Function() toggleExpand;
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Container(
         height: 50,
         child: Row(
@@ -33,7 +36,13 @@ class PostureCategoryItem extends StatelessWidget {
               tooltip: 'Add position',
               onPressed: () {},
             ),
-            Switch(value: isSwitched, onChanged: onChanged),
+            Switch(
+              value: isSwitched,
+              onChanged: enabled ? onChanged : null,
+              activeColor: enabled
+                  ? theme.toggleableActiveColor
+                  : theme.toggleButtonsTheme.disabledColor,
+            ),
             IconButton(
               icon: const Icon(Icons.delete),
               tooltip: 'Delete position',
