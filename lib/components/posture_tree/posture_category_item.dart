@@ -6,12 +6,14 @@ class PostureCategoryItem extends StatelessWidget {
       required this.isSwitched,
       required this.isExpanded,
       required this.onChanged,
+      required this.toggleExpand,
       required this.categoryLabel});
 
   final bool isSwitched;
   final bool isExpanded;
   final String categoryLabel;
   final void Function(bool) onChanged;
+  final void Function() toggleExpand;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class PostureCategoryItem extends StatelessWidget {
             IconButton(
               icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
               tooltip: isExpanded ? 'collapse' : 'expand',
-              onPressed: () {},
+              onPressed: toggleExpand,
             ),
             Center(child: Text(categoryLabel)),
             const Spacer(),

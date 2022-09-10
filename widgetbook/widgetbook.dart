@@ -23,7 +23,7 @@ Node createSimpleTree(
   leaf3.value.target = AcroNode(true, leaf3Name);
   AcroNode rootAcroNode = AcroNode(true, rootName);
   Node category = Node(ToMany<Node>(), ToOne<AcroNode>());
-  category.isExpanded = false;
+  category.isExpanded = true;
   category.value.target = rootAcroNode;
   category.addNode(leaf1);
   category.addNode(leaf2);
@@ -119,9 +119,10 @@ class HotReload extends StatelessWidget {
                               ),
                               isExpanded: context.knobs.boolean(
                                 label: 'isExpanded',
-                                initialValue: false,
+                                initialValue: true,
                               ),
                               onChanged: (p0) {},
+                              toggleExpand: () {},
                               categoryLabel: context.knobs.text(
                                 label: 'Label',
                                 initialValue: 'Category',
@@ -134,12 +135,18 @@ class HotReload extends StatelessWidget {
                   useCases: [
                     WidgetbookUseCase(
                         name: 'SimpleTree',
-                        builder: (context) =>
-                            PostureTree(tree: createSimpleTree())),
+                        builder: (context) => PostureTree(
+                              tree: createSimpleTree(),
+                              onSwitched: (b, n) {},
+                              toggleExpand: (n) {},
+                            )),
                     WidgetbookUseCase(
                         name: 'ComplexTree',
-                        builder: (context) =>
-                            PostureTree(tree: createComplexTree()))
+                        builder: (context) => PostureTree(
+                              tree: createComplexTree(),
+                              onSwitched: (b, n) {},
+                              toggleExpand: (n) {},
+                            ))
                   ],
                 ),
               ],

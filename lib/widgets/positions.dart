@@ -52,7 +52,18 @@ class _PositionsState extends State<Positions> {
             StreamBuilder(
                 stream: objectbox.watchNodeBox(),
                 builder: (context, snapshot) => snapshot.hasData
-                    ? PostureTree(tree: snapshot.data as Node)
+                    ? PostureTree(
+                        tree: snapshot.data as Node,
+                        onSwitched: (bool switched, Node tree) {
+                          tree.value.target!.isSwitched = switched;
+                          objectbox.putAcroNode(tree.value.target!);
+                          objectbox.putNode(tree);
+                        },
+                        toggleExpand: (Node tree) {
+                          tree.isExpanded = !tree.isExpanded;
+                          objectbox.putNode(tree);
+                        },
+                      )
                     : Container())
           ],
         ));
