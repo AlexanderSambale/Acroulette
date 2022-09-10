@@ -99,8 +99,16 @@ class ObjectBox {
     acroNodeBox.put(acroNode);
   }
 
+  void putManyAcroNodes(List<AcroNode> acroNodes) {
+    acroNodeBox.putMany(acroNodes);
+  }
+
   void putNode(Node node) {
     nodeBox.put(node);
+  }
+
+  void putManyNodes(List<Node> nodes) {
+    nodeBox.putMany(nodes);
   }
 
   String? getPosition(String positionName) {
