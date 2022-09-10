@@ -23,7 +23,8 @@ class PostureTree extends StatelessWidget {
               isSwitched: tree.value.target!.isSwitched,
               postureLabel: tree.value.target!.label,
               onChanged: (isOn) => onSwitched(isOn, tree),
-              delete: () {}));
+              delete: () {},
+              enabled: tree.value.target!.isEnabled));
     }
     return ListView.builder(
         shrinkWrap: true,
@@ -35,7 +36,8 @@ class PostureTree extends StatelessWidget {
                 isSwitched: tree.value.target!.isSwitched,
                 onChanged: (isOn) => onSwitched(isOn, tree),
                 toggleExpand: () => toggleExpand(tree),
-                isExpanded: tree.isExpanded);
+                isExpanded: tree.isExpanded,
+                enabled: tree.value.target!.isEnabled);
           }
           if (tree.isExpanded) {
             return Container(
