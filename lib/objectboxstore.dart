@@ -41,7 +41,7 @@ class ObjectBox {
         children.add(Node.createLeaf(acroNode));
       }
       ToOne<AcroNode> acroNodeRoot = ToOne<AcroNode>();
-      acroNodeRoot.target = AcroNode(true, 'Basic postures');
+      acroNodeRoot.target = AcroNode(true, 'Basic postures', predefined: true);
       acroNodeBox.put(acroNodeRoot.target!);
       nodeBox.put(Node(children, acroNodeRoot));
     }

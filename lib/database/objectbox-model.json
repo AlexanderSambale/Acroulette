@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8618962310372060955",
-      "lastPropertyId": "4:8738587954000365537",
+      "lastPropertyId": "5:105323891657185322",
       "name": "AcroNode",
       "properties": [
         {
@@ -28,6 +28,11 @@
           "id": "4:8738587954000365537",
           "name": "label",
           "type": 9
+        },
+        {
+          "id": "5:105323891657185322",
+          "name": "predefined",
+          "type": 1
         }
       ],
       "relations": []
