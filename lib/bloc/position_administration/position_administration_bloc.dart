@@ -14,28 +14,18 @@ class PositionAdministrationBloc
     extends Bloc<PositionAdministrationEvent, BasePositionAdministrationState> {
   PositionAdministrationBloc(this.objectbox)
       : super(PositionAdministrationInitialState()) {
-    QueryBuilder<Node> builder = objectbox.nodeBox.query();
-    builder.link(
-        Node_.value,
-        AcroNode_.predefined.equals(true) &
-            AcroNode_.label.equals(BASIC_POSTURES));
-    Query<Node> query = builder.build();
-    Node? tmpTree = query.findUnique();
-    query.close();
-    // Error handling ToDo
-    if (tmpTree == null) {
-      throw Error();
-    }
+    Node tmpTree = findRoot();
     tree = tmpTree;
+    state.tree = tmpTree;
 
     on<PositionsBDStartChangeEvent>((event, emit) {
-      // TODO: implement event handler
+      emit(PositionAdministrationState());
     });
     on<PositionsDBIsChangingEvent>((event, emit) {
-      // TODO: implement event handler
+      emit(PositionAdministrationState());
     });
     on<PositionsDBIsIdleEvent>((event, emit) {
-      // TODO: implement event handler
+      emit(PositionAdministrationInitialState.withTree(findRoot()));
     });
   }
 
@@ -66,17 +56,38 @@ class PositionAdministrationBloc
   }
 
   void onSwitch(bool switched, Node tree) {
+    add(PositionsBDStartChangeEvent());
     AcroNode acroNode = tree.value.target!;
     acroNode.isSwitched = switched;
     List<AcroNode> acroNodes = [];
     enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
     acroNodes.add(acroNode);
+
     objectbox.putManyAcroNodes(acroNodes);
     objectbox.putNode(tree);
+    add(PositionsDBIsIdleEvent());
   }
 
   void toggleExpand(Node tree) {
+    add(PositionsBDStartChangeEvent());
     tree.isExpanded = !tree.isExpanded;
     objectbox.putNode(tree);
+    add(PositionsDBIsIdleEvent());
+  }
+
+  Node findRoot() {
+    QueryBuilder<Node> builder = objectbox.nodeBox.query();
+    builder.link(
+        Node_.value,
+        AcroNode_.predefined.equals(true) &
+            AcroNode_.label.equals(BASIC_POSTURES));
+    Query<Node> query = builder.build();
+    Node? tmpTree = query.findUnique();
+    query.close();
+    // Error handling ToDo
+    if (tmpTree == null) {
+      throw Error();
+    }
+    return tmpTree;
   }
 }

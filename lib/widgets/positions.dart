@@ -55,15 +55,17 @@ class _PositionsState extends State<Positions> {
               create: (_) => PositionAdministrationBloc(objectbox),
               child: BlocBuilder<PositionAdministrationBloc,
                       BasePositionAdministrationState>(
+                  buildWhen: (previous, current) =>
+                      current is PositionAdministrationInitialState,
                   builder: (BuildContext context, state) {
-                PositionAdministrationBloc positionAdministrationBloc =
-                    context.read<PositionAdministrationBloc>();
-                return PostureTree(
-                  tree: state.tree,
-                  onSwitched: positionAdministrationBloc.onSwitch,
-                  toggleExpand: positionAdministrationBloc.toggleExpand,
-                );
-              }),
+                    PositionAdministrationBloc positionAdministrationBloc =
+                        context.read<PositionAdministrationBloc>();
+                    return PostureTree(
+                      tree: state.tree,
+                      onSwitched: positionAdministrationBloc.onSwitch,
+                      toggleExpand: positionAdministrationBloc.toggleExpand,
+                    );
+                  }),
             )
           ],
         ));

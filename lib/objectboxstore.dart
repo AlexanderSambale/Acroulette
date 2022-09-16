@@ -36,7 +36,7 @@ class ObjectBox {
         "high flying whale"
       ]) {
         ToOne<AcroNode> acroNode = ToOne<AcroNode>();
-        acroNode.target = AcroNode(true, element);
+        acroNode.target = AcroNode(true, element, predefined: true);
         acroNodeBox.put(acroNode.target!);
         children.add(Node.createLeaf(acroNode));
       }

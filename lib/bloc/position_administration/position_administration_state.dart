@@ -17,3 +17,7 @@ class PositionAdministrationInitialState
   @override
   late Node tree;
 }
+
+class PositionAdministrationState extends BasePositionAdministrationState {
+  PositionAdministrationState() : super();
+}
