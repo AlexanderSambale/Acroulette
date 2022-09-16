@@ -2,6 +2,7 @@ import 'package:acroulette/constants/nodes.dart';
 import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
+import 'package:acroulette/models/position.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -61,6 +62,11 @@ class PositionAdministrationBloc
     acroNode.isSwitched = switched;
     List<AcroNode> acroNodes = [];
     enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
+    if (tree.isLeaf) {
+      regeneratePositionsList([acroNode]);
+    } else {
+      regeneratePositionsList(acroNodes);
+    }
     acroNodes.add(acroNode);
 
     objectbox.putManyAcroNodes(acroNodes);
@@ -89,5 +95,23 @@ class PositionAdministrationBloc
       throw Error();
     }
     return tmpTree;
+  }
+
+  void regeneratePositionsList(List<AcroNode> acroNodes) {
+    List<Position> positions = objectbox.positionBox.getAll();
+    Set<String> setOfPositions = {};
+    setOfPositions.addAll(positions.map<String>((e) => e.name));
+    objectbox.positionBox.removeAll();
+    objectbox.positionBox.putMany(setOfPositions
+        .difference(acroNodes
+            .where((element) => !element.isSwitched || !element.isEnabled)
+            .map((e) => e.label)
+            .toSet())
+        .union(acroNodes
+            .where((element) => element.isSwitched && element.isEnabled)
+            .map((e) => e.label)
+            .toSet())
+        .map((e) => Position(e))
+        .toList());
   }
 }
