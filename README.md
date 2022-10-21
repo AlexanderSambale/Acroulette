@@ -17,6 +17,13 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Building
 
+if never run before:
+
+```bash
+flutter pub get
+```
+
+
 ```bash
 flutter pub run build_runner build
 ```
