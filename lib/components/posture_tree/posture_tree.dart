@@ -8,14 +8,18 @@ class PostureTree extends StatelessWidget {
       {super.key,
       required this.tree,
       required this.onSwitched,
-      required this.toggleExpand});
+      required this.toggleExpand,
+      required this.path});
 
   final Node tree;
   final void Function(bool, Node) onSwitched;
   final void Function(Node) toggleExpand;
+  final List<String> path;
 
   @override
   Widget build(BuildContext context) {
+    var newPath = path.toList();
+    newPath.add(tree.value.target!.label);
     if (tree.isLeaf) {
       return Container(
           margin: const EdgeInsets.only(left: 24),
@@ -32,20 +36,24 @@ class PostureTree extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index == 0) {
             return PostureCategoryItem(
-                categoryLabel: tree.value.target!.label,
-                isSwitched: tree.value.target!.isSwitched,
-                onChanged: (isOn) => onSwitched(isOn, tree),
-                toggleExpand: () => toggleExpand(tree),
-                isExpanded: tree.isExpanded,
-                enabled: tree.value.target!.isEnabled);
+              categoryLabel: tree.value.target!.label,
+              isSwitched: tree.value.target!.isSwitched,
+              onChanged: (isOn) => onSwitched(isOn, tree),
+              toggleExpand: () => toggleExpand(tree),
+              isExpanded: tree.isExpanded,
+              enabled: tree.value.target!.isEnabled,
+              path: newPath,
+            );
           }
           if (tree.isExpanded) {
             return Container(
                 margin: const EdgeInsets.only(left: 24),
                 child: PostureTree(
-                    tree: tree.children.elementAt(index - 1),
-                    onSwitched: onSwitched,
-                    toggleExpand: toggleExpand));
+                  tree: tree.children.elementAt(index - 1),
+                  onSwitched: onSwitched,
+                  toggleExpand: toggleExpand,
+                  path: newPath,
+                ));
           }
           return Container();
         });

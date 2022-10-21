@@ -1,14 +1,17 @@
+import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
 import 'package:flutter/material.dart';
 
 class PostureCategoryItem extends StatelessWidget {
-  const PostureCategoryItem(
-      {super.key,
-      required this.isSwitched,
-      required this.isExpanded,
-      required this.onChanged,
-      required this.toggleExpand,
-      required this.categoryLabel,
-      this.enabled = true});
+  const PostureCategoryItem({
+    super.key,
+    required this.isSwitched,
+    required this.isExpanded,
+    required this.onChanged,
+    required this.toggleExpand,
+    required this.categoryLabel,
+    required this.path,
+    this.enabled = true,
+  });
 
   final bool isSwitched;
   final bool isExpanded;
@@ -16,6 +19,7 @@ class PostureCategoryItem extends StatelessWidget {
   final String categoryLabel;
   final void Function(bool) onChanged;
   final void Function() toggleExpand;
+  final List<String> path;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,13 @@ class PostureCategoryItem extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.add_circle_rounded),
               tooltip: 'Add position',
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CreatePosture(path: path);
+                    });
+              },
             ),
             Switch(
               value: isSwitched,

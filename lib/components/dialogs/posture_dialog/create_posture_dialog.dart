@@ -4,7 +4,12 @@ import 'package:acroulette/models/position.dart';
 import 'package:flutter/material.dart';
 
 class CreatePosture extends StatefulWidget {
-  const CreatePosture({Key? key}) : super(key: key);
+  const CreatePosture({
+    Key? key,
+    required this.path,
+  }) : super(key: key);
+
+  final List<String> path;
 
   @override
   State<CreatePosture> createState() => _CreatePostureState();
@@ -41,6 +46,7 @@ class _CreatePostureState extends State<CreatePosture> {
                         selected = pressedIndex;
                       });
                     }),
+                Text(widget.path.join(" >> ")),
                 TextFormField(
                   decoration: const InputDecoration(
                     hintText: "Add position here",

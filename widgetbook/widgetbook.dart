@@ -90,7 +90,8 @@ class HotReload extends StatelessWidget {
               useCases: [
                 WidgetbookUseCase(
                     name: 'Create Dialog',
-                    builder: (context) => const CreatePosture()),
+                    builder: (context) =>
+                        const CreatePosture(path: ["root", "parent"])),
                 WidgetbookUseCase(
                     name: 'Test Dialog',
                     builder: (context) => SegmentedView(
@@ -152,6 +153,7 @@ class HotReload extends StatelessWidget {
                         ),
                         enabled: context.knobs
                             .boolean(label: 'enabled', initialValue: true),
+                        path: const [],
                       ),
                     ),
                   ],
@@ -165,6 +167,7 @@ class HotReload extends StatelessWidget {
                               tree: createSimpleTree(),
                               onSwitched: (b, n) {},
                               toggleExpand: (n) {},
+                              path: const [],
                             )),
                     WidgetbookUseCase(
                         name: 'ComplexTree',
@@ -172,6 +175,7 @@ class HotReload extends StatelessWidget {
                               tree: createComplexTree(),
                               onSwitched: (b, n) {},
                               toggleExpand: (n) {},
+                              path: const [],
                             ))
                   ],
                 ),
