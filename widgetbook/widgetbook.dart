@@ -1,3 +1,5 @@
+import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
+import 'package:acroulette/components/dialogs/posture_dialog/segmented_view.dart';
 import 'package:acroulette/components/posture_tree/posture_category_item.dart';
 import 'package:acroulette/components/posture_tree/posture_list_item.dart';
 import 'package:acroulette/components/posture_tree/posture_tree.dart';
@@ -57,7 +59,7 @@ class HotReload extends StatelessWidget {
               useCases: [
                 WidgetbookUseCase(
                   name: 'Default',
-                  builder: (context) => Text("test"),
+                  builder: (context) => const Text("test"),
                 ),
               ],
             ),
@@ -66,21 +68,40 @@ class HotReload extends StatelessWidget {
               useCases: [
                 WidgetbookUseCase(
                   name: 'Default',
-                  builder: (context) => ListView(children: <Widget>[
-                    Container(
+                  builder: (context) => ListView(children: const <Widget>[
+                    SizedBox(
                       height: 50,
-                      child: const Center(child: Text('Entry A')),
+                      child: Center(child: Text('Entry A')),
                     ),
-                    Container(
+                    SizedBox(
                       height: 50,
-                      child: const Center(child: Text('Entry B')),
+                      child: Center(child: Text('Entry B')),
                     ),
-                    Container(
+                    SizedBox(
                       height: 50,
-                      child: const Center(child: Text('Entry C')),
+                      child: Center(child: Text('Entry C')),
                     ),
                   ]),
                 ),
+              ],
+            ),
+            WidgetbookComponent(
+              name: 'Dialog',
+              useCases: [
+                WidgetbookUseCase(
+                    name: 'Create Dialog',
+                    builder: (context) => const CreatePosture()),
+                WidgetbookUseCase(
+                    name: 'Test Dialog',
+                    builder: (context) => SegmentedView(
+                          selected: context.knobs
+                              .number(
+                                label: 'selected part',
+                                initialValue: 0,
+                              )
+                              .toInt(),
+                          onPressed: (p0) {},
+                        )),
               ],
             ),
           ],
