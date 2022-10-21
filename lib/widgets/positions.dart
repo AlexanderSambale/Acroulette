@@ -1,6 +1,5 @@
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
 import 'package:acroulette/components/posture_tree/posture_tree.dart';
-import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/main.dart';
 import 'package:acroulette/models/position.dart';
 import 'package:flutter/material.dart';
