@@ -49,8 +49,12 @@ class _HomeState extends State<Home> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         BlocProvider(
-          create: (_) =>
-              AcrouletteBloc(flutterTts, objectbox.settingsBox.getAll()),
+          create: (_) => AcrouletteBloc(flutterTts,
+              settings: objectbox.settingsBox.getAll(),
+              possibleFigures: objectbox.positionBox
+                  .getAll()
+                  .map<String>((element) => element.name)
+                  .toList()),
           child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
               buildWhen: (previous, current) {
             return true;

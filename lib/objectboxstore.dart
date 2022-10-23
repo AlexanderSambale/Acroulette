@@ -1,5 +1,5 @@
 import 'package:acroulette/database/objectbox.g.dart';
-import 'package:acroulette/models/SettingsPair.dart';
+import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/position.dart';
@@ -66,9 +66,9 @@ class ObjectBox {
   }
 
   /// Create an instance of ObjectBox to use throughout the app.
-  static Future<ObjectBox> create() async {
+  static Future<ObjectBox> create(Store? store) async {
     // Future<Store> openStore() {...} is defined in the generated objectbox.g.dart
-    final store = await openStore();
+    if (store == null) return ObjectBox._create(await openStore());
     return ObjectBox._create(store);
   }
 
@@ -129,5 +129,13 @@ class ObjectBox {
     return nodeBoxQuery
         .watch(triggerImmediately: true)
         .map((event) => event.find().first);
+  }
+
+  Node findParent(Node child) {
+    QueryBuilder<Node> queryBuilder = nodeBox.query();
+    queryBuilder.linkMany(Node_.children, Node_.id.equals(child.id));
+    Node? parent = queryBuilder.build().findUnique();
+    if (parent == null) throw Exception("should not be null!");
+    return parent;
   }
 }

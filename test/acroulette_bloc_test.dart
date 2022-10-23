@@ -27,7 +27,8 @@ void main() {
       'emits [AcrouletteInitModel()] when AcrouletteStart is added',
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteStart()),
-      expect: () => [AcrouletteInitModel()],
+      expect: () =>
+          [AcrouletteInitModel(), AcrouletteVoiceRecognitionStartedState()],
     );
   });
 

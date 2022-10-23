@@ -5,7 +5,7 @@ import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/commands.dart';
 import 'package:acroulette/main.dart';
-import 'package:acroulette/models/SettingsPair.dart';
+import 'package:acroulette/models/settings_pair.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -16,22 +16,18 @@ part 'acroulette_event.dart';
 part 'acroulette_state.dart';
 
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
-  AcrouletteBloc(this.flutterTts, List<SettingsPair> settings)
+  AcrouletteBloc(this.flutterTts,
+      {List<SettingsPair> settings = const [],
+      List<String> possibleFigures = const []})
       : super(AcrouletteInitialState()) {
     voiceRecognitionBloc = VoiceRecognitionBloc(onInitiated);
     settingsMap = SettingsPair.toMap(settings);
-    rNextPosition = RegExp(settingsMap[NEXT_POSITION] ?? NEXT_POSITION);
-    rNewPosition = RegExp(settingsMap[NEW_POSITION] ?? NEW_POSITION);
+    rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
+    rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
     rPreviousPosition =
-        RegExp(settingsMap[PREVIOUS_POSITION] ?? PREVIOUS_POSITION);
-    rCurrentPosition =
-        RegExp(settingsMap[CURRENT_POSITION] ?? CURRENT_POSITION);
-    transitionBloc = TransitionBloc(
-        onTransitionChange,
-        objectbox.positionBox
-            .getAll()
-            .map<String>((element) => element.name)
-            .toList());
+        RegExp(settingsMap[previousPosition] ?? previousPosition);
+    rCurrentPosition = RegExp(settingsMap[currentPosition] ?? currentPosition);
+    transitionBloc = TransitionBloc(onTransitionChange, possibleFigures);
 
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(
