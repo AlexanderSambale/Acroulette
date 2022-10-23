@@ -107,7 +107,18 @@ class PositionAdministrationBloc
     }
   }
 
-  void onSaveClick(Node child, bool isCategory, String? posture) {}
+  void onSaveClick(Node child, bool isCategory, String? posture) {
+    if (posture == null) return;
+    add(PositionsBDStartChangeEvent());
+    Node parent = objectbox.findParent(child);
+    AcroNode acroNode = AcroNode(true, posture);
+    Node newPosture = Node.createLeaf(acroNode);
+    parent.addNode(newPosture);
+    objectbox.putAcroNode(acroNode);
+    objectbox.putNode(parent);
+    regeneratePositionsList([acroNode]);
+    add(PositionsDBIsIdleEvent());
+  }
 
   void onEditClick(Node child, bool isCategory, String? posture) {}
 }
