@@ -94,9 +94,26 @@ class PositionAdministrationBloc
         .toList());
   }
 
-  void createPosture(Node child, String posture) {}
+  void createPosture(Node child, String posture) {
+    add(PositionsBDStartChangeEvent());
+    Node parent = objectbox.findParent(child);
+    AcroNode acroNode = AcroNode(true, posture);
+    Node newPosture = Node.createLeaf(acroNode);
+    parent.addNode(newPosture);
+    objectbox.putAcroNode(acroNode);
+    objectbox.putNode(parent);
+    regeneratePositionsList([acroNode]);
+    add(PositionsDBIsIdleEvent());
+  }
 
-  void editPosture(Node child, String posture) {}
+  void editPosture(Node child, String posture) {
+    add(PositionsBDStartChangeEvent());
+    AcroNode acroNode = child.value.target!;
+    acroNode.label = posture;
+    objectbox.putAcroNode(acroNode);
+    regeneratePositionsList([acroNode]);
+    add(PositionsDBIsIdleEvent());
+  }
 
   void deletePosture(Node child) {}
 
@@ -109,16 +126,11 @@ class PositionAdministrationBloc
 
   void onSaveClick(Node child, bool isCategory, String? posture) {
     if (posture == null) return;
-    add(PositionsBDStartChangeEvent());
-    Node parent = objectbox.findParent(child);
-    AcroNode acroNode = AcroNode(true, posture);
-    Node newPosture = Node.createLeaf(acroNode);
-    parent.addNode(newPosture);
-    objectbox.putAcroNode(acroNode);
-    objectbox.putNode(parent);
-    regeneratePositionsList([acroNode]);
-    add(PositionsDBIsIdleEvent());
+    createPosture(child, posture);
   }
 
-  void onEditClick(Node child, bool isCategory, String? posture) {}
+  void onEditClick(Node child, bool isCategory, String? posture) {
+    if (posture == null) return;
+    editPosture(child, posture);
+  }
 }
