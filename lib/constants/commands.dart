@@ -1,4 +1,4 @@
-const NEXT_POSITION = 'next position';
-const NEW_POSITION = 'new position';
-const PREVIOUS_POSITION = 'previous position';
-const CURRENT_POSITION = 'current position';
+const nextPosition = 'next position';
+const newPosition = 'new position';
+const previousPosition = 'previous position';
+const currentPosition = 'current position';

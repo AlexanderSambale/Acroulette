@@ -1,1 +1,1 @@
-const BASIC_POSTURES = 'Basic postures';
+const basicPostures = 'Basic postures';

@@ -5,7 +5,6 @@ import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/position.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 part 'position_administration_event.dart';
@@ -86,7 +85,7 @@ class PositionAdministrationBloc
     builder.link(
         Node_.value,
         AcroNode_.predefined.equals(true) &
-            AcroNode_.label.equals(BASIC_POSTURES));
+            AcroNode_.label.equals(basicPostures));
     Query<Node> query = builder.build();
     Node? tmpTree = query.findUnique();
     query.close();
@@ -114,4 +113,21 @@ class PositionAdministrationBloc
         .map((e) => Position(e))
         .toList());
   }
+
+  void createPosture(Node child, String posture) {}
+
+  void editPosture(Node child, String posture) {}
+
+  void deletePosture(Node child) {}
+
+  void onDeleteClick(Node child) {
+    if (child.isLeaf) {
+      deletePosture(child);
+      return;
+    }
+  }
+
+  void onSaveClick(Node child, bool isCategory, String? posture) {}
+
+  void onEditClick(Node child, bool isCategory, String? posture) {}
 }
