@@ -1,7 +1,7 @@
 import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 
-List<Widget> TextSettingsFormField(String key) {
+List<Widget> textSettingsFormField(String key) {
   return [
     Text(key),
     TextFormField(

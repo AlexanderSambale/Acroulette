@@ -18,10 +18,10 @@ class _SettingsState extends State<Settings> {
       key: _formKey,
       child: ListView(
         children: <Widget>[
-          ...TextSettingsFormField(NEW_POSITION),
-          ...TextSettingsFormField(NEXT_POSITION),
-          ...TextSettingsFormField(PREVIOUS_POSITION),
-          ...TextSettingsFormField(CURRENT_POSITION),
+          ...textSettingsFormField(newPosition),
+          ...textSettingsFormField(nextPosition),
+          ...textSettingsFormField(previousPosition),
+          ...textSettingsFormField(currentPosition),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: ElevatedButton(
