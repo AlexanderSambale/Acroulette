@@ -115,7 +115,17 @@ class PositionAdministrationBloc
     add(PositionsDBIsIdleEvent());
   }
 
-  void deletePosture(Node child) {}
+  void deletePosture(Node child) {
+    add(PositionsBDStartChangeEvent());
+    Node parent = objectbox.findParent(child);
+    AcroNode acroNode = child.value.target!;
+    parent.children.remove(child);
+    objectbox.putNode(parent);
+    objectbox.removeNode(child);
+    objectbox.removeAcroNode(acroNode);
+    regeneratePositionsList([acroNode]);
+    add(PositionsDBIsIdleEvent());
+  }
 
   void onDeleteClick(Node child) {
     if (child.isLeaf) {
