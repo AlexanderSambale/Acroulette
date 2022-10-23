@@ -98,6 +98,10 @@ class ObjectBox {
     acroNodeBox.put(acroNode);
   }
 
+  void removeAcroNode(AcroNode acroNode) {
+    acroNodeBox.remove(acroNode.id);
+  }
+
   void putManyAcroNodes(List<AcroNode> acroNodes) {
     acroNodeBox.putMany(acroNodes);
   }
@@ -108,6 +112,10 @@ class ObjectBox {
 
   void putManyNodes(List<Node> nodes) {
     nodeBox.putMany(nodes);
+  }
+
+  void removeNode(Node node) {
+    nodeBox.remove(node.id);
   }
 
   String? getPosition(String positionName) {
