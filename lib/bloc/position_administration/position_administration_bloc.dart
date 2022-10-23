@@ -1,5 +1,3 @@
-import 'package:acroulette/constants/nodes.dart';
-import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/position.dart';
@@ -13,19 +11,17 @@ part 'position_administration_state.dart';
 class PositionAdministrationBloc
     extends Bloc<PositionAdministrationEvent, BasePositionAdministrationState> {
   PositionAdministrationBloc(this.objectbox)
-      : super(PositionAdministrationInitialState()) {
-    Node tmpTree = findRoot();
-    tree = tmpTree;
-    state.tree = tmpTree;
+      : super(PositionAdministrationInitialState(objectbox.findRoot())) {
+    tree = state.tree;
 
     on<PositionsBDStartChangeEvent>((event, emit) {
-      emit(PositionAdministrationState());
+      emit(PositionAdministrationState(tree));
     });
     on<PositionsDBIsChangingEvent>((event, emit) {
-      emit(PositionAdministrationState());
+      emit(PositionAdministrationState(tree));
     });
     on<PositionsDBIsIdleEvent>((event, emit) {
-      emit(PositionAdministrationInitialState.withTree(findRoot()));
+      emit(PositionAdministrationInitialState.withTree(objectbox.findRoot()));
     });
   }
 
@@ -78,22 +74,6 @@ class PositionAdministrationBloc
     tree.isExpanded = !tree.isExpanded;
     objectbox.putNode(tree);
     add(PositionsDBIsIdleEvent());
-  }
-
-  Node findRoot() {
-    QueryBuilder<Node> builder = objectbox.nodeBox.query();
-    builder.link(
-        Node_.value,
-        AcroNode_.predefined.equals(true) &
-            AcroNode_.label.equals(basicPostures));
-    Query<Node> query = builder.build();
-    Node? tmpTree = query.findUnique();
-    query.close();
-    // Error handling ToDo
-    if (tmpTree == null) {
-      throw Error();
-    }
-    return tmpTree;
   }
 
   void regeneratePositionsList(List<AcroNode> acroNodes) {

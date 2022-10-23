@@ -1,3 +1,4 @@
+import 'package:acroulette/constants/nodes.dart';
 import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/models/acro_node.dart';
@@ -41,7 +42,7 @@ class ObjectBox {
         children.add(Node.createLeaf(acroNode));
       }
       ToOne<AcroNode> acroNodeRoot = ToOne<AcroNode>();
-      acroNodeRoot.target = AcroNode(true, 'Basic postures', predefined: true);
+      acroNodeRoot.target = AcroNode(true, basicPostures, predefined: true);
       acroNodeBox.put(acroNodeRoot.target!);
       nodeBox.put(Node(children, acroNodeRoot));
     }
@@ -129,6 +130,22 @@ class ObjectBox {
     return nodeBoxQuery
         .watch(triggerImmediately: true)
         .map((event) => event.find().first);
+  }
+
+  Node findRoot() {
+    QueryBuilder<Node> builder = nodeBox.query();
+    builder.link(
+        Node_.value,
+        AcroNode_.predefined.equals(true) &
+            AcroNode_.label.equals(basicPostures));
+    Query<Node> query = builder.build();
+    Node? tmpTree = query.findUnique();
+    query.close();
+    // Error handling ToDo
+    if (tmpTree == null) {
+      throw Error();
+    }
+    return tmpTree;
   }
 
   Node findParent(Node child) {
