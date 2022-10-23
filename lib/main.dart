@@ -14,11 +14,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   objectbox = await ObjectBox.create(null);
-
-  BlocOverrides.runZoned(
-    () => runApp(MyApp()),
-    blocObserver: SimpleBlocObserver(),
-  );
+  Bloc.observer = SimpleBlocObserver();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
