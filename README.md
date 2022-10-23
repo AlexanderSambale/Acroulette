@@ -23,7 +23,6 @@ if never run before:
 flutter pub get
 ```
 
-
 ```bash
 flutter pub run build_runner build
 ```
@@ -33,3 +32,7 @@ flutter pub run build_runner build
 ```bash
 flutter build apk
 ```
+
+### objectbox test
+
+You need <https://github.com/objectbox/objectbox-c> installed.
