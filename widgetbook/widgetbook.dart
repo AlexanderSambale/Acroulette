@@ -6,7 +6,6 @@ import 'package:acroulette/components/posture_tree/posture_tree.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:flutter/material.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 onSwitch(bool isOn) {}
@@ -22,30 +21,20 @@ Node createSimpleTree(
     String leaf1Name = 'leaf1',
     String leaf2Name = 'leaf2',
     String leaf3Name = 'leaf3'}) {
-  Node leaf1 = Node.createLeaf(ToOne<AcroNode>());
-  leaf1.value.target = AcroNode(true, leaf1Name);
-  Node leaf2 = Node.createLeaf(ToOne<AcroNode>());
-  leaf2.value.target = AcroNode(false, leaf2Name);
-  Node leaf3 = Node.createLeaf(ToOne<AcroNode>());
-  leaf3.value.target = AcroNode(true, leaf3Name);
-  AcroNode rootAcroNode = AcroNode(true, rootName);
-  Node category = Node(ToMany<Node>(), ToOne<AcroNode>());
-  category.isExpanded = true;
-  category.value.target = rootAcroNode;
-  category.addNode(leaf1);
-  category.addNode(leaf2);
-  category.addNode(leaf3);
+  Node leaf1 = Node.createLeaf(AcroNode(true, leaf1Name));
+  Node leaf2 = Node.createLeaf(AcroNode(false, leaf2Name));
+  Node leaf3 = Node.createLeaf(AcroNode(true, leaf3Name));
+  Node category =
+      Node.createCategory([leaf1, leaf2, leaf3], AcroNode(true, rootName));
   return category;
 }
 
 Node createComplexTree() {
-  Node root = Node(ToMany<Node>(), ToOne<AcroNode>());
-  root.addNode(createSimpleTree(rootName: 'root1'));
-  root.addNode(createSimpleTree(rootName: 'root2'));
-  root.addNode(createSimpleTree(rootName: 'root3'));
-  root.isExpanded = true;
-  AcroNode rootAcroNode = AcroNode(true, 'root');
-  root.value.target = rootAcroNode;
+  Node root = Node.createCategory([
+    createSimpleTree(rootName: 'root1'),
+    createSimpleTree(rootName: 'root2'),
+    createSimpleTree(rootName: 'root3')
+  ], AcroNode(true, 'root'));
   return root;
 }
 

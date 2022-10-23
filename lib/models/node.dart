@@ -11,7 +11,16 @@ class Node {
   bool isExpanded;
 
   Node(this.children, this.value, {this.isExpanded = true});
-  Node.createLeaf(this.value, {this.isExpanded = true});
+
+  Node.createCategory(List<Node> children, AcroNode acroNode,
+      {this.isExpanded = true}) {
+    this.children.addAll(children);
+    value.target = acroNode;
+  }
+
+  Node.createLeaf(acroNode, {this.isExpanded = true}) {
+    value.target = acroNode;
+  }
 
   addNode(Node node) {
     children.add(node);

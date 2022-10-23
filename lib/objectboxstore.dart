@@ -21,7 +21,7 @@ class ObjectBox {
     acroNodeBox = Box<AcroNode>(store);
 
     if (nodeBox.isEmpty()) {
-      ToMany<Node> children = ToMany<Node>();
+      List<Node> children = [];
       for (var element in [
         "bird",
         "star",
@@ -36,15 +36,13 @@ class ObjectBox {
         "vishnus couch",
         "high flying whale"
       ]) {
-        ToOne<AcroNode> acroNode = ToOne<AcroNode>();
-        acroNode.target = AcroNode(true, element, predefined: true);
-        acroNodeBox.put(acroNode.target!);
+        AcroNode acroNode = AcroNode(true, element, predefined: true);
+        acroNodeBox.put(acroNode);
         children.add(Node.createLeaf(acroNode));
       }
-      ToOne<AcroNode> acroNodeRoot = ToOne<AcroNode>();
-      acroNodeRoot.target = AcroNode(true, basicPostures, predefined: true);
-      acroNodeBox.put(acroNodeRoot.target!);
-      nodeBox.put(Node(children, acroNodeRoot));
+      AcroNode acroNodeRoot = AcroNode(true, basicPostures, predefined: true);
+      acroNodeBox.put(acroNodeRoot);
+      nodeBox.put(Node.createCategory(children, acroNodeRoot));
     }
 
     if (positionBox.isEmpty()) {
