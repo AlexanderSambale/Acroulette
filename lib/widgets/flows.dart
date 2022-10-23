@@ -10,6 +10,6 @@ class Flows extends StatefulWidget {
 class _FlowsState extends State<Flows> {
   @override
   Widget build(BuildContext context) {
-    return Text("Flows");
+    return const Text("Flows");
   }
 }
