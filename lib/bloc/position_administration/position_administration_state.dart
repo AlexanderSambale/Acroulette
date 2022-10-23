@@ -12,10 +12,7 @@ abstract class BasePositionAdministrationState extends Equatable {
 class PositionAdministrationInitialState
     extends BasePositionAdministrationState {
   PositionAdministrationInitialState() : super();
-  PositionAdministrationInitialState.withTree(this.tree);
-
-  @override
-  late Node tree;
+  PositionAdministrationInitialState.withTree(Node tree) : super.withTree(tree);
 }
 
 class PositionAdministrationState extends BasePositionAdministrationState {
