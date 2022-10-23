@@ -14,7 +14,7 @@ late ObjectBox objectbox;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  objectbox = await ObjectBox.create();
+  objectbox = await ObjectBox.create(null);
 
   BlocOverrides.runZoned(
     () => runApp(MyApp()),
