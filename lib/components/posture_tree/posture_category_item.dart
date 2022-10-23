@@ -7,6 +7,9 @@ class PostureCategoryItem extends StatelessWidget {
     required this.isSwitched,
     required this.isExpanded,
     required this.onChanged,
+    required this.onEditClick,
+    required this.onDeleteClick,
+    required this.onSaveClick,
     required this.toggleExpand,
     required this.categoryLabel,
     required this.path,
@@ -18,6 +21,9 @@ class PostureCategoryItem extends StatelessWidget {
   final bool enabled;
   final String categoryLabel;
   final void Function(bool) onChanged;
+  final void Function(bool, String?) onSaveClick;
+  final void Function(bool, String?) onEditClick;
+  final void Function() onDeleteClick;
   final void Function() toggleExpand;
   final List<String> path;
 
@@ -42,7 +48,8 @@ class PostureCategoryItem extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return CreatePosture(path: path);
+                      return CreatePosture(
+                          path: path, onSaveClick: onSaveClick);
                     });
               },
             ),
@@ -56,7 +63,7 @@ class PostureCategoryItem extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete),
               tooltip: 'Delete position',
-              onPressed: () {},
+              onPressed: onDeleteClick,
             )
           ],
         ));

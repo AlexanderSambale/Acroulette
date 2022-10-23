@@ -1,15 +1,16 @@
 import 'package:acroulette/components/dialogs/posture_dialog/segmented_view.dart';
 import 'package:acroulette/main.dart';
-import 'package:acroulette/models/position.dart';
 import 'package:flutter/material.dart';
 
 class CreatePosture extends StatefulWidget {
   const CreatePosture({
     Key? key,
     required this.path,
+    required this.onSaveClick,
   }) : super(key: key);
 
   final List<String> path;
+  final void Function(bool isCategory, String? newValue) onSaveClick;
 
   @override
   State<CreatePosture> createState() => _CreatePostureState();
@@ -47,22 +48,39 @@ class _CreatePostureState extends State<CreatePosture> {
                       });
                     }),
                 Text(widget.path.join(" >> ")),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: "Add position here",
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    if (objectbox.getPosition(value) != null) {
-                      return 'Position $value already exists!';
-                    }
-                    return null;
-                  },
-                  onSaved: (newValue) =>
-                      objectbox.positionBox.put(Position(newValue!)),
-                ),
+                selected == 0
+                    ? TextFormField(
+                        decoration: const InputDecoration(
+                            hintText: "Add position here"),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          if (objectbox.getPosition(value) != null) {
+                            return 'Position $value already exists!';
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) => widget.onSaveClick(
+                            selected == 0, newValue), //(newValue) =>
+                        //    objectbox.positionBox.put(Position(newValue!)),
+                      )
+                    : TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: "Add category here",
+                        ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          if (objectbox.getPosition(value) != null) {
+                            return 'Position $value already exists!';
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) =>
+                            widget.onSaveClick(selected == 1, newValue),
+                      ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton(

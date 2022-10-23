@@ -9,11 +9,17 @@ class PostureTree extends StatelessWidget {
       required this.tree,
       required this.onSwitched,
       required this.toggleExpand,
+      required this.onSaveClick,
+      required this.onEditClick,
+      required this.onDeleteClick,
       required this.path});
 
   final Node tree;
   final void Function(bool, Node) onSwitched;
   final void Function(Node) toggleExpand;
+  final void Function(Node, bool, String?) onSaveClick;
+  final void Function(Node, bool, String?) onEditClick;
+  final void Function(Node) onDeleteClick;
   final List<String> path;
 
   @override
@@ -27,7 +33,9 @@ class PostureTree extends StatelessWidget {
               isSwitched: tree.value.target!.isSwitched,
               postureLabel: tree.value.target!.label,
               onChanged: (isOn) => onSwitched(isOn, tree),
-              delete: () {},
+              onEditClick: (bool isCategory, String? value) =>
+                  onEditClick(tree, isCategory, value),
+              onDeleteClick: () => onDeleteClick(tree),
               enabled: tree.value.target!.isEnabled));
     }
     return ListView.builder(
@@ -39,6 +47,11 @@ class PostureTree extends StatelessWidget {
               categoryLabel: tree.value.target!.label,
               isSwitched: tree.value.target!.isSwitched,
               onChanged: (isOn) => onSwitched(isOn, tree),
+              onEditClick: (bool isCategory, String? value) =>
+                  onEditClick(tree, isCategory, value),
+              onDeleteClick: () => onDeleteClick(tree),
+              onSaveClick: (bool isCategory, String? value) =>
+                  onSaveClick(tree, isCategory, value),
               toggleExpand: () => toggleExpand(tree),
               isExpanded: tree.isExpanded,
               enabled: tree.value.target!.isEnabled,
@@ -52,6 +65,9 @@ class PostureTree extends StatelessWidget {
                   tree: tree.children.elementAt(index - 1),
                   onSwitched: onSwitched,
                   toggleExpand: toggleExpand,
+                  onEditClick: onEditClick,
+                  onDeleteClick: onDeleteClick,
+                  onSaveClick: onSaveClick,
                   path: newPath,
                 ));
           }

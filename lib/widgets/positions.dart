@@ -33,6 +33,9 @@ class _PositionsState extends State<Positions> {
                       tree: state.tree,
                       onSwitched: positionAdministrationBloc.onSwitch,
                       toggleExpand: positionAdministrationBloc.toggleExpand,
+                      onDeleteClick: positionAdministrationBloc.onDeleteClick,
+                      onEditClick: positionAdministrationBloc.onEditClick,
+                      onSaveClick: positionAdministrationBloc.onSaveClick,
                       path: const [],
                     );
                   }),

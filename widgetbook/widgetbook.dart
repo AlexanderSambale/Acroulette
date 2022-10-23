@@ -9,8 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:widgetbook/widgetbook.dart';
 
-var onSwitch = (bool isOn) => {};
-var delete = () => {};
+onSwitch(bool isOn) {}
+onDeleteClick() {}
+onSaveClick(bool isCategory, String? newValue) {}
+onEditClick(bool isCategory, String? newValue) {}
+onDeleteClickPostureTree(Node child) {}
+onSaveClickPostureTree(Node child, bool isCategory, String? newValue) {}
+onEditClickPostureTree(Node child, bool isCategory, String? newValue) {}
 
 Node createSimpleTree(
     {String rootName = 'root',
@@ -90,8 +95,10 @@ class HotReload extends StatelessWidget {
               useCases: [
                 WidgetbookUseCase(
                     name: 'Create Dialog',
-                    builder: (context) =>
-                        const CreatePosture(path: ["root", "parent"])),
+                    builder: (context) => const CreatePosture(
+                          path: ["root", "parent"],
+                          onSaveClick: onSaveClick,
+                        )),
                 WidgetbookUseCase(
                     name: 'Test Dialog',
                     builder: (context) => SegmentedView(
@@ -125,7 +132,8 @@ class HotReload extends StatelessWidget {
                                 initialValue: 'Posture1',
                               ),
                               onChanged: onSwitch,
-                              delete: delete,
+                              onDeleteClick: onDeleteClick,
+                              onEditClick: onEditClick,
                               enabled: context.knobs.boolean(
                                   label: 'enabled', initialValue: true),
                             )),
@@ -154,6 +162,9 @@ class HotReload extends StatelessWidget {
                         enabled: context.knobs
                             .boolean(label: 'enabled', initialValue: true),
                         path: const [],
+                        onDeleteClick: onDeleteClick,
+                        onEditClick: onEditClick,
+                        onSaveClick: onSaveClick,
                       ),
                     ),
                   ],
@@ -168,6 +179,9 @@ class HotReload extends StatelessWidget {
                               onSwitched: (b, n) {},
                               toggleExpand: (n) {},
                               path: const [],
+                              onDeleteClick: onDeleteClickPostureTree,
+                              onEditClick: onEditClickPostureTree,
+                              onSaveClick: onSaveClickPostureTree,
                             )),
                     WidgetbookUseCase(
                         name: 'ComplexTree',
@@ -176,6 +190,9 @@ class HotReload extends StatelessWidget {
                               onSwitched: (b, n) {},
                               toggleExpand: (n) {},
                               path: const [],
+                              onDeleteClick: onDeleteClickPostureTree,
+                              onEditClick: onEditClickPostureTree,
+                              onSaveClick: onSaveClickPostureTree,
                             ))
                   ],
                 ),

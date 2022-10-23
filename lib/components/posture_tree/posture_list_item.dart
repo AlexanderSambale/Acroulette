@@ -6,14 +6,16 @@ class PostureListItem extends StatelessWidget {
       required this.isSwitched,
       required this.postureLabel,
       required this.onChanged,
-      required this.delete,
+      required this.onEditClick,
+      required this.onDeleteClick,
       this.enabled = true});
 
   final bool isSwitched;
   final bool enabled;
   final String postureLabel;
   final void Function(bool) onChanged;
-  final void Function() delete;
+  final void Function(bool, String?) onEditClick;
+  final void Function() onDeleteClick;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class PostureListItem extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete),
               tooltip: 'Delete position',
-              onPressed: delete,
+              onPressed: onDeleteClick,
             )
           ],
         ));
