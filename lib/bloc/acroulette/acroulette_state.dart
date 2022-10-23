@@ -21,6 +21,9 @@ class AcrouletteStopState extends BaseAcrouletteState {}
 class AcrouletteRecognizeCommandState extends BaseAcrouletteState {
   @override
   bool operator ==(Object other) => identical(this, other);
+
+  @override
+  int get hashCode => props.hashCode;
 }
 
 class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
@@ -29,4 +32,7 @@ class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
 
   @override
   bool operator ==(Object other) => identical(this, other);
+
+  @override
+  int get hashCode => props.hashCode;
 }
