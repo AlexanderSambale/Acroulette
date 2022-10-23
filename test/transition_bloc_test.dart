@@ -8,7 +8,9 @@ void main() {
     late TransitionBloc transitionBloc;
 
     setUp(() {
-      transitionBloc = TransitionBloc((status) => {});
+      transitionBloc = TransitionBloc((status) => {}, [
+        'test1',
+      ]);
     });
 
     test('initial state index is -1', () {
@@ -24,8 +26,16 @@ void main() {
       build: () => transitionBloc,
       act: (bloc) => bloc.add(NewTransitionEvent()),
       expect: () => [
-        isA<TransitionState>().having((bloc) => bloc.index, 'index', 0).having(
-            (bloc) => bloc.status, 'TransitionStatus', TransitionStatus.created)
+        isA<TransitionState>()
+            .having((bloc) => bloc.index, 'index', 0)
+            .having((bloc) => bloc.status, 'TransitionStatus',
+                TransitionStatus.changingStateProps)
+            .having((bloc) => bloc.figures, 'figures', ['test1']),
+        isA<TransitionState>()
+            .having((bloc) => bloc.index, 'index', 0)
+            .having((bloc) => bloc.status, 'TransitionStatus',
+                TransitionStatus.created)
+            .having((bloc) => bloc.figures, 'figures', ['test1']),
       ],
     );
   });
