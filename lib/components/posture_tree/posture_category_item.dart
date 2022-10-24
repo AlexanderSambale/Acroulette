@@ -55,6 +55,11 @@ class PostureCategoryItem extends StatelessWidget {
                 });
               },
             ),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              tooltip: 'Edit position',
+              onPressed: () => onEditClick(true, categoryLabel),
+            ),
             Switch(
               value: isSwitched,
               onChanged: enabled ? onChanged : null,

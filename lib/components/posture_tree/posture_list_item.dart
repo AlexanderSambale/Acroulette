@@ -26,6 +26,11 @@ class PostureListItem extends StatelessWidget {
           children: [
             Center(child: Text(postureLabel)),
             const Spacer(),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              tooltip: 'Edit position',
+              onPressed: () => onEditClick(false, postureLabel),
+            ),
             Switch(
               value: isSwitched,
               onChanged: enabled ? onChanged : null,
