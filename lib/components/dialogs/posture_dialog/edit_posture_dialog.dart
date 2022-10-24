@@ -22,6 +22,8 @@ class _EditPostureState extends State<EditPosture> {
   @override
   Widget build(BuildContext context) {
     String submitLabel = 'Edit Position';
+    List<String> reducedPath = widget.path;
+    reducedPath.removeLast();
 
     return Dialog(
         elevation: 0,
@@ -35,7 +37,7 @@ class _EditPostureState extends State<EditPosture> {
             key: _formKey,
             child: ListView(
               children: [
-                Text(widget.path.join(" >> ")),
+                Text(reducedPath.join(" >> ")),
                 TextFormField(
                   decoration:
                       const InputDecoration(hintText: "Rename position"),
@@ -57,13 +59,29 @@ class _EditPostureState extends State<EditPosture> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                      }
-                    },
-                    child: Text(submitLabel),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                          }
+                        },
+                        child: Text(submitLabel),
+                      )),
+                      Container(
+                        width: 10,
+                      ),
+                      Expanded(
+                          child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('Cancel'),
+                      )),
+                    ],
                   ),
                 ),
               ],

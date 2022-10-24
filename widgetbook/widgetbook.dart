@@ -85,9 +85,9 @@ class HotReload extends StatelessWidget {
               useCases: [
                 WidgetbookUseCase(
                     name: 'Create Dialog',
-                    builder: (context) => const CreatePosture(
-                          path: ["root", "parent"],
-                          onSaveClick: onSaveClick,
+                    builder: (context) => CreatePosture(
+                          path: const ["root", "parent"],
+                          onSaveClick: (posture) => onSaveClick(false, posture),
                         )),
                 WidgetbookUseCase(
                     name: 'Test Dialog',

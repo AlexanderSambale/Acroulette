@@ -49,7 +49,9 @@ class PostureCategoryItem extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return CreatePosture(
-                          path: path, onSaveClick: onSaveClick);
+                          path: path,
+                          onSaveClick: (posture) =>
+                              onSaveClick(false, posture));
                     }).then((exit) {
                   if (exit) return;
                 });
