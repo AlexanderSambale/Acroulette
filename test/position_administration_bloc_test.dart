@@ -17,6 +17,17 @@ extension ToManyExtension on ToMany<Node> {
     }
     return false;
   }
+
+  bool containsElementWithLabel(String label) {
+    int length = this.length;
+    for (int i = 0; i < length; i++) {
+      if (this[i].value.target!.label == label) return true;
+      if (length != this.length) {
+        throw ConcurrentModificationError(this);
+      }
+    }
+    return false;
+  }
 }
 
 void main() {
@@ -46,5 +57,17 @@ void main() {
     parent = objectbox.nodeBox.get(parent.id)!;
     expect(parent.children.containsElementWithId(child.id), false);
     expect(parent.children.length + 1, length);
+  });
+
+  test('onSaveClick', () async {
+    PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+    Node root = objectbox.findRoot();
+    int length = root.children.length;
+    String postureName = 'newPosture';
+    expect(root.children.containsElementWithLabel(postureName), false);
+    bloc.onSaveClick(root, false, postureName);
+    root = objectbox.nodeBox.get(root.id)!;
+    expect(root.children.containsElementWithLabel(postureName), true);
+    expect(root.children.length, length + 1);
   });
 }

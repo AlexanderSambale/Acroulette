@@ -94,9 +94,8 @@ class PositionAdministrationBloc
         .toList());
   }
 
-  void createPosture(Node child, String posture) {
+  void createPosture(Node parent, String posture) {
     add(PositionsBDStartChangeEvent());
-    Node parent = objectbox.findParent(child);
     AcroNode acroNode = AcroNode(true, posture);
     Node newPosture = Node.createLeaf(acroNode);
     parent.addNode(newPosture);
@@ -134,9 +133,9 @@ class PositionAdministrationBloc
     }
   }
 
-  void onSaveClick(Node child, bool isCategory, String? posture) {
+  void onSaveClick(Node parent, bool isCategory, String? posture) {
     if (posture == null) return;
-    createPosture(child, posture);
+    createPosture(parent, posture);
   }
 
   void onEditClick(Node child, bool isCategory, String? posture) {
