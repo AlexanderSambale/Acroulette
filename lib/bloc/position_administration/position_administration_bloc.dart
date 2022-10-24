@@ -141,7 +141,7 @@ class PositionAdministrationBloc
     createCategory(parent, label);
   }
 
-  void onEditClick(Node child, bool isCategory, String? posture) {
+  void onEditClick(Node child, bool isPosture, String? posture) {
     if (posture == null) return;
     editPosture(child, posture);
   }

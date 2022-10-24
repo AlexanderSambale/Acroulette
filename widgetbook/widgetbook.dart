@@ -10,12 +10,12 @@ import 'package:widgetbook/widgetbook.dart';
 
 onSwitch(bool isOn) {}
 onDeleteClick() {}
-onSaveClick(bool isCategory, String? newValue) {}
+onSaveClick(bool isPosture, String? newValue) {}
 onEditClick(String? newValue) {}
-onEditClickCategory(bool isCategory, String? newValue) {}
+onEditClickCategory(bool isPosture, String? newValue) {}
 onDeleteClickPostureTree(Node child) {}
-onSaveClickPostureTree(Node child, bool isCategory, String? newValue) {}
-onEditClickPostureTree(Node child, bool isCategory, String? newValue) {}
+onSaveClickPostureTree(Node child, bool isPosture, String? newValue) {}
+onEditClickPostureTree(Node child, bool isPosture, String? newValue) {}
 
 Node createSimpleTree(
     {String rootName = 'root',
