@@ -1,3 +1,4 @@
+import 'package:acroulette/components/dialogs/category_dialog/create_dategory_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -64,10 +65,10 @@ class PostureCategoryItem extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return CreatePosture(
+                      return CreateCategory(
                           path: path,
-                          onSaveClick: (posture) =>
-                              onSaveClick(false, posture));
+                          onSaveClick: (category) =>
+                              onSaveClick(true, category));
                     }).then((exit) {
                   if (exit) return;
                 });
