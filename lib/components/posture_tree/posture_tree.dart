@@ -25,13 +25,13 @@ class PostureTree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var newPath = path.toList();
-    newPath.add(tree.value.target!.label);
+    newPath.add(tree.label!);
     if (tree.isLeaf) {
       return Container(
           margin: const EdgeInsets.only(left: 24),
           child: PostureListItem(
               isSwitched: tree.value.target!.isSwitched,
-              postureLabel: tree.value.target!.label,
+              postureLabel: tree.label!,
               onChanged: (isOn) => onSwitched(isOn, tree),
               onEditClick: (bool isCategory, String? value) =>
                   onEditClick(tree, isCategory, value),
@@ -44,7 +44,7 @@ class PostureTree extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index == 0) {
             return PostureCategoryItem(
-              categoryLabel: tree.value.target!.label,
+              categoryLabel: tree.label!,
               isSwitched: tree.value.target!.isSwitched,
               onChanged: (isOn) => onSwitched(isOn, tree),
               onEditClick: (bool isCategory, String? value) =>

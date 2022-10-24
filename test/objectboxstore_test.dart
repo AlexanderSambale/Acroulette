@@ -26,6 +26,6 @@ void main() {
   test('findParent', () {
     Node parent = objectbox.findParent(objectbox.nodeBox.getAll().last);
     expect(parent.isExpanded, true);
-    expect(parent.value.target!.label, basicPostures);
+    expect(parent.label!, basicPostures);
   });
 }

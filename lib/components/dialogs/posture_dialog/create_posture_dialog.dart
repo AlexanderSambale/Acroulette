@@ -61,8 +61,10 @@ class _CreatePostureState extends State<CreatePosture> {
                           }
                           return null;
                         },
-                        onSaved: (newValue) => widget.onSaveClick(
-                            selected == 0, newValue), //(newValue) =>
+                        onSaved: (newValue) {
+                          widget.onSaveClick(selected == 0, newValue);
+                          Navigator.pop(context, true);
+                        }, //(newValue) =>
                         //    objectbox.positionBox.put(Position(newValue!)),
                       )
                     : TextFormField(

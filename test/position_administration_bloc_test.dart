@@ -21,7 +21,7 @@ extension ToManyExtension on ToMany<Node> {
   bool containsElementWithLabel(String label) {
     int length = this.length;
     for (int i = 0; i < length; i++) {
-      if (this[i].value.target!.label == label) return true;
+      if (this[i].label! == label) return true;
       if (length != this.length) {
         throw ConcurrentModificationError(this);
       }
@@ -53,7 +53,21 @@ void main() {
     Node parent = objectbox.findParent(child);
     expect(parent.children.containsElementWithId(child.id), true);
     int length = parent.children.length;
+    expect(
+        objectbox.positionBox
+            .query(Position_.name.equals(child.label!))
+            .build()
+            .find()
+            .isEmpty,
+        false);
     bloc.onDeleteClick(child);
+    expect(
+        objectbox.positionBox
+            .query(Position_.name.equals(child.label!))
+            .build()
+            .find()
+            .isEmpty,
+        false);
     parent = objectbox.nodeBox.get(parent.id)!;
     expect(parent.children.containsElementWithId(child.id), false);
     expect(parent.children.length + 1, length);
@@ -64,8 +78,22 @@ void main() {
     Node root = objectbox.findRoot();
     int length = root.children.length;
     String postureName = 'newPosture';
+    expect(
+        objectbox.positionBox
+            .query(Position_.name.equals(postureName))
+            .build()
+            .find()
+            .isEmpty,
+        true);
     expect(root.children.containsElementWithLabel(postureName), false);
     bloc.onSaveClick(root, false, postureName);
+    expect(
+        objectbox.positionBox
+            .query(Position_.name.equals(postureName))
+            .build()
+            .find()
+            .isEmpty,
+        false);
     root = objectbox.nodeBox.get(root.id)!;
     expect(root.children.containsElementWithLabel(postureName), true);
     expect(root.children.length, length + 1);

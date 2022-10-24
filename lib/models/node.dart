@@ -9,6 +9,7 @@ class Node {
   ToMany<Node> children = ToMany<Node>();
   ToOne<AcroNode> value = ToOne<AcroNode>();
   bool isExpanded;
+  String? get label => value.target?.label;
 
   Node(this.children, this.value, {this.isExpanded = true});
 
