@@ -114,6 +114,17 @@ class PositionAdministrationBloc
     add(PositionsDBIsIdleEvent());
   }
 
+  void createCategory(Node parent, String category) {
+    add(PositionsBDStartChangeEvent());
+    AcroNode acroNode = AcroNode(true, category);
+    Node newPosture = Node.createCategory([], acroNode);
+    parent.addNode(newPosture);
+    objectbox.putAcroNode(acroNode);
+    objectbox.putNode(parent);
+    regeneratePositionsList();
+    add(PositionsDBIsIdleEvent());
+  }
+
   void onDeleteClick(Node child) {
     if (child.isLeaf) {
       deletePosture(child);
@@ -121,9 +132,13 @@ class PositionAdministrationBloc
     }
   }
 
-  void onSaveClick(Node parent, bool isCategory, String? posture) {
-    if (posture == null) return;
-    createPosture(parent, posture);
+  void onSaveClick(Node parent, bool isPosture, String? label) {
+    if (label == null) return;
+    if (isPosture) {
+      createPosture(parent, label);
+      return;
+    }
+    createCategory(parent, label);
   }
 
   void onEditClick(Node child, bool isCategory, String? posture) {
