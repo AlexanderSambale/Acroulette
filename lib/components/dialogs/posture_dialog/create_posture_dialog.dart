@@ -50,8 +50,7 @@ class _CreatePostureState extends State<CreatePosture> {
                       onSaved: (newValue) {
                         widget.onSaveClick(newValue);
                         Navigator.pop(context, true);
-                      }, //(newValue) =>
-                      //    objectbox.positionBox.put(Position(newValue!)),
+                      },
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),

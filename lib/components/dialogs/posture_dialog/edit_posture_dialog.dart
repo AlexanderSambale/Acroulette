@@ -54,8 +54,7 @@ class _EditPostureState extends State<EditPosture> {
                   onSaved: (newValue) {
                     widget.onEditClick(newValue);
                     Navigator.pop(context, true);
-                  }, //(newValue) =>
-                  //    objectbox.positionBox.put(Position(newValue!)),
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
