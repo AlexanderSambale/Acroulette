@@ -67,7 +67,7 @@ void main() {
             .build()
             .find()
             .isEmpty,
-        false);
+        true);
     parent = objectbox.nodeBox.get(parent.id)!;
     expect(parent.children.containsElementWithId(child.id), false);
     expect(parent.children.length + 1, length);

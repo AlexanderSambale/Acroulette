@@ -57,11 +57,7 @@ class PositionAdministrationBloc
     acroNode.isSwitched = switched;
     List<AcroNode> acroNodes = [];
     enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
-    if (tree.isLeaf) {
-      regeneratePositionsList([acroNode]);
-    } else {
-      regeneratePositionsList(acroNodes);
-    }
+    regeneratePositionsList();
     acroNodes.add(acroNode);
 
     objectbox.putManyAcroNodes(acroNodes);
@@ -76,22 +72,14 @@ class PositionAdministrationBloc
     add(PositionsDBIsIdleEvent());
   }
 
-  void regeneratePositionsList(List<AcroNode> acroNodes) {
-    List<Position> positions = objectbox.positionBox.getAll();
+  void regeneratePositionsList() {
+    List<Node> nodes = objectbox.nodeBox.getAll();
     Set<String> setOfPositions = {};
-    setOfPositions.addAll(positions.map<String>((e) => e.name));
+    setOfPositions.addAll(
+        nodes.where((element) => element.isLeaf).map<String>((e) => e.label!));
     objectbox.positionBox.removeAll();
-    objectbox.positionBox.putMany(setOfPositions
-        .difference(acroNodes
-            .where((element) => !element.isSwitched || !element.isEnabled)
-            .map((e) => e.label)
-            .toSet())
-        .union(acroNodes
-            .where((element) => element.isSwitched && element.isEnabled)
-            .map((e) => e.label)
-            .toSet())
-        .map((e) => Position(e))
-        .toList());
+    objectbox.positionBox
+        .putMany(setOfPositions.map((e) => Position(e)).toList());
   }
 
   void createPosture(Node parent, String posture) {
@@ -101,7 +89,7 @@ class PositionAdministrationBloc
     parent.addNode(newPosture);
     objectbox.putAcroNode(acroNode);
     objectbox.putNode(parent);
-    regeneratePositionsList([acroNode]);
+    regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
 
@@ -110,7 +98,7 @@ class PositionAdministrationBloc
     AcroNode acroNode = child.value.target!;
     acroNode.label = posture;
     objectbox.putAcroNode(acroNode);
-    regeneratePositionsList([acroNode]);
+    regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
 
@@ -122,7 +110,7 @@ class PositionAdministrationBloc
     objectbox.putNode(parent);
     objectbox.removeNode(child);
     objectbox.removeAcroNode(acroNode);
-    regeneratePositionsList([acroNode]);
+    regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
 
