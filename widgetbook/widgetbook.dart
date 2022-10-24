@@ -11,7 +11,8 @@ import 'package:widgetbook/widgetbook.dart';
 onSwitch(bool isOn) {}
 onDeleteClick() {}
 onSaveClick(bool isCategory, String? newValue) {}
-onEditClick(bool isCategory, String? newValue) {}
+onEditClick(String? newValue) {}
+onEditClickCategory(bool isCategory, String? newValue) {}
 onDeleteClickPostureTree(Node child) {}
 onSaveClickPostureTree(Node child, bool isCategory, String? newValue) {}
 onEditClickPostureTree(Node child, bool isCategory, String? newValue) {}
@@ -123,6 +124,7 @@ class HotReload extends StatelessWidget {
                               onChanged: onSwitch,
                               onDeleteClick: onDeleteClick,
                               onEditClick: onEditClick,
+                              path: const [],
                               enabled: context.knobs.boolean(
                                   label: 'enabled', initialValue: true),
                             )),
@@ -152,7 +154,7 @@ class HotReload extends StatelessWidget {
                             .boolean(label: 'enabled', initialValue: true),
                         path: const [],
                         onDeleteClick: onDeleteClick,
-                        onEditClick: onEditClick,
+                        onEditClick: onEditClickCategory,
                         onSaveClick: onSaveClick,
                       ),
                     ),
