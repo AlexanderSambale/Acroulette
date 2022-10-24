@@ -12,7 +12,6 @@ onSwitch(bool isOn) {}
 onDeleteClick() {}
 onSaveClick(bool isPosture, String? newValue) {}
 onEditClick(String? newValue) {}
-onEditClickCategory(bool isPosture, String? newValue) {}
 onDeleteClickPostureTree(Node child) {}
 onSaveClickPostureTree(Node child, bool isPosture, String? newValue) {}
 onEditClickPostureTree(Node child, bool isPosture, String? newValue) {}
@@ -154,7 +153,7 @@ class HotReload extends StatelessWidget {
                             .boolean(label: 'enabled', initialValue: true),
                         path: const [],
                         onDeleteClick: onDeleteClick,
-                        onEditClick: onEditClickCategory,
+                        onEditClick: onEditClick,
                         onSaveClick: onSaveClick,
                       ),
                     ),

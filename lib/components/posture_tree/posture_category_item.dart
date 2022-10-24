@@ -1,4 +1,5 @@
 import 'package:acroulette/components/dialogs/category_dialog/create_dategory_dialog.dart';
+import 'package:acroulette/components/dialogs/category_dialog/edit_category_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ class PostureCategoryItem extends StatelessWidget {
   final String categoryLabel;
   final void Function(bool) onChanged;
   final void Function(bool, String?) onSaveClick;
-  final void Function(bool, String?) onEditClick;
+  final void Function(String?) onEditClick;
   final void Function() onDeleteClick;
   final void Function() toggleExpand;
   final List<String> path;
@@ -76,7 +77,15 @@ class PostureCategoryItem extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.edit),
               tooltip: 'Edit position',
-              onPressed: () => onEditClick(true, categoryLabel),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return EditCategory(path: path, onEditClick: onEditClick);
+                    }).then((exit) {
+                  if (exit) return;
+                });
+              },
             ),
             Switch(
               value: isSwitched,

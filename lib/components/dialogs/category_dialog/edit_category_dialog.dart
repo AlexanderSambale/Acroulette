@@ -1,8 +1,8 @@
 import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 
-class EditPosture extends StatefulWidget {
-  const EditPosture({
+class EditCategory extends StatefulWidget {
+  const EditCategory({
     Key? key,
     required this.path,
     required this.onEditClick,
@@ -12,17 +12,15 @@ class EditPosture extends StatefulWidget {
   final void Function(String? newValue) onEditClick;
 
   @override
-  State<EditPosture> createState() => _EditPostureState();
+  State<EditCategory> createState() => _EditCategoryState();
 }
 
-class _EditPostureState extends State<EditPosture> {
+class _EditCategoryState extends State<EditCategory> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    String submitLabel = 'Edit Position';
-    List<String> reducedPath = widget.path.toList();
-    reducedPath.removeLast();
+    String submitLabel = 'Edit Category';
 
     return Dialog(
         elevation: 0,
@@ -36,17 +34,17 @@ class _EditPostureState extends State<EditPosture> {
             key: _formKey,
             child: ListView(
               children: [
-                Text(reducedPath.join(" >> ")),
+                Text(widget.path.join(" >> ")),
                 TextFormField(
                   decoration:
-                      const InputDecoration(hintText: "Rename position"),
+                      const InputDecoration(hintText: "Rename category"),
                   initialValue: widget.path.last,
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
                     }
                     if (objectbox.getPosition(value) != null) {
-                      return 'Position $value already exists!';
+                      return 'Category $value already exists on this level!';
                     }
                     return null;
                   },

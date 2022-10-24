@@ -47,8 +47,7 @@ class PostureTree extends StatelessWidget {
               categoryLabel: tree.label!,
               isSwitched: tree.value.target!.isSwitched,
               onChanged: (isOn) => onSwitched(isOn, tree),
-              onEditClick: (bool isPosture, String? value) =>
-                  onEditClick(tree, isPosture, value),
+              onEditClick: (String? value) => onEditClick(tree, false, value),
               onDeleteClick: () => onDeleteClick(tree),
               onSaveClick: (bool isPosture, String? value) =>
                   onSaveClick(tree, isPosture, value),

@@ -93,10 +93,10 @@ class PositionAdministrationBloc
     add(PositionsDBIsIdleEvent());
   }
 
-  void editPosture(Node child, String posture) {
+  void editAcroNode(Node child, String label) {
     add(PositionsBDStartChangeEvent());
     AcroNode acroNode = child.value.target!;
-    acroNode.label = posture;
+    acroNode.label = label;
     objectbox.putAcroNode(acroNode);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
@@ -141,8 +141,8 @@ class PositionAdministrationBloc
     createCategory(parent, label);
   }
 
-  void onEditClick(Node child, bool isPosture, String? posture) {
-    if (posture == null) return;
-    editPosture(child, posture);
+  void onEditClick(Node child, bool isPosture, String? label) {
+    if (label == null) return;
+    editAcroNode(child, label);
   }
 }
