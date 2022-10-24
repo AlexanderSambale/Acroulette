@@ -58,6 +58,22 @@ class PostureCategoryItem extends StatelessWidget {
               },
             ),
             IconButton(
+              icon: const Icon(Icons.add_box),
+              tooltip: 'Add Category',
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CreatePosture(
+                          path: path,
+                          onSaveClick: (posture) =>
+                              onSaveClick(false, posture));
+                    }).then((exit) {
+                  if (exit) return;
+                });
+              },
+            ),
+            IconButton(
               icon: const Icon(Icons.edit),
               tooltip: 'Edit position',
               onPressed: () => onEditClick(true, categoryLabel),
