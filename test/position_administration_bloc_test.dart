@@ -98,4 +98,27 @@ void main() {
     expect(root.children.containsElementWithLabel(postureName), true);
     expect(root.children.length, length + 1);
   });
+
+  test('onEditClick', () async {
+    PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+    Node child = objectbox.nodeBox.getAll().last;
+    String testLabel = "testPosture";
+    expect(
+        objectbox.positionBox
+            .query(Position_.name.equals(testLabel))
+            .build()
+            .find()
+            .isEmpty,
+        true);
+    expect(child.label, isNot(equals(testLabel)));
+    bloc.onEditClick(child, false, testLabel);
+    expect(
+        objectbox.positionBox
+            .query(Position_.name.equals(testLabel))
+            .build()
+            .find()
+            .isEmpty,
+        false);
+    expect(child.label, testLabel);
+  });
 }
