@@ -33,9 +33,9 @@ class PostureTree extends StatelessWidget {
               isSwitched: tree.value.target!.isSwitched,
               postureLabel: tree.label!,
               onChanged: (isOn) => onSwitched(isOn, tree),
-              onEditClick: (bool isCategory, String? value) =>
-                  onEditClick(tree, isCategory, value),
+              onEditClick: (String? value) => onEditClick(tree, false, value),
               onDeleteClick: () => onDeleteClick(tree),
+              path: newPath,
               enabled: tree.value.target!.isEnabled));
     }
     return ListView.builder(
