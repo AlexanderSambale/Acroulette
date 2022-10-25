@@ -86,7 +86,7 @@ void main() {
             .isEmpty,
         true);
     expect(root.children.containsElementWithLabel(postureName), false);
-    bloc.onSaveClick(root, false, postureName);
+    bloc.onSaveClick(root, true, postureName);
     expect(
         objectbox.positionBox
             .query(Position_.name.equals(postureName))
