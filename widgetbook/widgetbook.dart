@@ -3,11 +3,12 @@ import 'package:acroulette/components/dialogs/posture_dialog/segmented_view.dart
 import 'package:acroulette/components/posture_tree/posture_category_item.dart';
 import 'package:acroulette/components/posture_tree/posture_list_item.dart';
 import 'package:acroulette/components/posture_tree/posture_tree.dart';
-import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
+
+import '../test/position_administration_bloc_test.dart';
 
 void onSwitch(bool isOn) {}
 void onDeleteClick() {}
@@ -16,34 +17,12 @@ void onEditClick(String? newValue) {}
 void onDeleteClickPostureTree(Node child) {}
 void onSaveClickPostureTree(Node child, bool isPosture, String? newValue) {}
 void onEditClickPostureTree(Node child, bool isPosture, String? newValue) {}
-List<Pair> listElementsToRemove() {
+List<Pair> listAllNodesRecursively() {
   return [];
 }
 
-List<Pair> listElementsToRemovePostureTree(Node root) {
+List<Pair> listAllNodesRecursivelyPostureTree(Node root) {
   return [];
-}
-
-Node createSimpleTree(
-    {String rootName = 'root',
-    String leaf1Name = 'leaf1',
-    String leaf2Name = 'leaf2',
-    String leaf3Name = 'leaf3'}) {
-  Node leaf1 = Node.createLeaf(AcroNode(true, leaf1Name));
-  Node leaf2 = Node.createLeaf(AcroNode(false, leaf2Name));
-  Node leaf3 = Node.createLeaf(AcroNode(true, leaf3Name));
-  Node category =
-      Node.createCategory([leaf1, leaf2, leaf3], AcroNode(true, rootName));
-  return category;
-}
-
-Node createComplexTree() {
-  Node root = Node.createCategory([
-    createSimpleTree(rootName: 'root1'),
-    createSimpleTree(rootName: 'root2'),
-    createSimpleTree(rootName: 'root3')
-  ], AcroNode(true, 'root'));
-  return root;
 }
 
 class HotReload extends StatelessWidget {
@@ -163,7 +142,7 @@ class HotReload extends StatelessWidget {
                         onDeleteClick: onDeleteClick,
                         onEditClick: onEditClick,
                         onSaveClick: onSaveClick,
-                        listElementsToRemove: listElementsToRemove,
+                        listAllNodesRecursively: listAllNodesRecursively,
                       ),
                     ),
                   ],
@@ -181,8 +160,8 @@ class HotReload extends StatelessWidget {
                               onDeleteClick: onDeleteClickPostureTree,
                               onEditClick: onEditClickPostureTree,
                               onSaveClick: onSaveClickPostureTree,
-                              listElementsToRemove:
-                                  listElementsToRemovePostureTree,
+                              listAllNodesRecursively:
+                                  listAllNodesRecursivelyPostureTree,
                             )),
                     WidgetbookUseCase(
                         name: 'ComplexTree',
@@ -194,8 +173,8 @@ class HotReload extends StatelessWidget {
                               onDeleteClick: onDeleteClickPostureTree,
                               onEditClick: onEditClickPostureTree,
                               onSaveClick: onSaveClickPostureTree,
-                              listElementsToRemove:
-                                  listElementsToRemovePostureTree,
+                              listAllNodesRecursively:
+                                  listAllNodesRecursivelyPostureTree,
                             ))
                   ],
                 ),

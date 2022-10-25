@@ -14,7 +14,7 @@ class PostureTree extends StatelessWidget {
       required this.onEditClick,
       required this.onDeleteClick,
       required this.path,
-      required this.listElementsToRemove});
+      required this.listAllNodesRecursively});
 
   final Node tree;
   final void Function(bool, Node) onSwitched;
@@ -22,7 +22,7 @@ class PostureTree extends StatelessWidget {
   final void Function(Node, bool, String?) onSaveClick;
   final void Function(Node, bool, String?) onEditClick;
   final void Function(Node) onDeleteClick;
-  final List<Pair> Function(Node) listElementsToRemove;
+  final List<Pair> Function(Node) listAllNodesRecursively;
   final List<String> path;
 
   @override
@@ -60,7 +60,7 @@ class PostureTree extends StatelessWidget {
                   isExpanded: tree.isExpanded,
                   enabled: tree.value.target!.isEnabled,
                   path: newPath,
-                  listElementsToRemove: () => listElementsToRemove(tree),
+                  listAllNodesRecursively: () => listAllNodesRecursively(tree),
                 );
               }
               if (tree.isExpanded) {
@@ -74,7 +74,7 @@ class PostureTree extends StatelessWidget {
                       onDeleteClick: onDeleteClick,
                       onSaveClick: onSaveClick,
                       path: newPath,
-                      listElementsToRemove: listElementsToRemove,
+                      listAllNodesRecursively: listAllNodesRecursively,
                     ));
               }
               return Container();

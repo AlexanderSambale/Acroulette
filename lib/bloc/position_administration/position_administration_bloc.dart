@@ -115,30 +115,26 @@ class PositionAdministrationBloc
     add(PositionsDBIsIdleEvent());
   }
 
-  List<Node> getAllChildrenRecursive(Node child) {
-    List<Node> allNodes = child.children;
-    for (var childOfChild in child.children) {
-      allNodes.addAll(getAllChildrenRecursive(childOfChild));
-    }
-    return allNodes;
-  }
-
   /// Returns a list of Pairs
   /// Here a pair is true, if it is a posture. If it is a category, it is false.
   /// The second property here is just a label for the posture/category.
-  List<Pair> listElementsToRemove(Node root) {
+  List<Pair> listAllNodesRecursively(Node root) {
     List<Pair> pairs = [Pair(root.isLeaf, root.label)];
     for (var child in root.children) {
-      pairs.addAll(listElementsToRemove(child));
+      pairs.addAll(listAllNodesRecursively(child));
     }
     return pairs;
   }
 
-  void deleteCategory(Node child) {
+  void deleteCategory(Node category) {
     add(PositionsBDStartChangeEvent());
-    List<Node> toRemove = getAllChildrenRecursive(child)..add(child);
+    List<Node> toRemove = objectbox.getAllChildrenRecursive(category)
+      ..add(category);
     List<AcroNode> toRemoveAcro =
         toRemove.map<AcroNode>((element) => element.value.target!).toList();
+    Node parent = objectbox.findParent(category);
+    parent.children.remove(category);
+    objectbox.putNode(parent);
     objectbox.removeManyAcroNodes(toRemoveAcro);
     objectbox.removeManyNodes(toRemove);
     regeneratePositionsList();

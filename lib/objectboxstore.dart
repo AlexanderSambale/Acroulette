@@ -170,4 +170,12 @@ class ObjectBox {
     if (parent == null) throw Exception("should not be null!");
     return parent;
   }
+
+  List<Node> getAllChildrenRecursive(Node child) {
+    List<Node> allNodes = child.children.toList();
+    for (var childOfChild in child.children) {
+      allNodes.addAll(getAllChildrenRecursive(childOfChild));
+    }
+    return allNodes;
+  }
 }

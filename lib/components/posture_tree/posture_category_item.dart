@@ -18,7 +18,7 @@ class PostureCategoryItem extends StatelessWidget {
     required this.toggleExpand,
     required this.categoryLabel,
     required this.path,
-    required this.listElementsToRemove,
+    required this.listAllNodesRecursively,
     this.enabled = true,
   });
 
@@ -31,7 +31,7 @@ class PostureCategoryItem extends StatelessWidget {
   final void Function(String?) onEditClick;
   final void Function() onDeleteClick;
   final void Function() toggleExpand;
-  final List<Pair> Function() listElementsToRemove;
+  final List<Pair> Function() listAllNodesRecursively;
   final List<String> path;
 
   @override
@@ -117,7 +117,7 @@ class PostureCategoryItem extends StatelessWidget {
                       return DeleteCategory(
                         onDeleteClick: onDeleteClick,
                         categoryLabel: path.last,
-                        elementsToRemove: listElementsToRemove(),
+                        elementsToRemove: listAllNodesRecursively(),
                       );
                     }).then((exit) {
                   if (exit) return;

@@ -2,9 +2,32 @@ import 'dart:io';
 
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
 import 'package:acroulette/database/objectbox.g.dart';
+import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+Node createSimpleTree(
+    {String rootName = 'root',
+    String leaf1Name = 'leaf1',
+    String leaf2Name = 'leaf2',
+    String leaf3Name = 'leaf3'}) {
+  Node leaf1 = Node.createLeaf(AcroNode(true, leaf1Name));
+  Node leaf2 = Node.createLeaf(AcroNode(false, leaf2Name));
+  Node leaf3 = Node.createLeaf(AcroNode(true, leaf3Name));
+  Node category =
+      Node.createCategory([leaf1, leaf2, leaf3], AcroNode(true, rootName));
+  return category;
+}
+
+Node createComplexTree() {
+  Node root = Node.createCategory([
+    createSimpleTree(rootName: 'root1'),
+    createSimpleTree(rootName: 'root2'),
+    createSimpleTree(rootName: 'root3')
+  ], AcroNode(true, 'root'));
+  return root;
+}
 
 extension ToManyExtension on ToMany<Node> {
   bool containsElementWithId(int id) {
@@ -47,32 +70,59 @@ void main() {
     if (dir.existsSync()) dir.deleteSync(recursive: true);
   });
 
-  test('onDeleteClick', () async {
-    PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
-    Node child = objectbox.nodeBox.getAll().last;
-    Node parent = objectbox.findParent(child);
-    expect(parent.children.containsElementWithId(child.id), true);
-    int length = parent.children.length;
-    expect(
-        objectbox.positionBox
-            .query(Position_.name.equals(child.label!))
-            .build()
-            .find()
-            .isEmpty,
-        false);
-    bloc.onDeleteClick(child);
-    expect(
-        objectbox.positionBox
-            .query(Position_.name.equals(child.label!))
-            .build()
-            .find()
-            .isEmpty,
-        true);
-    parent = objectbox.nodeBox.get(parent.id)!;
-    expect(parent.children.containsElementWithId(child.id), false);
-    expect(parent.children.length + 1, length);
-  });
+  group('onDeleteClick', () {
+    test('delete leaf', () async {
+      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+      Node child = objectbox.nodeBox.getAll().last;
+      Node parent = objectbox.findParent(child);
+      expect(parent.children.containsElementWithId(child.id), true);
+      int length = parent.children.length;
+      expect(
+          objectbox.positionBox
+              .query(Position_.name.equals(child.label!))
+              .build()
+              .find()
+              .isEmpty,
+          false);
+      bloc.onDeleteClick(child);
+      expect(
+          objectbox.positionBox
+              .query(Position_.name.equals(child.label!))
+              .build()
+              .find()
+              .isEmpty,
+          true);
+      parent = objectbox.nodeBox.get(parent.id)!;
+      expect(parent.children.containsElementWithId(child.id), false);
+      expect(parent.children.length + 1, length);
+    });
 
+    test('delete node with children', () async {
+      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+      int numberOfNodesBefore = objectbox.nodeBox.count();
+      int numberOfAcroNodesBefore = objectbox.acroNodeBox.count();
+      Node root = objectbox.findRoot();
+      Node complexTree = createComplexTree();
+      root.children.add(complexTree);
+      List<Node> nodes = objectbox.getAllChildrenRecursive(complexTree)
+        ..add(complexTree)
+        ..add(root);
+      List<AcroNode> acroNodes =
+          nodes.map<AcroNode>((element) => element.value.target!).toList();
+      objectbox.putManyAcroNodes(acroNodes);
+      objectbox.putManyNodes(nodes);
+      int numberOfNodesAfterAdding = objectbox.nodeBox.count();
+      int numberOfAcroNodesAfterAdding = objectbox.acroNodeBox.count();
+      expect(numberOfNodesBefore, isNot(equals(numberOfNodesAfterAdding)));
+      expect(
+          numberOfAcroNodesBefore, isNot(equals(numberOfAcroNodesAfterAdding)));
+      bloc.onDeleteClick(complexTree);
+      int numberOfNodesAfterDeleting = objectbox.nodeBox.count();
+      int numberOfAcroNodesAfterDeleting = objectbox.acroNodeBox.count();
+      expect(numberOfNodesBefore, numberOfNodesAfterDeleting);
+      expect(numberOfAcroNodesBefore, numberOfAcroNodesAfterDeleting);
+    });
+  });
   test('onSaveClick', () async {
     PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
     Node root = objectbox.findRoot();

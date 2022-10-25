@@ -37,8 +37,8 @@ class _PositionsState extends State<Positions> {
                       onEditClick: positionAdministrationBloc.onEditClick,
                       onSaveClick: positionAdministrationBloc.onSaveClick,
                       path: const [],
-                      listElementsToRemove:
-                          positionAdministrationBloc.listElementsToRemove,
+                      listAllNodesRecursively:
+                          positionAdministrationBloc.listAllNodesRecursively,
                     );
                   }),
             )
