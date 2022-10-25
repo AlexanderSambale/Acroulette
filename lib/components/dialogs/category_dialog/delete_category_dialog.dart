@@ -29,6 +29,9 @@ class DeleteCategory extends StatelessWidget {
                         elementsToRemove[index].first as bool
                             ? const Icon(Icons.circle)
                             : const Icon(Icons.rectangle),
+                        Container(
+                          width: 10,
+                        ),
                         Text(elementsToRemove[index].second as String)
                       ],
                     ),

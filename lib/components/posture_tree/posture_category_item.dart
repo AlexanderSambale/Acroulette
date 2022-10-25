@@ -2,6 +2,7 @@ import 'package:acroulette/components/dialogs/category_dialog/create_dategory_di
 import 'package:acroulette/components/dialogs/category_dialog/delete_category_dialog.dart';
 import 'package:acroulette/components/dialogs/category_dialog/edit_category_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
+import 'package:acroulette/components/icons/icons.dart';
 import 'package:acroulette/models/pair.dart';
 import 'package:flutter/material.dart';
 
@@ -44,6 +45,13 @@ class PostureCategoryItem extends StatelessWidget {
               icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
               tooltip: isExpanded ? 'collapse' : 'expand',
               onPressed: toggleExpand,
+            ),
+            Container(
+              width: 10,
+            ),
+            categoryIcon,
+            Container(
+              width: 10,
             ),
             Center(child: Text(categoryLabel)),
             const Spacer(),

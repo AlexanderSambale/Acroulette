@@ -1,4 +1,5 @@
 import 'package:acroulette/components/dialogs/posture_dialog/edit_posture_dialog.dart';
+import 'package:acroulette/components/icons/icons.dart';
 import 'package:flutter/material.dart';
 
 class PostureListItem extends StatelessWidget {
@@ -23,38 +24,47 @@ class PostureListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return SizedBox(
-        height: 50,
-        child: Row(
-          children: [
-            Center(child: Text(postureLabel)),
-            const Spacer(),
-            IconButton(
-              icon: const Icon(Icons.edit),
-              tooltip: 'Edit position',
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return EditPosture(path: path, onEditClick: onEditClick);
-                    }).then((exit) {
-                  if (exit) return;
-                });
-              },
-            ),
-            Switch(
-              value: isSwitched,
-              onChanged: enabled ? onChanged : null,
-              activeColor: enabled
-                  ? theme.toggleableActiveColor
-                  : theme.toggleButtonsTheme.disabledColor,
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              tooltip: 'Delete position',
-              onPressed: onDeleteClick,
-            )
-          ],
-        ));
+    return Card(
+        child: SizedBox(
+            height: 50,
+            child: Row(
+              children: [
+                Container(
+                  width: 10,
+                ),
+                postureIcon,
+                Container(
+                  width: 10,
+                ),
+                Center(child: Text(postureLabel)),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  tooltip: 'Edit position',
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return EditPosture(
+                              path: path, onEditClick: onEditClick);
+                        }).then((exit) {
+                      if (exit) return;
+                    });
+                  },
+                ),
+                Switch(
+                  value: isSwitched,
+                  onChanged: enabled ? onChanged : null,
+                  activeColor: enabled
+                      ? theme.toggleableActiveColor
+                      : theme.toggleButtonsTheme.disabledColor,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  tooltip: 'Delete position',
+                  onPressed: onDeleteClick,
+                )
+              ],
+            )));
   }
 }

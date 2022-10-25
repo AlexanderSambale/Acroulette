@@ -41,41 +41,43 @@ class PostureTree extends StatelessWidget {
               path: newPath,
               enabled: tree.value.target!.isEnabled));
     }
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: tree.children.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return PostureCategoryItem(
-              categoryLabel: tree.label!,
-              isSwitched: tree.value.target!.isSwitched,
-              onChanged: (isOn) => onSwitched(isOn, tree),
-              onEditClick: (String? value) => onEditClick(tree, false, value),
-              onDeleteClick: () => onDeleteClick(tree),
-              onSaveClick: (bool isPosture, String? value) =>
-                  onSaveClick(tree, isPosture, value),
-              toggleExpand: () => toggleExpand(tree),
-              isExpanded: tree.isExpanded,
-              enabled: tree.value.target!.isEnabled,
-              path: newPath,
-              listElementsToRemove: () => listElementsToRemove(tree),
-            );
-          }
-          if (tree.isExpanded) {
-            return Container(
-                margin: const EdgeInsets.only(left: 24),
-                child: PostureTree(
-                  tree: tree.children.elementAt(index - 1),
-                  onSwitched: onSwitched,
-                  toggleExpand: toggleExpand,
-                  onEditClick: onEditClick,
-                  onDeleteClick: onDeleteClick,
-                  onSaveClick: onSaveClick,
+    return Card(
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: tree.children.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return PostureCategoryItem(
+                  categoryLabel: tree.label!,
+                  isSwitched: tree.value.target!.isSwitched,
+                  onChanged: (isOn) => onSwitched(isOn, tree),
+                  onEditClick: (String? value) =>
+                      onEditClick(tree, false, value),
+                  onDeleteClick: () => onDeleteClick(tree),
+                  onSaveClick: (bool isPosture, String? value) =>
+                      onSaveClick(tree, isPosture, value),
+                  toggleExpand: () => toggleExpand(tree),
+                  isExpanded: tree.isExpanded,
+                  enabled: tree.value.target!.isEnabled,
                   path: newPath,
-                  listElementsToRemove: listElementsToRemove,
-                ));
-          }
-          return Container();
-        });
+                  listElementsToRemove: () => listElementsToRemove(tree),
+                );
+              }
+              if (tree.isExpanded) {
+                return Container(
+                    margin: const EdgeInsets.only(left: 24),
+                    child: PostureTree(
+                      tree: tree.children.elementAt(index - 1),
+                      onSwitched: onSwitched,
+                      toggleExpand: toggleExpand,
+                      onEditClick: onEditClick,
+                      onDeleteClick: onDeleteClick,
+                      onSaveClick: onSaveClick,
+                      path: newPath,
+                      listElementsToRemove: listElementsToRemove,
+                    ));
+              }
+              return Container();
+            }));
   }
 }
