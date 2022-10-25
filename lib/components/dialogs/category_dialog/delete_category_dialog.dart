@@ -46,6 +46,7 @@ class DeleteCategory extends StatelessWidget {
                 Expanded(
                     child: ElevatedButton(
                   onPressed: () {
+                    onDeleteClick();
                     Navigator.pop(context, true);
                   },
                   child: const Text('Confirm'),
