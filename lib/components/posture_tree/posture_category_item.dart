@@ -1,6 +1,8 @@
 import 'package:acroulette/components/dialogs/category_dialog/create_dategory_dialog.dart';
+import 'package:acroulette/components/dialogs/category_dialog/delete_category_dialog.dart';
 import 'package:acroulette/components/dialogs/category_dialog/edit_category_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
+import 'package:acroulette/models/pair.dart';
 import 'package:flutter/material.dart';
 
 class PostureCategoryItem extends StatelessWidget {
@@ -15,6 +17,7 @@ class PostureCategoryItem extends StatelessWidget {
     required this.toggleExpand,
     required this.categoryLabel,
     required this.path,
+    required this.listElementsToRemove,
     this.enabled = true,
   });
 
@@ -27,6 +30,7 @@ class PostureCategoryItem extends StatelessWidget {
   final void Function(String?) onEditClick;
   final void Function() onDeleteClick;
   final void Function() toggleExpand;
+  final List<Pair> Function() listElementsToRemove;
   final List<String> path;
 
   @override
@@ -97,7 +101,20 @@ class PostureCategoryItem extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete),
               tooltip: 'Delete position',
-              onPressed: onDeleteClick,
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return DeleteCategory(
+                        onDeleteClick: onDeleteClick,
+                        categoryLabel: path.last,
+                        elementsToRemove: listElementsToRemove(),
+                      );
+                    }).then((exit) {
+                  if (exit) return;
+                });
+              },
             )
           ],
         ));

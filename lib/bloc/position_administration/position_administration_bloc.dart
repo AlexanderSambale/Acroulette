@@ -1,5 +1,6 @@
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
+import 'package:acroulette/models/pair.dart';
 import 'package:acroulette/models/position.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:bloc/bloc.dart';
@@ -114,6 +115,36 @@ class PositionAdministrationBloc
     add(PositionsDBIsIdleEvent());
   }
 
+  List<Node> getAllChildrenRecursive(Node child) {
+    List<Node> allNodes = child.children;
+    for (var childOfChild in child.children) {
+      allNodes.addAll(getAllChildrenRecursive(childOfChild));
+    }
+    return allNodes;
+  }
+
+  /// Returns a list of Pairs
+  /// Here a pair is true, if it is a posture. If it is a category, it is false.
+  /// The second property here is just a label for the posture/category.
+  List<Pair> listElementsToRemove(Node root) {
+    List<Pair> pairs = [Pair(root.isLeaf, root.label)];
+    for (var child in root.children) {
+      pairs.addAll(listElementsToRemove(child));
+    }
+    return pairs;
+  }
+
+  void deleteCategory(Node child) {
+    add(PositionsBDStartChangeEvent());
+    List<Node> toRemove = getAllChildrenRecursive(child)..add(child);
+    List<AcroNode> toRemoveAcro =
+        toRemove.map<AcroNode>((element) => element.value.target!).toList();
+    objectbox.removeManyAcroNodes(toRemoveAcro);
+    objectbox.removeManyNodes(toRemove);
+    regeneratePositionsList();
+    add(PositionsDBIsIdleEvent());
+  }
+
   void createCategory(Node parent, String category) {
     add(PositionsBDStartChangeEvent());
     AcroNode acroNode = AcroNode(true, category);
@@ -130,6 +161,7 @@ class PositionAdministrationBloc
       deletePosture(child);
       return;
     }
+    deleteCategory(child);
   }
 
   void onSaveClick(Node parent, bool isPosture, String? label) {

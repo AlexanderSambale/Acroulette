@@ -1,6 +1,7 @@
 import 'package:acroulette/components/posture_tree/posture_category_item.dart';
 import 'package:acroulette/components/posture_tree/posture_list_item.dart';
 import 'package:acroulette/models/node.dart';
+import 'package:acroulette/models/pair.dart';
 import 'package:flutter/material.dart';
 
 class PostureTree extends StatelessWidget {
@@ -12,7 +13,8 @@ class PostureTree extends StatelessWidget {
       required this.onSaveClick,
       required this.onEditClick,
       required this.onDeleteClick,
-      required this.path});
+      required this.path,
+      required this.listElementsToRemove});
 
   final Node tree;
   final void Function(bool, Node) onSwitched;
@@ -20,6 +22,7 @@ class PostureTree extends StatelessWidget {
   final void Function(Node, bool, String?) onSaveClick;
   final void Function(Node, bool, String?) onEditClick;
   final void Function(Node) onDeleteClick;
+  final List<Pair> Function(Node) listElementsToRemove;
   final List<String> path;
 
   @override
@@ -55,6 +58,7 @@ class PostureTree extends StatelessWidget {
               isExpanded: tree.isExpanded,
               enabled: tree.value.target!.isEnabled,
               path: newPath,
+              listElementsToRemove: () => listElementsToRemove(tree),
             );
           }
           if (tree.isExpanded) {
@@ -68,6 +72,7 @@ class PostureTree extends StatelessWidget {
                   onDeleteClick: onDeleteClick,
                   onSaveClick: onSaveClick,
                   path: newPath,
+                  listElementsToRemove: listElementsToRemove,
                 ));
           }
           return Container();

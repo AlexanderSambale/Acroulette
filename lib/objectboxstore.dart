@@ -102,6 +102,11 @@ class ObjectBox {
     acroNodeBox.remove(acroNode.id);
   }
 
+  void removeManyAcroNodes(List<AcroNode> acroNodes) {
+    acroNodeBox
+        .removeMany(acroNodes.map<int>((element) => element.id).toList());
+  }
+
   void putManyAcroNodes(List<AcroNode> acroNodes) {
     acroNodeBox.putMany(acroNodes);
   }
@@ -116,6 +121,10 @@ class ObjectBox {
 
   void removeNode(Node node) {
     nodeBox.remove(node.id);
+  }
+
+  void removeManyNodes(List<Node> nodes) {
+    nodeBox.removeMany(nodes.map<int>((element) => element.id).toList());
   }
 
   String? getPosition(String positionName) {
