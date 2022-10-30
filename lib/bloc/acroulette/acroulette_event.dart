@@ -15,6 +15,11 @@ class AcrouletteCommandRecognizedEvent extends AcrouletteEvent {
 
 class AcrouletteStop extends AcrouletteEvent {}
 
+class AcrouletteTransition extends AcrouletteEvent {
+  final String transition;
+  AcrouletteTransition(this.transition);
+}
+
 class AcrouletteRecognizeCommand extends AcrouletteEvent {
   final String command;
   AcrouletteRecognizeCommand(this.command);

@@ -47,6 +47,22 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       voiceRecognitionBloc.add(VoiceRecognitionStop());
       emit(AcrouletteInitialState());
     });
+    on<AcrouletteTransition>((event, emit) {
+      switch (event.transition) {
+        case newPosition:
+          transitionBloc.add(NewTransitionEvent());
+          break;
+        case nextPosition:
+          transitionBloc.add(NextTransitionEvent());
+          break;
+        case previousPosition:
+          transitionBloc.add(PreviousTransitionEvent());
+          break;
+        case currentPosition:
+          transitionBloc.add(CurrentTransitionEvent());
+          break;
+      }
+    });
   }
 
   late final TransitionBloc transitionBloc;
@@ -88,19 +104,19 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     final text = commandMapped["text"];
 
     if (rNewPosition.hasMatch(text)) {
-      transitionBloc.add(NewTransitionEvent());
+      add(AcrouletteTransition(newPosition));
       return;
     }
     if (rNextPosition.hasMatch(text)) {
-      transitionBloc.add(NextTransitionEvent());
+      add(AcrouletteTransition(nextPosition));
       return;
     }
     if (rPreviousPosition.hasMatch(text)) {
-      transitionBloc.add(PreviousTransitionEvent());
+      add(AcrouletteTransition(previousPosition));
       return;
     }
     if (rCurrentPosition.hasMatch(text)) {
-      transitionBloc.add(CurrentTransitionEvent());
+      add(AcrouletteTransition(currentPosition));
       return;
     }
   }

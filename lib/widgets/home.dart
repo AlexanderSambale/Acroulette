@@ -1,4 +1,5 @@
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
+import 'package:acroulette/constants/commands.dart';
 import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -124,7 +125,7 @@ class _HomeState extends State<Home> {
                         Icons.skip_previous,
                         () => context
                             .read<AcrouletteBloc>()
-                            .add(AcrouletteStop())),
+                            .add(AcrouletteTransition(previousPosition))),
                     controlButton(
                         color,
                         splashColor,
@@ -138,14 +139,14 @@ class _HomeState extends State<Home> {
                         Icons.skip_next,
                         () => context
                             .read<AcrouletteBloc>()
-                            .add(AcrouletteStop())),
+                            .add(AcrouletteTransition(nextPosition))),
                     controlButton(
                         Colors.black,
                         Colors.black,
                         Icons.add_circle,
                         () => context
                             .read<AcrouletteBloc>()
-                            .add(AcrouletteStop()))
+                            .add(AcrouletteTransition(newPosition)))
                   ], stateWidgetLabel(color, 'STOP'));
                 }
             }
