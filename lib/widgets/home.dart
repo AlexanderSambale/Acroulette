@@ -80,34 +80,67 @@ class _HomeState extends State<Home> {
               default:
                 text = "Click the play button to start the game!";
             }
-            Column button;
+            Column controls;
             switch (state.runtimeType) {
               case AcrouletteInitialState:
               case AcrouletteInitModel:
-                button = _buildButtonColumn(
-                    Colors.amber,
-                    Colors.amberAccent,
-                    Icons.launch,
-                    'Initialize Model',
-                    () =>
-                        context.read<AcrouletteBloc>().add(AcrouletteStart()));
-                break;
+                {
+                  Color color = Colors.amber;
+                  Color splashColor = Colors.amberAccent;
+                  controls = _controls([
+                    controlButton(
+                        color,
+                        splashColor,
+                        Icons.launch,
+                        () => context
+                            .read<AcrouletteBloc>()
+                            .add(AcrouletteStart()))
+                  ], stateWidgetLabel(color, 'Initialize Model'));
+                  break;
+                }
               case AcrouletteModelInitiatedState:
-                button = _buildButtonColumn(
-                    Colors.green,
-                    Colors.greenAccent,
-                    Icons.play_arrow,
-                    'PLAY',
-                    () =>
-                        context.read<AcrouletteBloc>().add(AcrouletteStart()));
-                break;
+                {
+                  Color color = Colors.green;
+                  Color splashColor = Colors.greenAccent;
+                  controls = _controls([
+                    controlButton(
+                        color,
+                        splashColor,
+                        Icons.play_arrow,
+                        () => context
+                            .read<AcrouletteBloc>()
+                            .add(AcrouletteStart()))
+                  ], stateWidgetLabel(color, 'PLAY'));
+                  break;
+                }
               default:
-                button = _buildButtonColumn(
-                    Colors.red,
-                    Colors.redAccent,
-                    Icons.stop,
-                    'STOP',
-                    () => context.read<AcrouletteBloc>().add(AcrouletteStop()));
+                {
+                  Color color = Colors.red;
+                  Color splashColor = Colors.redAccent;
+                  controls = _controls([
+                    controlButton(
+                        Colors.black,
+                        Colors.black,
+                        Icons.skip_previous,
+                        () => context
+                            .read<AcrouletteBloc>()
+                            .add(AcrouletteStop())),
+                    controlButton(
+                        color,
+                        splashColor,
+                        Icons.stop,
+                        () => context
+                            .read<AcrouletteBloc>()
+                            .add(AcrouletteStop())),
+                    controlButton(
+                        Colors.black,
+                        Colors.black,
+                        Icons.skip_next,
+                        () => context
+                            .read<AcrouletteBloc>()
+                            .add(AcrouletteStop()))
+                  ], stateWidgetLabel(color, 'STOP'));
+                }
             }
             return Container(
                 padding: const EdgeInsets.only(top: 50.0),
@@ -119,7 +152,7 @@ class _HomeState extends State<Home> {
                         textAlign: TextAlign.center, style: displayTextStyle),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [button]),
+                      children: [controls]),
                 ]));
           }),
         )
@@ -128,23 +161,28 @@ class _HomeState extends State<Home> {
   }
 }
 
-Column _buildButtonColumn(Color color, Color splashColor, IconData icon,
-    String label, Function func) {
+Column _controls(List<Widget> rowChildren, Widget stateWidgetLabel) {
   return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-            icon: Icon(icon, size: 36.0),
-            color: color,
-            splashColor: splashColor,
-            onPressed: () => func()),
-        Container(
-            margin: const EdgeInsets.only(top: 8.0),
-            child: Text(label,
-                style: TextStyle(
-                    fontSize: 36.0, fontWeight: FontWeight.w400, color: color)))
-      ]);
+      children: [Row(children: rowChildren), stateWidgetLabel]);
+}
+
+Widget controlButton(
+    Color color, Color splashColor, IconData icon, Function func) {
+  return IconButton(
+      icon: Icon(icon, size: 36.0),
+      color: color,
+      splashColor: splashColor,
+      onPressed: () => func());
+}
+
+Widget stateWidgetLabel(Color color, String label) {
+  return Container(
+      margin: const EdgeInsets.only(top: 8.0),
+      child: Text(label,
+          style: TextStyle(
+              fontSize: 36.0, fontWeight: FontWeight.w400, color: color)));
 }
 
 TextStyle displayTextStyle =
