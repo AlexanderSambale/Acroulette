@@ -10,7 +10,10 @@ class AcrouletteStartVoiceRecognitionEvent extends AcrouletteEvent {}
 
 class AcrouletteCommandRecognizedEvent extends AcrouletteEvent {
   final String currentFigure;
-  AcrouletteCommandRecognizedEvent(this.currentFigure);
+  final String nextFigure;
+  final String previousFigure;
+  AcrouletteCommandRecognizedEvent(this.currentFigure,
+      {this.nextFigure = '', this.previousFigure = ''});
 }
 
 class AcrouletteStop extends AcrouletteEvent {}

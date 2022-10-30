@@ -61,7 +61,9 @@ class _HomeState extends State<Home> {
             return true;
           }, builder: (BuildContext context, state) {
             String text;
-            String figure = "";
+            String currentFigure = "";
+            String nextFigure = "";
+            String previousFigure = "";
             switch (state.runtimeType) {
               case AcrouletteInitModel:
                 text = "Loading languagemodel!";
@@ -70,8 +72,11 @@ class _HomeState extends State<Home> {
                 text = "Starting voice recognition!";
                 break;
               case AcrouletteCommandRecognizedState:
-                figure =
-                    (state as AcrouletteCommandRecognizedState).currentFigure;
+                AcrouletteCommandRecognizedState currentState =
+                    (state as AcrouletteCommandRecognizedState);
+                currentFigure = currentState.currentFigure;
+                previousFigure = currentState.previousFigure;
+                nextFigure = currentState.nextFigure;
                 text = "Listening to voice commands!";
                 break;
               case AcrouletteVoiceRecognitionStartedState:
@@ -158,9 +163,41 @@ class _HomeState extends State<Home> {
                   Container(
                     height: 50,
                   ),
-                  if (figure != "")
-                    Text(figure,
-                        textAlign: TextAlign.center, style: displayTextStyle),
+                  if (currentFigure != "")
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Card(
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 16.0),
+                                child: previousFigure == ""
+                                    ? noPosture()
+                                    : Text(
+                                        previousFigure,
+                                        textAlign: TextAlign.center,
+                                        style: displayTextStyle,
+                                      ))),
+                        Container(
+                          width: 10,
+                        ),
+                        postureMiddle(currentFigure),
+                        Container(
+                          width: 10,
+                        ),
+                        Card(
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16.0, horizontal: 16.0),
+                                child: nextFigure == ""
+                                    ? noPosture()
+                                    : Text(
+                                        nextFigure,
+                                        textAlign: TextAlign.center,
+                                        style: displayTextStyle,
+                                      )))
+                      ],
+                    ),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [controls]),
@@ -198,3 +235,24 @@ Widget stateWidgetLabel(Color color, String label) {
 
 TextStyle displayTextStyle =
     const TextStyle(fontSize: 36.0, fontWeight: FontWeight.w400);
+
+TextStyle displayCurrentPostureStyle = const TextStyle(
+    fontSize: 36.0, fontWeight: FontWeight.w400, color: Colors.blue);
+
+Widget postureMiddle(String figure) {
+  return Card(
+      child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+          child: Text(
+            figure,
+            textAlign: TextAlign.center,
+            style: displayCurrentPostureStyle,
+          )));
+}
+
+Widget noPosture() {
+  return const Icon(
+    Icons.warning,
+    size: 36.0,
+  );
+}

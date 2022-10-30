@@ -28,7 +28,10 @@ class AcrouletteRecognizeCommandState extends BaseAcrouletteState {
 
 class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
   final String currentFigure;
-  const AcrouletteCommandRecognizedState(this.currentFigure);
+  final String nextFigure;
+  final String previousFigure;
+  const AcrouletteCommandRecognizedState(this.currentFigure,
+      {this.nextFigure = '', this.previousFigure = ''});
 
   @override
   bool operator ==(Object other) => identical(this, other);

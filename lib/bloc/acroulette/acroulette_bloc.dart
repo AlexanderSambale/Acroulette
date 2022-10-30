@@ -41,8 +41,11 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     });
     on<AcrouletteRecognizeCommand>(
         (event, emit) => {recognizeCommand(event.command)});
-    on<AcrouletteCommandRecognizedEvent>((event, emit) =>
-        {emit(AcrouletteCommandRecognizedState(event.currentFigure))});
+    on<AcrouletteCommandRecognizedEvent>((event, emit) => {
+          emit(AcrouletteCommandRecognizedState(event.currentFigure,
+              previousFigure: event.previousFigure,
+              nextFigure: event.nextFigure))
+        });
     on<AcrouletteStop>((event, emit) {
       voiceRecognitionBloc.add(VoiceRecognitionStop());
       emit(AcrouletteInitialState());
@@ -82,7 +85,10 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
         status == TransitionStatus.current ||
         status == TransitionStatus.previous) {
       String currentFigure = transitionBloc.currentFigure();
-      add(AcrouletteCommandRecognizedEvent(currentFigure));
+      String previousFigure = transitionBloc.previousFigure();
+      String nextFigure = transitionBloc.nextFigure();
+      add(AcrouletteCommandRecognizedEvent(currentFigure,
+          previousFigure: previousFigure, nextFigure: nextFigure));
       _speak(currentFigure);
     }
   }

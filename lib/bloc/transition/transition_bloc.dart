@@ -67,4 +67,16 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
   String currentFigure() {
     return state.figures[state.index];
   }
+
+  String previousFigure() {
+    int previousIndex = state.index - 1;
+    if (previousIndex < 0) return '';
+    return state.figures[previousIndex];
+  }
+
+  String nextFigure() {
+    int nextIndex = state.index + 1;
+    if (nextIndex >= state.figures.length) return '';
+    return state.figures[nextIndex];
+  }
 }
