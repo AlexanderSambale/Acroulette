@@ -138,6 +138,13 @@ class _HomeState extends State<Home> {
                         Icons.skip_next,
                         () => context
                             .read<AcrouletteBloc>()
+                            .add(AcrouletteStop())),
+                    controlButton(
+                        Colors.black,
+                        Colors.black,
+                        Icons.add_circle,
+                        () => context
+                            .read<AcrouletteBloc>()
                             .add(AcrouletteStop()))
                   ], stateWidgetLabel(color, 'STOP'));
                 }
@@ -147,6 +154,9 @@ class _HomeState extends State<Home> {
                 child: Column(children: [
                   Text(text,
                       textAlign: TextAlign.center, style: displayTextStyle),
+                  Container(
+                    height: 50,
+                  ),
                   if (figure != "")
                     Text(figure,
                         textAlign: TextAlign.center, style: displayTextStyle),
