@@ -174,12 +174,12 @@ class PositionAdministrationBloc
     editAcroNode(child, label);
   }
 
-  String? validator(Node child, bool isPosture, String? label) {
+  String? validator(Node parent, bool isPosture, String? label) {
     if (label == null || label.isEmpty) {
       return 'Please enter some text';
     }
-    if (objectbox.getPosition(label) != null) {
-      return 'Category $label already exists!';
+    if (parent.children.containsElementWithLabel(isPosture, label)) {
+      return '${isPosture ? 'Posture' : 'Category'} $label already exists!';
     }
     return null;
   }

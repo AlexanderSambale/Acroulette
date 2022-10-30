@@ -29,30 +29,6 @@ Node createComplexTree() {
   return root;
 }
 
-extension ToManyExtension on ToMany<Node> {
-  bool containsElementWithId(int id) {
-    int length = this.length;
-    for (int i = 0; i < length; i++) {
-      if (this[i].id == id) return true;
-      if (length != this.length) {
-        throw ConcurrentModificationError(this);
-      }
-    }
-    return false;
-  }
-
-  bool containsElementWithLabel(String label) {
-    int length = this.length;
-    for (int i = 0; i < length; i++) {
-      if (this[i].label! == label) return true;
-      if (length != this.length) {
-        throw ConcurrentModificationError(this);
-      }
-    }
-    return false;
-  }
-}
-
 void main() {
   late Store store;
   late ObjectBox objectbox;
@@ -135,7 +111,7 @@ void main() {
             .find()
             .isEmpty,
         true);
-    expect(root.children.containsElementWithLabel(postureName), false);
+    expect(root.children.containsElementWithLabel(true, postureName), false);
     bloc.onSaveClick(root, true, postureName);
     expect(
         objectbox.positionBox
@@ -145,7 +121,7 @@ void main() {
             .isEmpty,
         false);
     root = objectbox.nodeBox.get(root.id)!;
-    expect(root.children.containsElementWithLabel(postureName), true);
+    expect(root.children.containsElementWithLabel(true, postureName), true);
     expect(root.children.length, length + 1);
   });
 
