@@ -5,7 +5,7 @@ class CreateCategory extends StatefulWidget {
     Key? key,
     required this.path,
     required this.onSaveClick,
-    required this.validator,
+    this.validator,
   }) : super(key: key);
 
   final List<String> path;

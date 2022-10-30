@@ -1,4 +1,3 @@
-import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 
 class CreatePosture extends StatefulWidget {
@@ -6,10 +5,12 @@ class CreatePosture extends StatefulWidget {
     Key? key,
     required this.path,
     required this.onSaveClick,
+    this.validator,
   }) : super(key: key);
 
   final List<String> path;
   final void Function(String? newValue) onSaveClick;
+  final String? Function(String? newValue)? validator;
 
   @override
   State<CreatePosture> createState() => _CreatePostureState();
@@ -38,15 +39,7 @@ class _CreatePostureState extends State<CreatePosture> {
                     TextFormField(
                       decoration:
                           const InputDecoration(hintText: "Add position here"),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        if (objectbox.getPosition(value) != null) {
-                          return 'Position $value already exists!';
-                        }
-                        return null;
-                      },
+                      validator: widget.validator,
                       onSaved: (newValue) {
                         widget.onSaveClick(newValue);
                         Navigator.pop(context, true);

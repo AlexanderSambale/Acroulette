@@ -1,3 +1,4 @@
+import 'package:acroulette/components/dialogs/category_dialog/create_category_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/segmented_view.dart';
 import 'package:acroulette/components/posture_tree/posture_category_item.dart';
@@ -70,10 +71,17 @@ class HotReload extends StatelessWidget {
               name: 'Dialog',
               useCases: [
                 WidgetbookUseCase(
-                    name: 'Create Dialog',
+                    name: 'Create Posture Dialog',
                     builder: (context) => CreatePosture(
                           path: const ["root", "parent"],
                           onSaveClick: (posture) => onSaveClick(false, posture),
+                        )),
+                WidgetbookUseCase(
+                    name: 'Create Category Dialog',
+                    builder: (context) => CreateCategory(
+                          path: const ["root", "parent"],
+                          onSaveClick: (category) =>
+                              onSaveClick(false, category),
                         )),
                 WidgetbookUseCase(
                     name: 'Test Dialog',
