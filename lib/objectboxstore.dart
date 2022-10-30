@@ -178,4 +178,6 @@ class ObjectBox {
     }
     return allNodes;
   }
+
+  boolean nodeExists(Node child) {}
 }

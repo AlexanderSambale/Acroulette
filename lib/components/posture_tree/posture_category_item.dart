@@ -1,4 +1,4 @@
-import 'package:acroulette/components/dialogs/category_dialog/create_dategory_dialog.dart';
+import 'package:acroulette/components/dialogs/category_dialog/create_category_dialog.dart';
 import 'package:acroulette/components/dialogs/category_dialog/delete_category_dialog.dart';
 import 'package:acroulette/components/dialogs/category_dialog/edit_category_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';

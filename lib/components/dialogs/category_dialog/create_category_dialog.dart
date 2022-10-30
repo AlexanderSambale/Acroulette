@@ -1,4 +1,3 @@
-import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 
 class CreateCategory extends StatefulWidget {
@@ -6,10 +5,12 @@ class CreateCategory extends StatefulWidget {
     Key? key,
     required this.path,
     required this.onSaveClick,
+    required this.validator,
   }) : super(key: key);
 
   final List<String> path;
   final void Function(String? newValue) onSaveClick;
+  final String? Function(String? newValue)? validator;
 
   @override
   State<CreateCategory> createState() => _CreateCategoryState();
@@ -38,15 +39,7 @@ class _CreateCategoryState extends State<CreateCategory> {
                     TextFormField(
                       decoration:
                           const InputDecoration(hintText: "Add category here"),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        if (objectbox.getPosition(value) != null) {
-                          return 'Category $value already exists!';
-                        }
-                        return null;
-                      },
+                      validator: widget.validator,
                       onSaved: (newValue) {
                         widget.onSaveClick(newValue);
                         Navigator.pop(context, true);
