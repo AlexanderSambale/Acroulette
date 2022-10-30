@@ -19,6 +19,7 @@ class PostureCategoryItem extends StatelessWidget {
     required this.categoryLabel,
     required this.path,
     required this.listAllNodesRecursively,
+    this.validator,
     this.enabled = true,
   });
 
@@ -28,6 +29,7 @@ class PostureCategoryItem extends StatelessWidget {
   final String categoryLabel;
   final void Function(bool) onChanged;
   final void Function(bool, String?) onSaveClick;
+  final String? Function(bool, String?)? validator;
   final void Function(String?) onEditClick;
   final void Function() onDeleteClick;
   final void Function() toggleExpand;
@@ -80,7 +82,11 @@ class PostureCategoryItem extends StatelessWidget {
                       return CreateCategory(
                           path: path,
                           onSaveClick: (category) =>
-                              onSaveClick(false, category));
+                              onSaveClick(false, category),
+                          validator: (category) {
+                            if (validator == null) return null;
+                            return validator!(false, category);
+                          });
                     }).then((exit) {
                   if (exit) return;
                 });

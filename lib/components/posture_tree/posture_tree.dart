@@ -14,13 +14,15 @@ class PostureTree extends StatelessWidget {
       required this.onEditClick,
       required this.onDeleteClick,
       required this.path,
-      required this.listAllNodesRecursively});
+      required this.listAllNodesRecursively,
+      this.validator});
 
   final Node tree;
   final void Function(bool, Node) onSwitched;
   final void Function(Node) toggleExpand;
   final void Function(Node, bool, String?) onSaveClick;
   final void Function(Node, bool, String?) onEditClick;
+  final String? Function(Node, bool, String?)? validator;
   final void Function(Node) onDeleteClick;
   final List<Pair> Function(Node) listAllNodesRecursively;
   final List<String> path;
@@ -61,21 +63,25 @@ class PostureTree extends StatelessWidget {
                   enabled: tree.value.target!.isEnabled,
                   path: newPath,
                   listAllNodesRecursively: () => listAllNodesRecursively(tree),
+                  validator: (bool isPosture, String? value) {
+                    if (validator == null) return null;
+                    return validator!(tree, isPosture, value);
+                  },
                 );
               }
               if (tree.isExpanded) {
                 return Container(
                     margin: const EdgeInsets.only(left: 24),
                     child: PostureTree(
-                      tree: tree.children.elementAt(index - 1),
-                      onSwitched: onSwitched,
-                      toggleExpand: toggleExpand,
-                      onEditClick: onEditClick,
-                      onDeleteClick: onDeleteClick,
-                      onSaveClick: onSaveClick,
-                      path: newPath,
-                      listAllNodesRecursively: listAllNodesRecursively,
-                    ));
+                        tree: tree.children.elementAt(index - 1),
+                        onSwitched: onSwitched,
+                        toggleExpand: toggleExpand,
+                        onEditClick: onEditClick,
+                        onDeleteClick: onDeleteClick,
+                        onSaveClick: onSaveClick,
+                        path: newPath,
+                        listAllNodesRecursively: listAllNodesRecursively,
+                        validator: validator));
               }
               return Container();
             }));

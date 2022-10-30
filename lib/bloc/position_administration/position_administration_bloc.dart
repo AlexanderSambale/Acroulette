@@ -173,4 +173,14 @@ class PositionAdministrationBloc
     if (label == null) return;
     editAcroNode(child, label);
   }
+
+  String? validator(Node child, bool isPosture, String? label) {
+    if (label == null || label.isEmpty) {
+      return 'Please enter some text';
+    }
+    if (objectbox.getPosition(label) != null) {
+      return 'Category $label already exists!';
+    }
+    return null;
+  }
 }

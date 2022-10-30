@@ -30,16 +30,16 @@ class _PositionsState extends State<Positions> {
                     PositionAdministrationBloc positionAdministrationBloc =
                         context.read<PositionAdministrationBloc>();
                     return PostureTree(
-                      tree: state.tree,
-                      onSwitched: positionAdministrationBloc.onSwitch,
-                      toggleExpand: positionAdministrationBloc.toggleExpand,
-                      onDeleteClick: positionAdministrationBloc.onDeleteClick,
-                      onEditClick: positionAdministrationBloc.onEditClick,
-                      onSaveClick: positionAdministrationBloc.onSaveClick,
-                      path: const [],
-                      listAllNodesRecursively:
-                          positionAdministrationBloc.listAllNodesRecursively,
-                    );
+                        tree: state.tree,
+                        onSwitched: positionAdministrationBloc.onSwitch,
+                        toggleExpand: positionAdministrationBloc.toggleExpand,
+                        onDeleteClick: positionAdministrationBloc.onDeleteClick,
+                        onEditClick: positionAdministrationBloc.onEditClick,
+                        onSaveClick: positionAdministrationBloc.onSaveClick,
+                        path: const [],
+                        listAllNodesRecursively:
+                            positionAdministrationBloc.listAllNodesRecursively,
+                        validator: positionAdministrationBloc.validator);
                   }),
             )
           ],
