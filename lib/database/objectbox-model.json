@@ -38,30 +38,6 @@
       "relations": []
     },
     {
-      "id": "2:193142498004548856",
-      "lastPropertyId": "3:6015013169389664181",
-      "name": "Flow",
-      "properties": [
-        {
-          "id": "1:2447411586676293608",
-          "name": "id",
-          "type": 6,
-          "flags": 1
-        },
-        {
-          "id": "2:2166612337000267658",
-          "name": "name",
-          "type": 9
-        },
-        {
-          "id": "3:6015013169389664181",
-          "name": "positions",
-          "type": 30
-        }
-      ],
-      "relations": []
-    },
-    {
       "id": "3:6380265456224756441",
       "lastPropertyId": "4:3134229336453548263",
       "name": "Node",
@@ -141,17 +117,52 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "6:2188687721460847867",
+      "lastPropertyId": "4:6128530503942591694",
+      "name": "FlowNode",
+      "properties": [
+        {
+          "id": "1:5967329143842180517",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2957947042404742976",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:3137277518162687758",
+          "name": "positions",
+          "type": 30
+        },
+        {
+          "id": "4:6128530503942591694",
+          "name": "isExpanded",
+          "type": 1
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "5:2494723213517198311",
+  "lastEntityId": "6:2188687721460847867",
   "lastIndexId": "1:1394569529412347974",
   "lastRelationId": "1:9076478931846036150",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    193142498004548856
+  ],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    2447411586676293608,
+    2166612337000267658,
+    6015013169389664181
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

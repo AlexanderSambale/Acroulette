@@ -98,7 +98,7 @@ class PostureCategoryItem extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.edit),
-              tooltip: 'Edit position',
+              tooltip: 'Edit category name',
               onPressed: () {
                 showDialog(
                     context: context,
@@ -118,7 +118,7 @@ class PostureCategoryItem extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete),
-              tooltip: 'Delete position',
+              tooltip: 'Delete category',
               onPressed: () {
                 showDialog(
                     context: context,
