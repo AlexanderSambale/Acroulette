@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
+import 'package:acroulette/constants/model.dart';
+import 'package:acroulette/constants/validator.dart';
 import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
@@ -28,6 +30,20 @@ Node createComplexTree() {
     createSimpleTree(rootName: 'root3')
   ], AcroNode(true, 'root'));
   return root;
+}
+
+Node setupComplexTree(ObjectBox objectbox) {
+  Node root = objectbox.findRoot();
+  Node complexTree = createComplexTree();
+  root.children.add(complexTree);
+  List<Node> nodes = objectbox.getAllChildrenRecursive(complexTree)
+    ..add(complexTree)
+    ..add(root);
+  List<AcroNode> acroNodes =
+      nodes.map<AcroNode>((element) => element.value.target!).toList();
+  objectbox.putManyAcroNodes(acroNodes);
+  objectbox.putManyNodes(nodes);
+  return complexTree;
 }
 
 void main() {
@@ -78,16 +94,7 @@ void main() {
       PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
       int numberOfNodesBefore = objectbox.nodeBox.count();
       int numberOfAcroNodesBefore = objectbox.acroNodeBox.count();
-      Node root = objectbox.findRoot();
-      Node complexTree = createComplexTree();
-      root.children.add(complexTree);
-      List<Node> nodes = objectbox.getAllChildrenRecursive(complexTree)
-        ..add(complexTree)
-        ..add(root);
-      List<AcroNode> acroNodes =
-          nodes.map<AcroNode>((element) => element.value.target!).toList();
-      objectbox.putManyAcroNodes(acroNodes);
-      objectbox.putManyNodes(nodes);
+      Node complexTree = setupComplexTree(objectbox);
       int numberOfNodesAfterAdding = objectbox.nodeBox.count();
       int numberOfAcroNodesAfterAdding = objectbox.acroNodeBox.count();
       expect(numberOfNodesBefore, isNot(equals(numberOfNodesAfterAdding)));
@@ -147,5 +154,28 @@ void main() {
             .isEmpty,
         false);
     expect(child.label, testLabel);
+  });
+
+  group('validate', () {
+    test('validate posture', () async {
+      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+      Node last = objectbox.nodeBox.getAll().last;
+      Node parent = objectbox.findParent(last);
+      String testLabel = "testPosture";
+      expect(bloc.validator(parent, true, ''), enterText);
+      expect(bloc.validator(parent, true, last.label),
+          bloc.existsText(postureLabel, last.label!));
+      expect(bloc.validator(parent, true, testLabel), null);
+    });
+
+    test('validate category', () async {
+      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+      Node complexTree = setupComplexTree(objectbox);
+      String testLabel = "testCategory";
+      expect(bloc.validator(complexTree, false, ''), enterText);
+      expect(bloc.validator(complexTree, false, complexTree.label),
+          bloc.existsText(categoryLabel, complexTree.label!));
+      expect(bloc.validator(complexTree, false, testLabel), null);
+    });
   });
 }

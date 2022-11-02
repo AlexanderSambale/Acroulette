@@ -1,3 +1,4 @@
+import 'package:acroulette/constants/validator.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
@@ -177,7 +178,7 @@ class PositionAdministrationBloc
 
   String? validatorPosture(Node parent, String label) {
     if (parent.children.containsElementWithLabel(true, label)) {
-      return 'Posture $label already exists!';
+      return existsText('Posture', label);
     }
     return null;
   }
@@ -187,17 +188,21 @@ class PositionAdministrationBloc
         .findParent(category)
         .children
         .containsElementWithLabel(false, label)) {
-      return 'Category $label already exists!';
+      return existsText('Category', label);
     }
     return null;
   }
 
   String? validator(Node category, bool isPosture, String? label) {
     if (label == null || label.isEmpty) {
-      return 'Please enter some text';
+      return enterText;
     }
     return isPosture
         ? validatorPosture(category, label)
         : validatorCategory(category, label);
+  }
+
+  String existsText(String label1, String label2) {
+    return '$label1 $label2 already exists!';
   }
 }
