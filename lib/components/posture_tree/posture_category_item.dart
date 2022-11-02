@@ -132,7 +132,7 @@ class PostureCategoryItem extends StatelessWidget {
                     builder: (BuildContext context) {
                       return DeleteCategory(
                         onDeleteClick: onDeleteClick,
-                        categoryLabel: path.last,
+                        path: path,
                         elementsToRemove: listAllNodesRecursively(),
                       );
                     }).then((exit) {

@@ -1,3 +1,4 @@
+import 'package:acroulette/components/dialogs/posture_dialog/delete_posture_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/edit_posture_dialog.dart';
 import 'package:acroulette/components/icons/icons.dart';
 import 'package:flutter/material.dart';
@@ -67,10 +68,21 @@ class PostureListItem extends StatelessWidget {
                       : theme.toggleButtonsTheme.disabledColor,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete),
-                  tooltip: 'Delete position',
-                  onPressed: onDeleteClick,
-                )
+                    icon: const Icon(Icons.delete),
+                    tooltip: 'Delete position',
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return DeletePosture(
+                              onDeleteClick: onDeleteClick,
+                              path: path,
+                            );
+                          }).then((exit) {
+                        if (exit) return;
+                      });
+                    })
               ],
             )));
   }
