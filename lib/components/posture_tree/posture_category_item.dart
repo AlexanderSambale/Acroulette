@@ -103,7 +103,13 @@ class PostureCategoryItem extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return EditCategory(path: path, onEditClick: onEditClick);
+                      return EditCategory(
+                          path: path,
+                          onEditClick: onEditClick,
+                          validator: (category) {
+                            if (validator == null) return null;
+                            return validator!(false, category);
+                          });
                     }).then((exit) {
                   if (exit) return;
                 });

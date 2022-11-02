@@ -1,4 +1,3 @@
-import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 
 class EditPosture extends StatefulWidget {
@@ -6,10 +5,12 @@ class EditPosture extends StatefulWidget {
     Key? key,
     required this.path,
     required this.onEditClick,
+    this.validator,
   }) : super(key: key);
 
   final List<String> path;
   final void Function(String? newValue) onEditClick;
+  final String? Function(String? newValue)? validator;
 
   @override
   State<EditPosture> createState() => _EditPostureState();
@@ -41,15 +42,7 @@ class _EditPostureState extends State<EditPosture> {
                   decoration:
                       const InputDecoration(hintText: "Rename position"),
                   initialValue: widget.path.last,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    if (objectbox.getPosition(value) != null) {
-                      return 'Position $value already exists!';
-                    }
-                    return null;
-                  },
+                  validator: widget.validator,
                   onSaved: (newValue) {
                     widget.onEditClick(newValue);
                     Navigator.pop(context, true);

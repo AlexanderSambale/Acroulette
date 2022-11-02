@@ -175,13 +175,29 @@ class PositionAdministrationBloc
     editAcroNode(child, label);
   }
 
-  String? validator(Node parent, bool isPosture, String? label) {
+  String? validatorPosture(Node parent, String label) {
+    if (parent.children.containsElementWithLabel(true, label)) {
+      return 'Posture $label already exists!';
+    }
+    return null;
+  }
+
+  String? validatorCategory(Node category, String label) {
+    if (objectbox
+        .findParent(category)
+        .children
+        .containsElementWithLabel(false, label)) {
+      return 'Category $label already exists!';
+    }
+    return null;
+  }
+
+  String? validator(Node category, bool isPosture, String? label) {
     if (label == null || label.isEmpty) {
       return 'Please enter some text';
     }
-    if (parent.children.containsElementWithLabel(isPosture, label)) {
-      return '${isPosture ? 'Posture' : 'Category'} $label already exists!';
-    }
-    return null;
+    return isPosture
+        ? validatorPosture(category, label)
+        : validatorCategory(category, label);
   }
 }

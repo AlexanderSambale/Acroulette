@@ -11,6 +11,7 @@ class PostureListItem extends StatelessWidget {
       required this.onEditClick,
       required this.onDeleteClick,
       required this.path,
+      this.validator,
       this.enabled = true});
 
   final bool isSwitched;
@@ -20,6 +21,7 @@ class PostureListItem extends StatelessWidget {
   final void Function(String?) onEditClick;
   final void Function() onDeleteClick;
   final List<String> path;
+  final String? Function(bool, String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,12 @@ class PostureListItem extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return EditPosture(
-                              path: path, onEditClick: onEditClick);
+                              path: path,
+                              onEditClick: onEditClick,
+                              validator: (posture) {
+                                if (validator == null) return null;
+                                return validator!(true, posture);
+                              });
                         }).then((exit) {
                       if (exit) return;
                     });
