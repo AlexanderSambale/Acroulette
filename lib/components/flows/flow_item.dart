@@ -1,5 +1,5 @@
+import 'package:acroulette/components/dialogs/flow_dialog/show_edit_flow_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
-import 'package:acroulette/components/dialogs/posture_dialog/edit_posture_dialog.dart';
 import 'package:acroulette/components/icons/icons.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +12,7 @@ class FlowItem extends StatelessWidget {
     required this.onSavePostureClick,
     required this.toggleExpand,
     required this.flowLabel,
+    this.validator,
   });
 
   final bool isExpanded;
@@ -20,6 +21,7 @@ class FlowItem extends StatelessWidget {
   final void Function(String?) onEditClick;
   final dynamic Function(BuildContext context) showDeleteFlowDialog;
   final void Function() toggleExpand;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -60,16 +62,8 @@ class FlowItem extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.edit),
               tooltip: 'Edit flow name',
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return EditPosture(
-                          path: [flowLabel], onEditClick: onEditClick);
-                    }).then((exit) {
-                  if (exit) return;
-                });
-              },
+              onPressed: () => showEditFlowDialog(
+                  context, flowLabel, onEditClick, validator),
             ),
             IconButton(
               icon: const Icon(Icons.delete),

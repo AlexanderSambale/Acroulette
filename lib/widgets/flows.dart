@@ -1,4 +1,5 @@
 import 'package:acroulette/bloc/flow_administration/flow_administration_bloc.dart';
+import 'package:acroulette/components/dialogs/flow_dialog/create_flow_dialog.dart';
 import 'package:acroulette/components/flows/flow_view.dart';
 import 'package:acroulette/main.dart';
 import 'package:acroulette/models/flow_node.dart';
@@ -31,19 +32,30 @@ class Flows extends StatelessWidget {
                           deletePosture: bloc.deletePosture,
                           deleteFlow: bloc.deleteFlow,
                           onEditClick: bloc.onEditClick,
-                          // validator: bloc.validator,
+                          onEditFlowClick: bloc.onEditFlowClick,
+                          validator: bloc.validatorFlow,
                           onSavePostureClick: bloc.onSavePostureClick,
                         );
                       }),
                 ),
                 Align(
                     alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 100,
+                    child: SizedBox(
                       child: ElevatedButton(
-                        child: const Icon(Icons.add_circle_rounded),
-                        onPressed: () {},
-                      ),
+                          child: const Icon(Icons.add_circle_rounded),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CreateFlow(
+                                    onSaveClick: bloc.onSaveFlowClick,
+                                    validator: bloc.validatorFlow,
+                                  );
+                                }).then((exit) {
+                              if (exit) return;
+                            });
+                          }),
                     ))
               ]);
             }));

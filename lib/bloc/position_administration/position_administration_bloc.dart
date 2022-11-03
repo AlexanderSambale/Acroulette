@@ -150,7 +150,7 @@ class PositionAdministrationBloc
   }
 
   void onSaveClick(Node parent, bool isPosture, String? label) {
-    if (label == null) return;
+    if (label == null || label.isEmpty) return;
     if (isPosture) {
       createPosture(parent, label);
       return;
@@ -159,7 +159,7 @@ class PositionAdministrationBloc
   }
 
   void onEditClick(Node child, bool isPosture, String? label) {
-    if (label == null) return;
+    if (label == null || label.isEmpty) return;
     editAcroNode(child, label);
   }
 

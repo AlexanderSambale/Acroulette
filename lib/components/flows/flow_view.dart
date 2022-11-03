@@ -13,15 +13,19 @@ class FlowView extends StatelessWidget {
       required this.toggleExpand,
       required this.onSavePostureClick,
       required this.onEditClick,
+      required this.onEditFlowClick,
       required this.deletePosture,
-      required this.deleteFlow});
+      required this.deleteFlow,
+      this.validator});
 
   final FlowNode flow;
   final void Function(FlowNode) toggleExpand;
   final void Function(FlowNode flowNode, String? label) onSavePostureClick;
   final void Function(FlowNode, int, String?) onEditClick;
+  final void Function(FlowNode, String?) onEditFlowClick;
   final void Function(FlowNode, int) deletePosture;
   final void Function(FlowNode) deleteFlow;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +37,7 @@ class FlowView extends StatelessWidget {
               if (index == 0) {
                 return FlowItem(
                   flowLabel: flow.name,
-                  onEditClick: (flowName) => onEditClick(flow, 0, flowName),
+                  onEditClick: (flowName) => onEditFlowClick(flow, flowName),
                   onSavePostureClick: (position) =>
                       onSavePostureClick(flow, position),
                   toggleExpand: () => toggleExpand(flow),
@@ -41,6 +45,7 @@ class FlowView extends StatelessWidget {
                   showDeleteFlowDialog: (BuildContext context) {
                     showDeleteFlowDialog(context, flow, () => deleteFlow(flow));
                   },
+                  validator: validator,
                 );
               }
               if (flow.isExpanded) {

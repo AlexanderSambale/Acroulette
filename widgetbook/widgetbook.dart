@@ -206,6 +206,7 @@ class HotReload extends StatelessWidget {
                           deletePosture: (p0, p1) {},
                           deleteFlow: (p0) {},
                           onEditClick: (p0, p1, p2) {},
+                          onEditFlowClick: (p0, p1) {},
                           flow: FlowNode(
                               context.knobs.text(
                                   label: 'flow name', initialValue: 'flow1'),

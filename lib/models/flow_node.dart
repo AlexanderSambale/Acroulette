@@ -4,7 +4,7 @@ import 'package:objectbox/objectbox.dart';
 class FlowNode {
   int id = 0;
 
-  final String name;
+  String name;
   final List<String> positions;
   bool isExpanded;
 

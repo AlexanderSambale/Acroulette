@@ -42,6 +42,13 @@ class FlowAdministrationBloc
     add(FlowDBIsIdleEvent());
   }
 
+  void editFlow(FlowNode flowNode, String label) {
+    add(FlowBDStartChangeEvent());
+    flowNode.name = label;
+    objectbox.putFlowNode(flowNode);
+    add(FlowDBIsIdleEvent());
+  }
+
   void deletePosture(FlowNode flowNode, int index) {
     add(FlowBDStartChangeEvent());
     flowNode.positions.removeAt(index);
@@ -62,21 +69,27 @@ class FlowAdministrationBloc
   }
 
   void onSavePostureClick(FlowNode flowNode, String? label) {
-    if (label == null) return;
+    if (label == null || label.isEmpty) return;
     createPosture(flowNode, label);
   }
 
   void onSaveFlowClick(String? label) {
-    if (label == null) return;
+    if (label == null || label.isEmpty) return;
     createFlow(label);
   }
 
   void onEditClick(FlowNode flowNode, int index, String? label) {
-    if (label == null) return;
+    if (label == null || label.isEmpty) return;
     editPosture(flowNode, index, label);
   }
 
-  String? validatorFlow(String label) {
+  void onEditFlowClick(FlowNode flowNode, String? label) {
+    if (label == null || label.isEmpty) return;
+    editFlow(flowNode, label);
+  }
+
+  String? validatorFlow(String? label) {
+    if (label == null || label.isEmpty) return enterText;
     if (objectbox.flowExists(label)) {
       return existsText('Flow', label);
     }
