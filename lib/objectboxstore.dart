@@ -169,7 +169,7 @@ class ObjectBox {
     QueryBuilder<Node> queryBuilder = nodeBox.query();
     queryBuilder.linkMany(Node_.children, Node_.id.equals(child.id));
     Node? parent = queryBuilder.build().findUnique();
-    if (parent == null) throw Exception("should not be null!");
+    if (parent == null) return findRoot();
     return parent;
   }
 
