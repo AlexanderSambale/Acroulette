@@ -1,4 +1,5 @@
 import 'package:acroulette/components/dialogs/flow_dialog/show_delete_flow_dialog.dart';
+import 'package:acroulette/components/dialogs/posture_dialog/show_delete_posture_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/show_edit_posture_dialog.dart';
 import 'package:acroulette/components/flows/flow_item.dart';
 import 'package:acroulette/components/flows/flow_position_item.dart';
@@ -43,16 +44,21 @@ class FlowView extends StatelessWidget {
                 );
               }
               if (flow.isExpanded) {
+                String positionLabel = flow.positions.elementAt(index - 1);
                 return Container(
                   margin: const EdgeInsets.only(left: 24),
                   child: FlowPositionItem(
-                    positionLabel: flow.positions.elementAt(index - 1),
+                    positionLabel: positionLabel,
                     showEditPositionDialog: (context) => showEditPositionDialog(
                         context,
-                        [flow.name],
+                        [flow.name, positionLabel],
                         (positionLabel) =>
                             onEditClick(flow, index - 1, positionLabel)),
-                    onDeleteClick: () => deletePosture(flow, index - 1),
+                    showDeletePositionDialog: (context) =>
+                        showDeletePositionDialog(
+                            context,
+                            [flow.name, positionLabel],
+                            () => deletePosture(flow, index - 1)),
                   ),
                 );
               }

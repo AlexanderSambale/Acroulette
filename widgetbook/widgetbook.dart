@@ -34,6 +34,10 @@ void showEditPositionDialog(BuildContext context) {
   return;
 }
 
+void showDeletePositionDialog(BuildContext context) {
+  return;
+}
+
 class HotReload extends StatelessWidget {
   const HotReload({Key? key}) : super(key: key);
 
@@ -120,7 +124,7 @@ class HotReload extends StatelessWidget {
                               initialValue: 'Posture1',
                             ),
                             onChanged: onSwitch,
-                            onDeleteClick: onDeleteClick,
+                            showDeletePositionDialog: showDeletePositionDialog,
                             onEditClick: onEditClick,
                             path: const [],
                             enabled: context.knobs
@@ -240,7 +244,7 @@ class HotReload extends StatelessWidget {
                           label: 'Label',
                           initialValue: 'Position1',
                         ),
-                        onDeleteClick: onDeleteClick,
+                        showDeletePositionDialog: showDeletePositionDialog,
                         showEditPositionDialog: showEditPositionDialog)),
               ],
             )

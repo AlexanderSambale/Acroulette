@@ -6,11 +6,11 @@ class FlowPositionItem extends StatelessWidget {
       {super.key,
       required this.positionLabel,
       required this.showEditPositionDialog,
-      required this.onDeleteClick});
+      required this.showDeletePositionDialog});
 
   final String positionLabel;
   final void Function(BuildContext) showEditPositionDialog;
-  final void Function() onDeleteClick;
+  final void Function(BuildContext) showDeletePositionDialog;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class FlowPositionItem extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.delete),
                   tooltip: 'Delete position',
-                  onPressed: onDeleteClick,
+                  onPressed: () => showDeletePositionDialog(context),
                 )
               ],
             )));

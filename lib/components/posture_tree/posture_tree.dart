@@ -1,3 +1,4 @@
+import 'package:acroulette/components/dialogs/posture_dialog/show_delete_posture_dialog.dart';
 import 'package:acroulette/components/posture_tree/posture_category_item.dart';
 import 'package:acroulette/components/posture_tree/posture_list_item.dart';
 import 'package:acroulette/models/node.dart';
@@ -39,7 +40,11 @@ class PostureTree extends StatelessWidget {
               postureLabel: tree.label!,
               onChanged: (isOn) => onSwitched(isOn, tree),
               onEditClick: (String? value) => onEditClick(tree, false, value),
-              onDeleteClick: () => onDeleteClick(tree),
+              showDeletePositionDialog: (context) => showDeletePositionDialog(
+                    context,
+                    newPath,
+                    () => onDeleteClick(tree),
+                  ),
               path: newPath,
               enabled: tree.value.target!.isEnabled));
     }

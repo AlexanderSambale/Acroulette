@@ -1,4 +1,3 @@
-import 'package:acroulette/components/dialogs/posture_dialog/delete_posture_dialog.dart';
 import 'package:acroulette/components/dialogs/posture_dialog/edit_posture_dialog.dart';
 import 'package:acroulette/components/icons/icons.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,7 @@ class PostureListItem extends StatelessWidget {
       required this.postureLabel,
       required this.onChanged,
       required this.onEditClick,
-      required this.onDeleteClick,
+      required this.showDeletePositionDialog,
       required this.path,
       this.validator,
       this.enabled = true});
@@ -20,7 +19,7 @@ class PostureListItem extends StatelessWidget {
   final String postureLabel;
   final void Function(bool) onChanged;
   final void Function(String?) onEditClick;
-  final void Function() onDeleteClick;
+  final void Function(BuildContext) showDeletePositionDialog;
   final List<String> path;
   final String? Function(bool, String?)? validator;
 
@@ -68,21 +67,10 @@ class PostureListItem extends StatelessWidget {
                       : theme.toggleButtonsTheme.disabledColor,
                 ),
                 IconButton(
-                    icon: const Icon(Icons.delete),
-                    tooltip: 'Delete position',
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return DeletePosture(
-                              onDeleteClick: onDeleteClick,
-                              path: path,
-                            );
-                          }).then((exit) {
-                        if (exit) return;
-                      });
-                    })
+                  icon: const Icon(Icons.delete),
+                  tooltip: 'Delete position',
+                  onPressed: () => showDeletePositionDialog(context),
+                )
               ],
             )));
   }
