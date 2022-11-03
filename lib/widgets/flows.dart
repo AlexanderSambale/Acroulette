@@ -19,22 +19,33 @@ class Flows extends StatelessWidget {
               List<FlowNode> flows = objectbox.flowNodeBox.getAll();
               FlowAdministrationBloc bloc =
                   context.read<FlowAdministrationBloc>();
-              return Card(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: flows.length,
-                    itemBuilder: (context, index) {
-                      return FlowView(
-                        flow: flows[index],
-                        toggleExpand: bloc.toggleExpand,
-                        deletePosture: bloc.deletePosture,
-                        deleteFlow: bloc.deleteFlow,
-                        onEditClick: bloc.onEditClick,
-                        // validator: bloc.validator,
-                        onSavePostureClick: bloc.onSavePostureClick,
-                      );
-                    }),
-              );
+              return Stack(children: [
+                Card(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: flows.length,
+                      itemBuilder: (context, index) {
+                        return FlowView(
+                          flow: flows[index],
+                          toggleExpand: bloc.toggleExpand,
+                          deletePosture: bloc.deletePosture,
+                          deleteFlow: bloc.deleteFlow,
+                          onEditClick: bloc.onEditClick,
+                          // validator: bloc.validator,
+                          onSavePostureClick: bloc.onSavePostureClick,
+                        );
+                      }),
+                ),
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 100,
+                      child: ElevatedButton(
+                        child: const Icon(Icons.add_circle_rounded),
+                        onPressed: () {},
+                      ),
+                    ))
+              ]);
             }));
   }
 }
