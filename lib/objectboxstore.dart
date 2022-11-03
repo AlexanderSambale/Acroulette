@@ -1,5 +1,7 @@
+import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/nodes.dart';
 import 'package:acroulette/database/objectbox.g.dart';
+import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
@@ -13,12 +15,14 @@ class ObjectBox {
   late final Box<Position> positionBox;
   late final Box<Node> nodeBox;
   late final Box<AcroNode> acroNodeBox;
+  late final Box<FlowNode> flowNodeBox;
 
   ObjectBox._create(this.store) {
     settingsBox = Box<SettingsPair>(store);
     positionBox = Box<Position>(store);
     nodeBox = Box<Node>(store);
     acroNodeBox = Box<AcroNode>(store);
+    flowNodeBox = Box<FlowNode>(store);
 
     if (nodeBox.isEmpty()) {
       List<Node> children = [];
@@ -43,25 +47,24 @@ class ObjectBox {
       AcroNode acroNodeRoot = AcroNode(true, basicPostures, predefined: true);
       acroNodeBox.put(acroNodeRoot);
       nodeBox.put(Node.createCategory(children, acroNodeRoot));
+      regeneratePositionsList();
     }
 
-    if (positionBox.isEmpty()) {
-      List<Position> figures = [
-        "bird",
-        "star",
-        "stradle bat",
-        "triangle",
-        "backbird",
-        "reversebird",
-        "throne",
-        "chair",
-        "folded leaf",
-        "side star",
-        "vishnus couch",
-        "high flying whale"
-      ].map<Position>((figure) => Position(figure)).toList();
-      positionBox.putMany(figures);
+    if (flowNodeBox.isEmpty()) {
+      FlowNode flowNode = FlowNode('ninja star',
+          ['sidestar', 'reverse bird', 'sidestar', 'straddle bat']);
+      int flowNodeId = flowNodeBox.put(flowNode);
+      putSettingsPairValueByKey(flowIndex, flowNodeId.toString());
     }
+  }
+
+  void regeneratePositionsList() {
+    List<Node> nodes = nodeBox.getAll();
+    Set<String> setOfPositions = {};
+    setOfPositions.addAll(
+        nodes.where((element) => element.isLeaf).map<String>((e) => e.label!));
+    positionBox.removeAll();
+    positionBox.putMany(setOfPositions.map((e) => Position(e)).toList());
   }
 
   /// Create an instance of ObjectBox to use throughout the app.
@@ -127,6 +130,14 @@ class ObjectBox {
     nodeBox.removeMany(nodes.map<int>((element) => element.id).toList());
   }
 
+  void putFlowNode(FlowNode flow) {
+    flowNodeBox.put(flow);
+  }
+
+  void removeFlowNode(FlowNode flow) {
+    flowNodeBox.remove(flow.id);
+  }
+
   String? getPosition(String positionName) {
     Query<Position> keyQuery =
         positionBox.query(Position_.name.equals(positionName)).build();
@@ -136,15 +147,6 @@ class ObjectBox {
     } else {
       return keyQueryFirstValue.name;
     }
-  }
-
-  Stream<Node> watchNodeBox() {
-    final nodeBoxQuery = nodeBox.query();
-    // Build and watch the query,
-    // set triggerImmediately to emit the query immediately on listen.
-    return nodeBoxQuery
-        .watch(triggerImmediately: true)
-        .map((event) => event.find().first);
   }
 
   Node findRoot() {
@@ -177,5 +179,11 @@ class ObjectBox {
       allNodes.addAll(getAllChildrenRecursive(childOfChild));
     }
     return allNodes;
+  }
+
+  bool flowExists(String label) {
+    FlowNode? first =
+        flowNodeBox.query(FlowNode_.name.equals(label)).build().findFirst();
+    return first == null ? false : true;
   }
 }

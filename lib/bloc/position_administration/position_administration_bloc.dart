@@ -3,7 +3,6 @@ import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
-import 'package:acroulette/models/position.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -15,13 +14,8 @@ class PositionAdministrationBloc
     extends Bloc<PositionAdministrationEvent, BasePositionAdministrationState> {
   PositionAdministrationBloc(this.objectbox)
       : super(PositionAdministrationInitialState(objectbox.findRoot())) {
-    tree = state.tree;
-
     on<PositionsBDStartChangeEvent>((event, emit) {
-      emit(PositionAdministrationState(tree));
-    });
-    on<PositionsDBIsChangingEvent>((event, emit) {
-      emit(PositionAdministrationState(tree));
+      emit(PositionAdministrationState(state.tree));
     });
     on<PositionsDBIsIdleEvent>((event, emit) {
       emit(PositionAdministrationInitialState.withTree(objectbox.findRoot()));
@@ -29,7 +23,6 @@ class PositionAdministrationBloc
   }
 
   late ObjectBox objectbox;
-  late Node tree;
 
   /// Depending on [isSwitched] we enable or disable recursive [acroNodes] from
   /// this [tree].
@@ -76,13 +69,7 @@ class PositionAdministrationBloc
   }
 
   void regeneratePositionsList() {
-    List<Node> nodes = objectbox.nodeBox.getAll();
-    Set<String> setOfPositions = {};
-    setOfPositions.addAll(
-        nodes.where((element) => element.isLeaf).map<String>((e) => e.label!));
-    objectbox.positionBox.removeAll();
-    objectbox.positionBox
-        .putMany(setOfPositions.map((e) => Position(e)).toList());
+    objectbox.regeneratePositionsList();
   }
 
   void createPosture(Node parent, String posture) {
@@ -200,9 +187,5 @@ class PositionAdministrationBloc
     return isPosture
         ? validatorPosture(category, label)
         : validatorCategory(category, label);
-  }
-
-  String existsText(String label1, String label2) {
-    return '$label1 $label2 already exists!';
   }
 }

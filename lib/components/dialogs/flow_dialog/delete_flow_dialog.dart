@@ -42,7 +42,7 @@ class DeleteFlow extends StatelessWidget {
                         Container(
                           width: 10,
                         ),
-                        Text(elementsToRemove[index])
+                        Text(elementsToRemove[index - 1])
                       ],
                     ),
                   );

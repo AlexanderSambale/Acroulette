@@ -164,7 +164,7 @@ void main() {
       String testLabel = "testPosture";
       expect(bloc.validator(parent, true, ''), enterText);
       expect(bloc.validator(parent, true, last.label),
-          bloc.existsText(postureLabel, last.label!));
+          existsText(postureLabel, last.label!));
       expect(bloc.validator(parent, true, testLabel), null);
     });
 
@@ -174,7 +174,7 @@ void main() {
       String testLabel = "testCategory";
       expect(bloc.validator(complexTree, false, ''), enterText);
       expect(bloc.validator(complexTree, false, complexTree.label),
-          bloc.existsText(categoryLabel, complexTree.label!));
+          existsText(categoryLabel, complexTree.label!));
       expect(bloc.validator(complexTree, false, testLabel), null);
     });
   });

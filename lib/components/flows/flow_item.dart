@@ -9,14 +9,14 @@ class FlowItem extends StatelessWidget {
     required this.isExpanded,
     required this.onEditClick,
     required this.showDeleteFlowDialog,
-    required this.onSaveClick,
+    required this.onSavePostureClick,
     required this.toggleExpand,
     required this.flowLabel,
   });
 
   final bool isExpanded;
   final String flowLabel;
-  final void Function(bool, String?) onSaveClick;
+  final void Function(String?) onSavePostureClick;
   final void Function(String?) onEditClick;
   final dynamic Function(BuildContext context) showDeleteFlowDialog;
   final void Function() toggleExpand;
@@ -50,7 +50,7 @@ class FlowItem extends StatelessWidget {
                     builder: (BuildContext context) {
                       return CreatePosture(
                         path: [flowLabel],
-                        onSaveClick: (flow) => onSaveClick(true, flow),
+                        onSaveClick: onSavePostureClick,
                       );
                     }).then((exit) {
                   if (exit) return;

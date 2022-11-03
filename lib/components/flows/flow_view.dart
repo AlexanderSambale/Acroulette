@@ -10,15 +10,17 @@ class FlowView extends StatelessWidget {
       {super.key,
       required this.flow,
       required this.toggleExpand,
-      required this.onSaveClick,
+      required this.onSavePostureClick,
       required this.onEditClick,
-      required this.onDeleteClick});
+      required this.deletePosture,
+      required this.deleteFlow});
 
   final FlowNode flow;
   final void Function(FlowNode) toggleExpand;
-  final void Function(FlowNode, bool, String?) onSaveClick;
-  final void Function(FlowNode, bool, String?) onEditClick;
-  final void Function(FlowNode) onDeleteClick;
+  final void Function(FlowNode flowNode, String? label) onSavePostureClick;
+  final void Function(FlowNode, int, String?) onEditClick;
+  final void Function(FlowNode, int) deletePosture;
+  final void Function(FlowNode) deleteFlow;
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +32,13 @@ class FlowView extends StatelessWidget {
               if (index == 0) {
                 return FlowItem(
                   flowLabel: flow.name,
-                  onEditClick: (String? value) =>
-                      onEditClick(flow, false, value),
-                  onSaveClick: (bool isPosture, String? value) =>
-                      onSaveClick(flow, isPosture, value),
+                  onEditClick: (flowName) => onEditClick(flow, 0, flowName),
+                  onSavePostureClick: (position) =>
+                      onSavePostureClick(flow, position),
                   toggleExpand: () => toggleExpand(flow),
                   isExpanded: flow.isExpanded,
                   showDeleteFlowDialog: (BuildContext context) {
-                    showDeleteFlowDialog(
-                        context, flow, () => onDeleteClick(flow));
+                    showDeleteFlowDialog(context, flow, () => deleteFlow(flow));
                   },
                 );
               }
@@ -51,8 +51,8 @@ class FlowView extends StatelessWidget {
                         context,
                         [flow.name],
                         (positionLabel) =>
-                            onEditClick(flow, true, positionLabel)),
-                    onDeleteClick: () => onDeleteClick(flow),
+                            onEditClick(flow, index - 1, positionLabel)),
+                    onDeleteClick: () => deletePosture(flow, index - 1),
                   ),
                 );
               }

@@ -199,13 +199,14 @@ class HotReload extends StatelessWidget {
                 WidgetbookUseCase(
                     name: 'Show',
                     builder: (context) => FlowView(
-                          onDeleteClick: (p0) {},
+                          deletePosture: (p0, p1) {},
+                          deleteFlow: (p0) {},
                           onEditClick: (p0, p1, p2) {},
                           flow: FlowNode(
                               context.knobs.text(
                                   label: 'flow name', initialValue: 'flow1'),
                               ['position1', 'position2']),
-                          onSaveClick: (p1, p2, p3) {},
+                          onSavePostureClick: (p0, p1) {},
                           toggleExpand: (p1) {},
                         )),
               ],
@@ -224,7 +225,7 @@ class HotReload extends StatelessWidget {
                           ),
                           onEditClick: onEditClick,
                           toggleExpand: () {},
-                          onSaveClick: (p0, p1) {},
+                          onSavePostureClick: (p0) {},
                           showDeleteFlowDialog: (BuildContext context) {},
                         )),
               ],

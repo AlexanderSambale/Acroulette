@@ -10,8 +10,5 @@ abstract class PositionAdministrationEvent extends Equatable {
 // nodes and acro nodes change
 class PositionsBDStartChangeEvent extends PositionAdministrationEvent {}
 
-// function to sync with db started
-class PositionsDBIsChangingEvent extends PositionAdministrationEvent {}
-
 // no sync with db is pending
 class PositionsDBIsIdleEvent extends PositionAdministrationEvent {}
