@@ -1,5 +1,6 @@
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
 import 'package:acroulette/constants/commands.dart';
+import 'package:acroulette/constants/widgets.dart';
 import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,10 +15,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late FlutterTts flutterTts;
+  late String selectedMode = acroulette;
 
   @override
   initState() {
     super.initState();
+    selectedMode = acroulette;
     initTts();
   }
 
@@ -49,6 +52,19 @@ class _HomeState extends State<Home> {
       // horizontal).
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        DropdownButton<String>(
+          value: selectedMode,
+          items: const [
+            DropdownMenuItem(value: acroulette, child: Text(acroulette)),
+            DropdownMenuItem(value: washingMachine, child: Text(washingMachine))
+          ],
+          onChanged: (value) {
+            if (value == null) return;
+            setState(() {
+              selectedMode = value;
+            });
+          },
+        ),
         BlocProvider(
           create: (_) => AcrouletteBloc(flutterTts,
               settings: objectbox.settingsBox.getAll(),
