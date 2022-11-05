@@ -1,6 +1,5 @@
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
-import 'package:acroulette/constants/commands.dart';
-import 'package:acroulette/constants/widgets.dart';
+import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,6 +61,7 @@ class _HomeState extends State<Home> {
             if (value == null) return;
             setState(() {
               selectedMode = value;
+              objectbox.putSettingsPairValueByKey(appMode, value);
             });
           },
         ),
