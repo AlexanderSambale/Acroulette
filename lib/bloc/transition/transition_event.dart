@@ -14,6 +14,11 @@ class CurrentTransitionEvent extends TransitionEvent {}
 /// Triggers adding a new figure to the transitions list
 class NewTransitionEvent extends TransitionEvent {}
 
-class SubscribeTransitionStreamEvent extends TransitionEvent {}
+class InitFlowTransitionEvent extends TransitionEvent {
+  late List<String> figures;
+  InitFlowTransitionEvent(this.figures);
+}
 
-class UnSubscribeTransitionStreamEvent extends TransitionEvent {}
+class InitAcrouletteTransitionEvent extends TransitionEvent {
+  InitAcrouletteTransitionEvent();
+}

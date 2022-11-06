@@ -49,7 +49,7 @@ Node setupComplexTree(ObjectBox objectbox) {
 void main() {
   late Store store;
   late ObjectBox objectbox;
-  final dir = Directory('testdata');
+  final dir = Directory('position_administration_bloc_testdata');
 
   setUp(() async {
     if (dir.existsSync()) dir.deleteSync(recursive: true);

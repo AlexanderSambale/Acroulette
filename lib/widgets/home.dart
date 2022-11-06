@@ -1,4 +1,5 @@
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
+import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late FlutterTts flutterTts;
-  late String selectedMode = acroulette;
 
   @override
   initState() {
     super.initState();
-    selectedMode = acroulette;
     initTts();
   }
 
@@ -51,27 +50,8 @@ class _HomeState extends State<Home> {
       // horizontal).
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        DropdownButton<String>(
-          value: selectedMode,
-          items: const [
-            DropdownMenuItem(value: acroulette, child: Text(acroulette)),
-            DropdownMenuItem(value: washingMachine, child: Text(washingMachine))
-          ],
-          onChanged: (value) {
-            if (value == null) return;
-            setState(() {
-              selectedMode = value;
-              objectbox.putSettingsPairValueByKey(appMode, value);
-            });
-          },
-        ),
         BlocProvider(
-          create: (_) => AcrouletteBloc(flutterTts,
-              settings: objectbox.settingsBox.getAll(),
-              possibleFigures: objectbox.positionBox
-                  .getAll()
-                  .map<String>((element) => element.name)
-                  .toList()),
+          create: (_) => AcrouletteBloc(flutterTts, objectbox),
           child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
               buildWhen: (previous, current) {
             return true;
@@ -161,19 +141,39 @@ class _HomeState extends State<Home> {
                         () => context
                             .read<AcrouletteBloc>()
                             .add(AcrouletteTransition(nextPosition))),
-                    controlButton(
-                        Colors.black,
-                        Colors.black,
-                        Icons.add_circle,
-                        () => context
-                            .read<AcrouletteBloc>()
-                            .add(AcrouletteTransition(newPosition)))
+                    if (context.read<AcrouletteBloc>().mode == acroulette)
+                      controlButton(
+                          Colors.black,
+                          Colors.black,
+                          Icons.add_circle,
+                          () => context
+                              .read<AcrouletteBloc>()
+                              .add(AcrouletteTransition(newPosition)))
                   ], stateWidgetLabel(color, 'STOP'));
                 }
             }
             return Container(
                 padding: const EdgeInsets.only(top: 50.0),
                 child: Column(children: [
+                  DropdownButton<String>(
+                    value: context.read<AcrouletteBloc>().mode,
+                    items: const [
+                      DropdownMenuItem(
+                          value: acroulette, child: Text(acroulette)),
+                      DropdownMenuItem(
+                          value: washingMachine, child: Text(washingMachine))
+                    ],
+                    onChanged: (value) {
+                      if (value == null) return;
+                      context.read<AcrouletteBloc>().add(AcrouletteChangeMode(
+                          value,
+                          objectbox.flowNodeBox
+                              .get(int.parse(objectbox
+                                  .getSettingsPairValueByKey(flowIndex)))!
+                              .positions));
+                      objectbox.putSettingsPairValueByKey(appMode, value);
+                    },
+                  ),
                   Text(text,
                       textAlign: TextAlign.center, style: displayTextStyle),
                   Container(

@@ -47,6 +47,17 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
       emit(TransitionState(
           state.figures, state.index, TransitionStatus.current));
     });
+    on<InitFlowTransitionEvent>((event, emit) {
+      emit(TransitionState(
+          event.figures.toList(), 0, TransitionStatus.changingStateProps));
+      add(CurrentTransitionEvent());
+    });
+
+    on<InitAcrouletteTransitionEvent>((event, emit) {
+      emit(TransitionState(
+          [getRandomFigure()], 0, TransitionStatus.changingStateProps));
+      add(CurrentTransitionEvent());
+    });
   }
 
   @override

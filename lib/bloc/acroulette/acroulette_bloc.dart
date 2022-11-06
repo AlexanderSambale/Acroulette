@@ -3,8 +3,10 @@ import 'dart:collection';
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
+import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/models/settings_pair.dart';
+import 'package:acroulette/objectboxstore.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -15,18 +17,31 @@ part 'acroulette_event.dart';
 part 'acroulette_state.dart';
 
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
-  AcrouletteBloc(this.flutterTts,
-      {List<SettingsPair> settings = const [],
-      List<String> possibleFigures = const []})
+  AcrouletteBloc(this.flutterTts, ObjectBox objectbox)
       : super(AcrouletteInitialState()) {
     voiceRecognitionBloc = VoiceRecognitionBloc(onInitiated);
-    settingsMap = SettingsPair.toMap(settings);
+    HashMap<String, String> settingsMap =
+        SettingsPair.toMap(objectbox.settingsBox.getAll());
+    mode = settingsMap[appMode] ?? acroulette;
+    List<String> possibleFigures = [];
     rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
     rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
     rPreviousPosition =
         RegExp(settingsMap[previousPosition] ?? previousPosition);
     rCurrentPosition = RegExp(settingsMap[currentPosition] ?? currentPosition);
+    if (mode == acroulette) {
+      possibleFigures = objectbox.positionBox
+          .getAll()
+          .map<String>((element) => element.name)
+          .toList();
+    }
     transitionBloc = TransitionBloc(onTransitionChange, possibleFigures);
+    if (mode == washingMachine) {
+      List<String> figures = objectbox.flowNodeBox
+          .get(int.parse(objectbox.getSettingsPairValueByKey(flowIndex)))!
+          .positions;
+      transitionBloc.add(InitFlowTransitionEvent(figures));
+    }
 
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(
@@ -44,7 +59,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     on<AcrouletteCommandRecognizedEvent>((event, emit) => {
           emit(AcrouletteCommandRecognizedState(event.currentFigure,
               previousFigure: event.previousFigure,
-              nextFigure: event.nextFigure))
+              nextFigure: event.nextFigure,
+              mode: mode))
         });
     on<AcrouletteStop>((event, emit) {
       voiceRecognitionBloc.add(VoiceRecognitionStop());
@@ -66,18 +82,29 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           break;
       }
     });
+    on<AcrouletteChangeMode>((event, emit) {
+      mode = event.mode;
+      if (mode == acroulette) {
+        transitionBloc.add(InitAcrouletteTransitionEvent());
+      }
+      if (mode == washingMachine) {
+        transitionBloc.add(InitFlowTransitionEvent(event.figures));
+      }
+      emit(AcrouletteInitialState());
+    });
   }
 
   late final TransitionBloc transitionBloc;
   late VoiceRecognitionBloc voiceRecognitionBloc;
   final ttsBloc = TtsBloc();
   final FlutterTts flutterTts;
-  late HashMap<String, String> settingsMap;
 
   late RegExp rNextPosition;
   late RegExp rNewPosition;
   late RegExp rPreviousPosition;
   late RegExp rCurrentPosition;
+
+  late String mode;
 
   void onTransitionChange(TransitionStatus status) {
     if (status == TransitionStatus.created ||
@@ -109,7 +136,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     final Map<String, dynamic> commandMapped = jsonDecode(command);
     final text = commandMapped["text"];
 
-    if (rNewPosition.hasMatch(text)) {
+    if (appMode != washingMachine && rNewPosition.hasMatch(text)) {
       add(AcrouletteTransition(newPosition));
       return;
     }
