@@ -40,3 +40,8 @@ class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
   @override
   int get hashCode => props.hashCode;
 }
+
+class AcrouletteFlowState extends BaseAcrouletteState {
+  final String flowName;
+  const AcrouletteFlowState(this.flowName);
+}

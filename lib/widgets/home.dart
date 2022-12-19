@@ -149,7 +149,7 @@ class _HomeState extends State<Home> {
                           value: washingMachine, child: Text(washingMachine))
                     ],
                     onChanged: (value) {
-                      if (value == null) return;
+                      if (value == null || mode == value) return;
                       acrouletteBloc.add(AcrouletteChangeMode(value));
                     },
                   ),

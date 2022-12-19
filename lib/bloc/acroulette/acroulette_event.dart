@@ -32,3 +32,8 @@ class AcrouletteChangeMode extends AcrouletteEvent {
   final String mode;
   AcrouletteChangeMode(this.mode);
 }
+
+class AcrouletteChangeMachine extends AcrouletteEvent {
+  final String machine;
+  AcrouletteChangeMachine(this.machine);
+}
