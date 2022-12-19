@@ -61,6 +61,8 @@ class _HomeState extends State<Home> {
             String currentFigure = "";
             String nextFigure = "";
             String previousFigure = "";
+            AcrouletteBloc acrouletteBloc = context.read<AcrouletteBloc>();
+            var mode = acrouletteBloc.mode;
             switch (state.runtimeType) {
               case AcrouletteInitModel:
                 text = "Loading languagemodel!";
@@ -91,13 +93,8 @@ class _HomeState extends State<Home> {
                   Color color = Colors.amber;
                   Color splashColor = Colors.amberAccent;
                   controls = _controls([
-                    controlButton(
-                        color,
-                        splashColor,
-                        Icons.launch,
-                        () => context
-                            .read<AcrouletteBloc>()
-                            .add(AcrouletteStart()))
+                    controlButton(color, splashColor, Icons.launch,
+                        () => acrouletteBloc.add(AcrouletteStart()))
                   ], stateWidgetLabel(color, 'Initialize Model'));
                   break;
                 }
@@ -106,13 +103,8 @@ class _HomeState extends State<Home> {
                   Color color = Colors.green;
                   Color splashColor = Colors.greenAccent;
                   controls = _controls([
-                    controlButton(
-                        color,
-                        splashColor,
-                        Icons.play_arrow,
-                        () => context
-                            .read<AcrouletteBloc>()
-                            .add(AcrouletteStart()))
+                    controlButton(color, splashColor, Icons.play_arrow,
+                        () => acrouletteBloc.add(AcrouletteStart()))
                   ], stateWidgetLabel(color, 'PLAY'));
                   break;
                 }
@@ -125,35 +117,26 @@ class _HomeState extends State<Home> {
                         Colors.black,
                         Colors.black,
                         Icons.skip_previous,
-                        () => context
-                            .read<AcrouletteBloc>()
+                        () => acrouletteBloc
                             .add(AcrouletteTransition(previousPosition))),
-                    controlButton(
-                        color,
-                        splashColor,
-                        Icons.stop,
-                        () => context
-                            .read<AcrouletteBloc>()
-                            .add(AcrouletteStop())),
+                    controlButton(color, splashColor, Icons.stop,
+                        () => acrouletteBloc.add(AcrouletteStop())),
                     controlButton(
                         Colors.black,
                         Colors.black,
                         Icons.skip_next,
-                        () => context
-                            .read<AcrouletteBloc>()
+                        () => acrouletteBloc
                             .add(AcrouletteTransition(nextPosition))),
-                    if (context.read<AcrouletteBloc>().mode == acroulette)
+                    if (mode == acroulette)
                       controlButton(
                           Colors.black,
                           Colors.black,
                           Icons.add_circle,
-                          () => context
-                              .read<AcrouletteBloc>()
+                          () => acrouletteBloc
                               .add(AcrouletteTransition(newPosition)))
                   ], stateWidgetLabel(color, 'STOP'));
                 }
             }
-            var mode = context.read<AcrouletteBloc>().mode;
             return Container(
                 padding: const EdgeInsets.only(top: 50.0),
                 child: Column(children: [
@@ -167,9 +150,7 @@ class _HomeState extends State<Home> {
                     ],
                     onChanged: (value) {
                       if (value == null) return;
-                      context
-                          .read<AcrouletteBloc>()
-                          .add(AcrouletteChangeMode(value));
+                      acrouletteBloc.add(AcrouletteChangeMode(value));
                     },
                   ),
                   Text(text,
