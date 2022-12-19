@@ -13,7 +13,9 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
       final newFigures = List<String>.empty(growable: true);
       newFigures.addAll(state.figures);
       int index = newFigures.length;
-      newFigures.add(getRandomFigure());
+      newFigures.add(getRandomFigure(
+          sameAllowed: false,
+          lastFigure: state.figures.isEmpty ? '' : state.figures.last));
       emit(TransitionState(
           newFigures, index, TransitionStatus.changingStateProps));
       emit(TransitionState(newFigures, state.index, TransitionStatus.created));
@@ -70,9 +72,13 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
   final rng = Random();
   late final List<String> possibleFigures;
 
-  String getRandomFigure() {
+  String getRandomFigure({bool sameAllowed = false, String lastFigure = ''}) {
     final newFigureIndex = rng.nextInt(possibleFigures.length);
-    return possibleFigures[newFigureIndex];
+    final newFigure = possibleFigures[newFigureIndex];
+    if (newFigure == lastFigure) {
+      return getRandomFigure(sameAllowed: sameAllowed, lastFigure: lastFigure);
+    }
+    return newFigure;
   }
 
   String currentFigure() {
