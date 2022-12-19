@@ -192,4 +192,8 @@ class ObjectBox {
         .get(int.parse(getSettingsPairValueByKey(flowIndex)))!
         .positions;
   }
+
+  List<String> possiblePositions() {
+    return positionBox.getAll().map<String>((element) => element.name).toList();
+  }
 }

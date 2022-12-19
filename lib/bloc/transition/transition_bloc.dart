@@ -56,6 +56,8 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
     });
 
     on<InitAcrouletteTransitionEvent>((event, emit) {
+      possibleFigures.clear();
+      possibleFigures.addAll(event.possibleFigures);
       emit(TransitionState(
           [getRandomFigure()], 0, TransitionStatus.changingStateProps));
       add(CurrentTransitionEvent());

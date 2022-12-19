@@ -20,5 +20,6 @@ class InitFlowTransitionEvent extends TransitionEvent {
 }
 
 class InitAcrouletteTransitionEvent extends TransitionEvent {
-  InitAcrouletteTransitionEvent();
+  late List<String> possibleFigures;
+  InitAcrouletteTransitionEvent(this.possibleFigures);
 }

@@ -31,16 +31,11 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
         RegExp(settingsMap[previousPosition] ?? previousPosition);
     rCurrentPosition = RegExp(settingsMap[currentPosition] ?? currentPosition);
     if (mode == acroulette) {
-      possibleFigures = objectbox.positionBox
-          .getAll()
-          .map<String>((element) => element.name)
-          .toList();
+      possibleFigures = objectbox.possiblePositions();
     }
     transitionBloc = TransitionBloc(onTransitionChange, possibleFigures);
     if (mode == washingMachine) {
-      List<String> figures = objectbox.flowNodeBox
-          .get(int.parse(objectbox.getSettingsPairValueByKey(flowIndex)))!
-          .positions;
+      List<String> figures = objectbox.flowPositions();
       transitionBloc.add(InitFlowTransitionEvent(figures));
     }
 
@@ -84,9 +79,12 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       }
     });
     on<AcrouletteChangeMode>((event, emit) {
+      if (mode == event.mode) return;
       if (event.mode == acroulette) {
-        modeBloc.add(ModeChange(event.mode,
-            () => transitionBloc.add(InitAcrouletteTransitionEvent())));
+        modeBloc.add(ModeChange(
+            event.mode,
+            () => transitionBloc.add(
+                InitAcrouletteTransitionEvent(objectbox.possiblePositions()))));
       }
       if (event.mode == washingMachine) {
         modeBloc.add(ModeChange(
