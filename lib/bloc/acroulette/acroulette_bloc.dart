@@ -4,7 +4,6 @@ import 'package:acroulette/bloc/mode/mode_bloc.dart';
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
-import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/objectboxstore.dart';
