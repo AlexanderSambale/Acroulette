@@ -1,5 +1,4 @@
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
-import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/main.dart';
 import 'package:acroulette/objectboxstore.dart';
@@ -63,6 +62,7 @@ class _HomeState extends State<Home> {
             String previousFigure = "";
             AcrouletteBloc acrouletteBloc = context.read<AcrouletteBloc>();
             var mode = acrouletteBloc.mode;
+            var machine = acrouletteBloc.machine;
             switch (state.runtimeType) {
               case AcrouletteInitModel:
                 text = "Loading languagemodel!";
@@ -159,14 +159,13 @@ class _HomeState extends State<Home> {
                     height: 50,
                   ),
                   if (mode == washingMachine)
-                    DropdownButton<int>(
-                        value: int.parse(
-                            objectbox.getSettingsPairValueByKey(flowIndex)),
+                    DropdownButton<String>(
+                        value: machine,
                         items: getWashingMachineItems(objectbox),
-                        onChanged: ((value) {
-                          objectbox.putSettingsPairValueByKey(
-                              flowIndex, value.toString());
-                        })),
+                        onChanged: (value) {
+                          if (value == null || machine == value) return;
+                          acrouletteBloc.add(AcrouletteChangeMachine(value));
+                        }),
                   if (currentFigure != "")
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -261,10 +260,10 @@ Widget noPosture() {
   );
 }
 
-List<DropdownMenuItem<int>> getWashingMachineItems(ObjectBox objectBox) {
+List<DropdownMenuItem<String>> getWashingMachineItems(ObjectBox objectBox) {
   return objectBox.flowNodeBox
       .getAll()
-      .map((flow) =>
-          DropdownMenuItem<int>(value: flow.id, child: Text(flow.name)))
+      .map((flow) => DropdownMenuItem<String>(
+          value: flow.id.toString(), child: Text(flow.name)))
       .toList();
 }

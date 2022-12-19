@@ -4,6 +4,7 @@ import 'package:acroulette/bloc/mode/mode_bloc.dart';
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
+import 'package:acroulette/bloc/washing_machine/washing_machine_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/objectboxstore.dart';
@@ -23,6 +24,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     HashMap<String, String> settingsMap =
         SettingsPair.toMap(objectbox.settingsBox.getAll());
     modeBloc = ModeBloc(objectbox);
+    washingMachineBloc = WashingMachineBloc(objectbox);
     List<String> possibleFigures = [];
     rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
     rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
@@ -94,10 +96,14 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       }
       emit(AcrouletteFlowState(positions.first));
     });
-            () => transitionBloc
-                .add(InitFlowTransitionEvent(objectbox.flowPositions()))));
-      }
-      emit(AcrouletteInitialState());
+
+    on<AcrouletteChangeMachine>((event, emit) {
+      if (machine == event.machine) return;
+      washingMachineBloc.add(WashingMachineChange(
+          event.machine,
+          () => transitionBloc
+              .add(InitFlowTransitionEvent(objectbox.flowPositions()))));
+      emit(AcrouletteFlowState(event.machine));
     });
   }
 
@@ -106,6 +112,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   final ttsBloc = TtsBloc();
   final FlutterTts flutterTts;
   late final ModeBloc modeBloc;
+  late final WashingMachineBloc washingMachineBloc;
 
   late RegExp rNextPosition;
   late RegExp rNewPosition;
@@ -114,6 +121,10 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
   String get mode {
     return modeBloc.mode;
+  }
+
+  String get machine {
+    return washingMachineBloc.machine;
   }
 
   void onTransitionChange(TransitionStatus status) {
