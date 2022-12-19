@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:acroulette/bloc/mode/mode_bloc.dart';
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
@@ -22,7 +23,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     voiceRecognitionBloc = VoiceRecognitionBloc(onInitiated);
     HashMap<String, String> settingsMap =
         SettingsPair.toMap(objectbox.settingsBox.getAll());
-    mode = settingsMap[appMode] ?? acroulette;
+    modeBloc = ModeBloc(objectbox);
     List<String> possibleFigures = [];
     rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
     rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
@@ -83,12 +84,13 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       }
     });
     on<AcrouletteChangeMode>((event, emit) {
-      mode = event.mode;
-      if (mode == acroulette) {
-        transitionBloc.add(InitAcrouletteTransitionEvent());
+      if (event.mode == acroulette) {
+        modeBloc.add(ModeChange(event.mode,
+            () => transitionBloc.add(InitAcrouletteTransitionEvent())));
       }
-      if (mode == washingMachine) {
-        transitionBloc.add(InitFlowTransitionEvent(event.figures));
+      if (event.mode == washingMachine) {
+        modeBloc.add(ModeChange(event.mode,
+            () => transitionBloc.add(InitFlowTransitionEvent(event.figures))));
       }
       emit(AcrouletteInitialState());
     });
@@ -98,13 +100,16 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   late VoiceRecognitionBloc voiceRecognitionBloc;
   final ttsBloc = TtsBloc();
   final FlutterTts flutterTts;
+  late final ModeBloc modeBloc;
 
   late RegExp rNextPosition;
   late RegExp rNewPosition;
   late RegExp rPreviousPosition;
   late RegExp rCurrentPosition;
 
-  late String mode;
+  String get mode {
+    return modeBloc.mode;
+  }
 
   void onTransitionChange(TransitionStatus status) {
     if (status == TransitionStatus.created ||

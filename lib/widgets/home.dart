@@ -173,7 +173,6 @@ class _HomeState extends State<Home> {
                               .get(int.parse(objectbox
                                   .getSettingsPairValueByKey(flowIndex)))!
                               .positions));
-                      objectbox.putSettingsPairValueByKey(appMode, value);
                     },
                   ),
                   Text(text,
