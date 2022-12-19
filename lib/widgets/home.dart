@@ -2,6 +2,7 @@ import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/main.dart';
+import 'package:acroulette/objectboxstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -152,11 +153,12 @@ class _HomeState extends State<Home> {
                   ], stateWidgetLabel(color, 'STOP'));
                 }
             }
+            var mode = context.read<AcrouletteBloc>().mode;
             return Container(
                 padding: const EdgeInsets.only(top: 50.0),
                 child: Column(children: [
                   DropdownButton<String>(
-                    value: context.read<AcrouletteBloc>().mode,
+                    value: mode,
                     items: const [
                       DropdownMenuItem(
                           value: acroulette, child: Text(acroulette)),
@@ -179,6 +181,15 @@ class _HomeState extends State<Home> {
                   Container(
                     height: 50,
                   ),
+                  if (mode == washingMachine)
+                    DropdownButton<int>(
+                        value: int.parse(
+                            objectbox.getSettingsPairValueByKey(flowIndex)),
+                        items: getWashingMachineItems(objectbox),
+                        onChanged: ((value) {
+                          objectbox.putSettingsPairValueByKey(
+                              flowIndex, value.toString());
+                        })),
                   if (currentFigure != "")
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -271,4 +282,12 @@ Widget noPosture() {
     Icons.warning,
     size: 36.0,
   );
+}
+
+List<DropdownMenuItem<int>> getWashingMachineItems(ObjectBox objectBox) {
+  return objectBox.flowNodeBox
+      .getAll()
+      .map((flow) =>
+          DropdownMenuItem<int>(value: flow.id, child: Text(flow.name)))
+      .toList();
 }
