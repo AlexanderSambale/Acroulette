@@ -30,6 +30,5 @@ class AcrouletteRecognizeCommand extends AcrouletteEvent {
 
 class AcrouletteChangeMode extends AcrouletteEvent {
   final String mode;
-  final List<String> figures;
-  AcrouletteChangeMode(this.mode, this.figures);
+  AcrouletteChangeMode(this.mode);
 }

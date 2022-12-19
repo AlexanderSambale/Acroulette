@@ -167,12 +167,9 @@ class _HomeState extends State<Home> {
                     ],
                     onChanged: (value) {
                       if (value == null) return;
-                      context.read<AcrouletteBloc>().add(AcrouletteChangeMode(
-                          value,
-                          objectbox.flowNodeBox
-                              .get(int.parse(objectbox
-                                  .getSettingsPairValueByKey(flowIndex)))!
-                              .positions));
+                      context
+                          .read<AcrouletteBloc>()
+                          .add(AcrouletteChangeMode(value));
                     },
                   ),
                   Text(text,

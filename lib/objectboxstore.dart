@@ -186,4 +186,10 @@ class ObjectBox {
         flowNodeBox.query(FlowNode_.name.equals(label)).build().findFirst();
     return first == null ? false : true;
   }
+
+  List<String> flowPositions() {
+    return flowNodeBox
+        .get(int.parse(getSettingsPairValueByKey(flowIndex)))!
+        .positions;
+  }
 }

@@ -89,8 +89,10 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
             () => transitionBloc.add(InitAcrouletteTransitionEvent())));
       }
       if (event.mode == washingMachine) {
-        modeBloc.add(ModeChange(event.mode,
-            () => transitionBloc.add(InitFlowTransitionEvent(event.figures))));
+        modeBloc.add(ModeChange(
+            event.mode,
+            () => transitionBloc
+                .add(InitFlowTransitionEvent(objectbox.flowPositions()))));
       }
       emit(AcrouletteInitialState());
     });
