@@ -18,19 +18,15 @@ part 'acroulette_event.dart';
 part 'acroulette_state.dart';
 
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
-  AcrouletteBloc(this.flutterTts, ObjectBox objectbox)
+  AcrouletteBloc(
+      this.flutterTts, ObjectBox objectbox, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
-    voiceRecognitionBloc = VoiceRecognitionBloc(onInitiated);
-    HashMap<String, String> settingsMap =
-        SettingsPair.toMap(objectbox.settingsBox.getAll());
+    // initialize blocs
     modeBloc = ModeBloc(objectbox);
     washingMachineBloc = WashingMachineBloc(objectbox);
+
+    // initialize transitionBloc
     List<String> possibleFigures = [];
-    rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
-    rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
-    rPreviousPosition =
-        RegExp(settingsMap[previousPosition] ?? previousPosition);
-    rCurrentPosition = RegExp(settingsMap[currentPosition] ?? currentPosition);
     if (mode == acroulette) {
       possibleFigures = objectbox.possiblePositions();
     }
@@ -39,6 +35,20 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       List<String> figures = objectbox.flowPositions();
       transitionBloc.add(InitFlowTransitionEvent(figures));
     }
+
+    // when Model is loaded call onInitiated
+    voiceRecognitionBloc.initialize(onInitiated);
+
+    // get settings
+    HashMap<String, String> settingsMap =
+        SettingsPair.toMap(objectbox.settingsBox.getAll());
+
+    // set regex for voice commands
+    rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
+    rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
+    rPreviousPosition =
+        RegExp(settingsMap[previousPosition] ?? previousPosition);
+    rCurrentPosition = RegExp(settingsMap[currentPosition] ?? currentPosition);
 
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(
@@ -108,11 +118,11 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   }
 
   late final TransitionBloc transitionBloc;
-  late VoiceRecognitionBloc voiceRecognitionBloc;
-  final ttsBloc = TtsBloc();
-  final FlutterTts flutterTts;
+  final VoiceRecognitionBloc voiceRecognitionBloc;
   late final ModeBloc modeBloc;
   late final WashingMachineBloc washingMachineBloc;
+  final ttsBloc = TtsBloc();
+  final FlutterTts flutterTts;
 
   late RegExp rNextPosition;
   late RegExp rNewPosition;
