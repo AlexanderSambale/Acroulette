@@ -75,74 +75,11 @@ class _HomeState extends State<Home> {
               default:
                 text = "Click the play button to start the game!";
             }
-            Column controls;
-            switch (state.runtimeType) {
-              case AcrouletteInitialState:
-              case AcrouletteInitModel:
-                {
-                  Color color = Colors.amber;
-                  Color splashColor = Colors.amberAccent;
-                  controls = _controls([
-                    controlButton(color, splashColor, Icons.launch,
-                        () => acrouletteBloc.add(AcrouletteStart()))
-                  ], stateWidgetLabel(color, 'Initialize Model'));
-                  break;
-                }
-              case AcrouletteModelInitiatedState:
-                {
-                  Color color = Colors.green;
-                  Color splashColor = Colors.greenAccent;
-                  controls = _controls([
-                    controlButton(color, splashColor, Icons.play_arrow,
-                        () => acrouletteBloc.add(AcrouletteStart()))
-                  ], stateWidgetLabel(color, 'PLAY'));
-                  break;
-                }
-              default:
-                {
-                  Color color = Colors.red;
-                  Color splashColor = Colors.redAccent;
-                  controls = _controls([
-                    controlButton(
-                        Colors.black,
-                        Colors.black,
-                        Icons.skip_previous,
-                        () => acrouletteBloc
-                            .add(AcrouletteTransition(previousPosition))),
-                    controlButton(color, splashColor, Icons.stop,
-                        () => acrouletteBloc.add(AcrouletteStop())),
-                    controlButton(
-                        Colors.black,
-                        Colors.black,
-                        Icons.skip_next,
-                        () => acrouletteBloc
-                            .add(AcrouletteTransition(nextPosition))),
-                    if (mode == acroulette)
-                      controlButton(
-                          Colors.black,
-                          Colors.black,
-                          Icons.add_circle,
-                          () => acrouletteBloc
-                              .add(AcrouletteTransition(newPosition)))
-                  ], stateWidgetLabel(color, 'STOP'));
-                }
-            }
+
             return Container(
                 padding: const EdgeInsets.only(top: 50.0),
                 child: Column(children: [
-                  DropdownButton<String>(
-                    value: mode,
-                    items: const [
-                      DropdownMenuItem(
-                          value: acroulette, child: Text(acroulette)),
-                      DropdownMenuItem(
-                          value: washingMachine, child: Text(washingMachine))
-                    ],
-                    onChanged: (value) {
-                      if (value == null || mode == value) return;
-                      acrouletteBloc.add(AcrouletteChangeMode(value));
-                    },
-                  ),
+                  modeSelect(mode, acrouletteBloc),
                   Text(text,
                       textAlign: TextAlign.center, style: displayTextStyle),
                   Container(
@@ -193,7 +130,7 @@ class _HomeState extends State<Home> {
                     ),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [controls]),
+                      children: [getControls(state, acrouletteBloc, mode)]),
                 ]));
           }),
         )
@@ -256,4 +193,59 @@ List<DropdownMenuItem<String>> getWashingMachineItems(ObjectBox objectBox) {
       .map((flow) => DropdownMenuItem<String>(
           value: flow.id.toString(), child: Text(flow.name)))
       .toList();
+}
+
+Column getControls(
+    BaseAcrouletteState state, AcrouletteBloc acrouletteBloc, String mode) {
+  switch (state.runtimeType) {
+    case AcrouletteInitialState:
+    case AcrouletteInitModel:
+      {
+        Color color = Colors.amber;
+        Color splashColor = Colors.amberAccent;
+        return _controls([
+          controlButton(color, splashColor, Icons.launch,
+              () => acrouletteBloc.add(AcrouletteStart()))
+        ], stateWidgetLabel(color, 'Initialize Model'));
+      }
+    case AcrouletteModelInitiatedState:
+      {
+        Color color = Colors.green;
+        Color splashColor = Colors.greenAccent;
+        return _controls([
+          controlButton(color, splashColor, Icons.play_arrow,
+              () => acrouletteBloc.add(AcrouletteStart()))
+        ], stateWidgetLabel(color, 'PLAY'));
+      }
+    default:
+      {
+        Color color = Colors.red;
+        Color splashColor = Colors.redAccent;
+        return _controls([
+          controlButton(Colors.black, Colors.black, Icons.skip_previous,
+              () => acrouletteBloc.add(AcrouletteTransition(previousPosition))),
+          controlButton(color, splashColor, Icons.stop,
+              () => acrouletteBloc.add(AcrouletteStop())),
+          controlButton(Colors.black, Colors.black, Icons.skip_next,
+              () => acrouletteBloc.add(AcrouletteTransition(nextPosition))),
+          if (mode == acroulette)
+            controlButton(Colors.black, Colors.black, Icons.add_circle,
+                () => acrouletteBloc.add(AcrouletteTransition(newPosition)))
+        ], stateWidgetLabel(color, 'STOP'));
+      }
+  }
+}
+
+Widget modeSelect(String mode, AcrouletteBloc acrouletteBloc) {
+  return DropdownButton<String>(
+    value: mode,
+    items: const [
+      DropdownMenuItem(value: acroulette, child: Text(acroulette)),
+      DropdownMenuItem(value: washingMachine, child: Text(washingMachine))
+    ],
+    onChanged: (value) {
+      if (value == null || mode == value) return;
+      acrouletteBloc.add(AcrouletteChangeMode(value));
+    },
+  );
 }
