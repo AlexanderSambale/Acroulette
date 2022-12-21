@@ -12,14 +12,24 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'dart:convert';
-import 'package:flutter_tts/flutter_tts.dart';
 
 part 'acroulette_event.dart';
 part 'acroulette_state.dart';
 
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
-  AcrouletteBloc(
-      this.flutterTts, ObjectBox objectbox, this.voiceRecognitionBloc)
+  final VoiceRecognitionBloc voiceRecognitionBloc;
+  final TtsBloc ttsBloc;
+
+  late final TransitionBloc transitionBloc;
+  late final ModeBloc modeBloc;
+  late final WashingMachineBloc washingMachineBloc;
+
+  late RegExp rNextPosition;
+  late RegExp rNewPosition;
+  late RegExp rPreviousPosition;
+  late RegExp rCurrentPosition;
+
+  AcrouletteBloc(this.ttsBloc, ObjectBox objectbox, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
     // initialize blocs
     modeBloc = ModeBloc(objectbox);
@@ -117,18 +127,6 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     });
   }
 
-  late final TransitionBloc transitionBloc;
-  final VoiceRecognitionBloc voiceRecognitionBloc;
-  late final ModeBloc modeBloc;
-  late final WashingMachineBloc washingMachineBloc;
-  final ttsBloc = TtsBloc();
-  final FlutterTts flutterTts;
-
-  late RegExp rNextPosition;
-  late RegExp rNewPosition;
-  late RegExp rPreviousPosition;
-  late RegExp rCurrentPosition;
-
   String get mode {
     return modeBloc.mode;
   }
@@ -189,10 +187,10 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     double volume = 0.5;
     double pitch = 1.0;
     double rate = 0.5;
-    await flutterTts.setVolume(volume);
-    await flutterTts.setSpeechRate(rate);
-    await flutterTts.setPitch(pitch);
+    await ttsBloc.setVolume(volume);
+    await ttsBloc.setSpeechRate(rate);
+    await ttsBloc.setPitch(pitch);
 
-    await flutterTts.speak(text);
+    await ttsBloc.speak(text);
   }
 }

@@ -1,18 +1,18 @@
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
+import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/main.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 class Home extends StatefulWidget {
   const Home(
-      {Key? key, required this.flutterTts, required this.voiceRecognitionBloc})
+      {Key? key, required this.voiceRecognitionBloc, required this.ttsBloc})
       : super(key: key);
 
-  final FlutterTts flutterTts;
+  final TtsBloc ttsBloc;
   final VoiceRecognitionBloc voiceRecognitionBloc;
 
   @override
@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
       children: <Widget>[
         BlocProvider(
           create: (_) => AcrouletteBloc(
-              widget.flutterTts, objectbox, widget.voiceRecognitionBloc),
+              widget.ttsBloc, objectbox, widget.voiceRecognitionBloc),
           child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
               buildWhen: (previous, current) {
             return true;

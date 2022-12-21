@@ -1,3 +1,4 @@
+import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:acroulette/widgets/flows.dart';
@@ -6,7 +7,6 @@ import 'package:acroulette/widgets/positions.dart';
 import 'package:acroulette/widgets/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 import 'simple_bloc_observer.dart';
 
@@ -64,32 +64,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static late FlutterTts flutterTts;
   static late VoiceRecognitionBloc voiceRecognitionBloc;
+  static late TtsBloc ttsBloc;
 
   @override
   initState() {
     super.initState();
-    initTts();
-    initVoiceRecognition();
-  }
-
-  initTts() {
-    flutterTts = FlutterTts();
-    _setAwaitOptions();
-  }
-
-  Future _setAwaitOptions() async {
-    await flutterTts.awaitSpeakCompletion(true);
-  }
-
-  initVoiceRecognition() {
     voiceRecognitionBloc = VoiceRecognitionBloc();
+    ttsBloc = TtsBloc();
   }
 
   int _selectedIndex = 0;
   static final List<Widget> _widgetOptions = <Widget>[
-    Home(flutterTts: flutterTts, voiceRecognitionBloc: voiceRecognitionBloc),
+    Home(
+      voiceRecognitionBloc: voiceRecognitionBloc,
+      ttsBloc: ttsBloc,
+    ),
     const Positions(),
     const Flows(),
     const Settings(),
