@@ -1,6 +1,8 @@
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/nodes.dart';
+import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/database/objectbox.g.dart';
+import 'package:acroulette/exceptions/pair_value_exception.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/models/acro_node.dart';
@@ -56,6 +58,12 @@ class ObjectBox {
       int flowNodeId = flowNodeBox.put(flowNode);
       putSettingsPairValueByKey(flowIndex, flowNodeId.toString());
     }
+
+    try {
+      getSettingsPairValueByKey(appMode);
+    } on PairValueException {
+      putSettingsPairValueByKey(appMode, acroulette);
+    }
   }
 
   void regeneratePositionsList() {
@@ -79,10 +87,10 @@ class ObjectBox {
         settingsBox.query(SettingsPair_.key.equals(key)).build();
     SettingsPair? keyQueryFirstValue = keyQuery.findFirst();
     if (keyQueryFirstValue == null) {
-      return key;
-    } else {
-      return keyQueryFirstValue.value;
+      throw PairValueException(
+          "There is no value for the key $key in settings yet!");
     }
+    return keyQueryFirstValue.value;
   }
 
   void putSettingsPairValueByKey(String key, String value) {
