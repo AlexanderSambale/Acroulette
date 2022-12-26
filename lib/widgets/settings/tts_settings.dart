@@ -1,5 +1,6 @@
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
+import 'package:acroulette/widgets/formWidgets/heading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,7 +30,7 @@ class _TtsSettings extends State<TtsSettings> {
                 child: ListView(
                   shrinkWrap: true,
                   children: <Widget>[
-                    const Text(ttsText, textAlign: TextAlign.center),
+                    const Heading(headingLabel: ttsText),
                     Text("Volume: ${ttsBloc.volume}"),
                     Slider(
                         value: ttsBloc.volume,
