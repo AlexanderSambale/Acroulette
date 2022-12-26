@@ -71,7 +71,13 @@ class _MyHomePageState extends State<MyHomePage> {
   initState() {
     super.initState();
     voiceRecognitionBloc = VoiceRecognitionBloc();
-    ttsBloc = TtsBloc();
+    ttsBloc = TtsBloc(objectbox);
+  }
+
+  @override
+  void dispose() {
+    ttsBloc.dispose();
+    super.dispose();
   }
 
   int _selectedIndex = 0;
@@ -82,7 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     const Positions(),
     const Flows(),
-    const Settings(),
+    Settings(
+      ttsBloc: ttsBloc,
+    ),
   ];
 
   void _onItemTapped(int index) {
@@ -107,11 +115,11 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.dry_cleaning, color: Colors.black),
+            icon: Icon(Icons.self_improvement, color: Colors.black),
             label: 'Positions',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.refresh, color: Colors.black),
+            icon: Icon(Icons.flip_camera_android_rounded, color: Colors.black),
             label: 'Flows',
           ),
           BottomNavigationBarItem(

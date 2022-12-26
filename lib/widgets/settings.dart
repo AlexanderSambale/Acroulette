@@ -1,9 +1,13 @@
+import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/widgets/formWidgets/text_settings_form_field.dart';
+import 'package:acroulette/widgets/settings/tts.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatefulWidget {
-  const Settings({Key? key}) : super(key: key);
+  final TtsBloc ttsBloc;
+
+  const Settings({Key? key, required this.ttsBloc}) : super(key: key);
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -33,6 +37,7 @@ class _SettingsState extends State<Settings> {
               child: const Text('Submit'),
             ),
           ),
+          TtsSettings(ttsBloc: widget.ttsBloc)
         ],
       ),
     );

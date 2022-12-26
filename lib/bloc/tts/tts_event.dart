@@ -6,3 +6,12 @@ abstract class TtsEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class TtsChangeEvent extends TtsEvent {
+  final String property;
+  const TtsChangeEvent(this.property);
+}
+
+class TtsIdleEvent extends TtsEvent {
+  const TtsIdleEvent();
+}

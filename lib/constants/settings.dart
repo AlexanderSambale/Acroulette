@@ -5,3 +5,7 @@ const currentPosition = 'current position';
 const appMode = 'appMode';
 const acroulette = 'Acroulette';
 const washingMachine = 'Washing machines';
+const ttsText = 'Text to Speech';
+const volumeKey = 'Spech volume';
+const rateKey = 'Speech rate';
+const pitchKey = 'Speech pitch';

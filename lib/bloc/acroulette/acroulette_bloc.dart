@@ -184,13 +184,6 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   }
 
   Future _speak(String text) async {
-    double volume = 0.5;
-    double pitch = 1.0;
-    double rate = 0.5;
-    await ttsBloc.setVolume(volume);
-    await ttsBloc.setSpeechRate(rate);
-    await ttsBloc.setPitch(pitch);
-
     await ttsBloc.speak(text);
   }
 }

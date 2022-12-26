@@ -59,10 +59,26 @@ class ObjectBox {
       putSettingsPairValueByKey(flowIndex, flowNodeId.toString());
     }
 
+    setDefaultValue(appMode, acroulette);
+
+    // voice recognition
+
+    setDefaultValue(newPosition, newPosition);
+    setDefaultValue(nextPosition, nextPosition);
+    setDefaultValue(previousPosition, previousPosition);
+    setDefaultValue(currentPosition, currentPosition);
+
+    // text to speech
+    setDefaultValue(rateKey, "0.5");
+    setDefaultValue(pitchKey, "0.5");
+    setDefaultValue(volumeKey, "0.5");
+  }
+
+  void setDefaultValue(String key, String value) {
     try {
-      getSettingsPairValueByKey(appMode);
+      getSettingsPairValueByKey(key);
     } on PairValueException {
-      putSettingsPairValueByKey(appMode, acroulette);
+      putSettingsPairValueByKey(key, value);
     }
   }
 
