@@ -3,6 +3,8 @@ import 'package:acroulette/objectboxstore.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 part 'tts_event.dart';
 part 'tts_state.dart';
@@ -13,11 +15,24 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
 
   late double _volume, _rate, _pitch;
 
+  String? language;
+  String? engine;
+  late bool isCurrentLanguageInstalled = false;
+
+  late final Future<dynamic> languages;
+  late final Future<dynamic> engines;
+  late final Future<dynamic> defaultEngine;
+  late final Future<dynamic> defaultVoice;
+
   TtsBloc(this.objectbox) : super(TtsIdleState()) {
     _volume = double.parse(objectbox.getSettingsPairValueByKey(volumeKey));
     _rate = double.parse(objectbox.getSettingsPairValueByKey(rateKey));
     _pitch = double.parse(objectbox.getSettingsPairValueByKey(pitchKey));
     initTts();
+    languages = _getLanguages();
+    engines = _getEngines();
+    defaultEngine = _getDefaultEngine();
+    defaultVoice = _getDefaultVoice();
 
     on<TtsChangeEvent>((event, emit) {
       emit(TtsChangeState());
@@ -33,12 +48,13 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     _setAwaitOptions();
   }
 
-  double get volume => _volume;
-  double get speechRate => _rate;
-  double get pitch => _pitch;
+  double get volume => round(_volume);
+  double get speechRate => round(_rate);
+  double get pitch => round(_pitch);
   set volume(double newVolume) => setVolume(newVolume);
   set speechRate(double newRate) => setSpeechRate(newRate);
   set pitch(double newPitch) => setPitch(newPitch);
+  bool get isAndroid => !kIsWeb && Platform.isAndroid;
 
   Future _setAwaitOptions() async {
     await flutterTts.awaitSpeakCompletion(true);
@@ -69,7 +85,22 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     await flutterTts.speak(text);
   }
 
+  Future<dynamic> _getLanguages() async => await flutterTts.getLanguages;
+
+  Future<dynamic> _getEngines() async => await flutterTts.getEngines;
+
+  Future<dynamic> _getDefaultEngine() async =>
+      await flutterTts.getDefaultEngine;
+
+  Future _getDefaultVoice() async => await flutterTts.getDefaultVoice;
+
   dispose() {
     flutterTts.stop();
   }
+
+  isLanguageInstalled(String language) {}
+}
+
+double round(double value) {
+  return (value * 10 + 0.5).truncateToDouble() / 10;
 }

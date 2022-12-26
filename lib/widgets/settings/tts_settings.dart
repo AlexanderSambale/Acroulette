@@ -32,42 +32,145 @@ class _TtsSettings extends State<TtsSettings> {
                   children: <Widget>[
                     const Heading(headingLabel: ttsText),
                     Text("Volume: ${ttsBloc.volume}"),
-                    Slider(
-                        value: ttsBloc.volume,
-                        onChanged: (newVolume) {
-                          ttsBloc.volume = newVolume;
-                        },
-                        min: 0.0,
-                        max: 1.0,
-                        divisions: 10,
-                        label: "Volume: ${ttsBloc.volume}"),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 16.0),
+                        child: Slider(
+                            value: ttsBloc.volume,
+                            onChanged: (newVolume) {
+                              ttsBloc.volume = newVolume;
+                            },
+                            min: 0.0,
+                            max: 1.0,
+                            divisions: 10,
+                            label: "Volume: ${ttsBloc.volume}")),
                     Text("Pitch: ${ttsBloc.pitch}"),
-                    Slider(
-                      value: ttsBloc.pitch,
-                      onChanged: (newPitch) {
-                        ttsBloc.pitch = newPitch;
-                      },
-                      min: 0.5,
-                      max: 2.0,
-                      divisions: 15,
-                      label: "Pitch: ${ttsBloc.pitch}",
-                      activeColor: Colors.red,
-                    ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 16.0),
+                        child: Slider(
+                          value: ttsBloc.pitch,
+                          onChanged: (newPitch) {
+                            ttsBloc.pitch = newPitch;
+                          },
+                          min: 0.5,
+                          max: 2.0,
+                          divisions: 15,
+                          label: "Pitch: ${ttsBloc.pitch}",
+                          activeColor: Colors.red,
+                        )),
                     Text("Rate: ${ttsBloc.speechRate}"),
-                    Slider(
-                      value: ttsBloc.speechRate,
-                      onChanged: (newRate) {
-                        ttsBloc.speechRate = newRate;
-                      },
-                      min: 0.0,
-                      max: 1.0,
-                      divisions: 10,
-                      label: "Rate: ${ttsBloc.speechRate}",
-                      activeColor: Colors.green,
-                    )
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 16.0),
+                        child: Slider(
+                          value: ttsBloc.speechRate,
+                          onChanged: (newRate) {
+                            ttsBloc.speechRate = newRate;
+                          },
+                          min: 0.0,
+                          max: 1.0,
+                          divisions: 10,
+                          label: "Rate: ${ttsBloc.speechRate}",
+                          activeColor: Colors.green,
+                        )),
+                    _futureBuilder(ttsBloc),
+                    _engineSection(ttsBloc),
+                    if (ttsBloc.isAndroid) ...[
+                      Text("Default engine: ${ttsBloc.defaultEngine}"),
+                      Text("Default voice: ${ttsBloc.defaultVoice}")
+                    ]
                   ],
                 ),
               ));
         }));
   }
 }
+
+Widget _futureBuilder(TtsBloc ttsBloc) => FutureBuilder<dynamic>(
+    future: ttsBloc.languages,
+    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      if (snapshot.hasData) {
+        return _languageDropDownSection(snapshot.data, ttsBloc);
+      } else if (snapshot.hasError) {
+        return const Text('Error loading languages...');
+      } else {
+        return const Text('Loading Languages...');
+      }
+    });
+
+Widget _languageDropDownSection(dynamic languages, TtsBloc ttsBloc) =>
+    Container(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          DropdownButton(
+            value: ttsBloc.language,
+            items: getLanguageDropDownMenuItems(languages),
+            onChanged: (value) =>
+                changedLanguageDropDownItem(value as String?, ttsBloc),
+          ),
+          Visibility(
+            visible: ttsBloc.isAndroid,
+            child: Text("Is installed: ${ttsBloc.isCurrentLanguageInstalled}"),
+          ),
+        ]));
+
+List<DropdownMenuItem<String>> getLanguageDropDownMenuItems(dynamic languages) {
+  var items = <DropdownMenuItem<String>>[];
+  for (dynamic type in languages) {
+    items.add(
+        DropdownMenuItem(value: type as String?, child: Text(type as String)));
+  }
+  return items;
+}
+
+void changedLanguageDropDownItem(String? selectedType, TtsBloc ttsBloc) {
+  var language = selectedType!;
+  ttsBloc.language = language;
+  if (ttsBloc.isAndroid) {
+    ttsBloc
+        .isLanguageInstalled(language)
+        .then((value) => ttsBloc.isCurrentLanguageInstalled = (value as bool));
+  }
+}
+
+Widget _engineSection(TtsBloc ttsBloc) {
+  if (ttsBloc.isAndroid) {
+    return FutureBuilder<dynamic>(
+        future: ttsBloc.engines,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return _enginesDropDownSection(snapshot.data, ttsBloc);
+          } else if (snapshot.hasError) {
+            return const Text('Error loading engines...');
+          } else {
+            return const Text('Loading engines...');
+          }
+        });
+  } else {
+    return const SizedBox(width: 0, height: 0);
+  }
+}
+
+List<DropdownMenuItem<String>> getEnginesDropDownMenuItems(dynamic engines) {
+  var items = <DropdownMenuItem<String>>[];
+  for (dynamic type in engines) {
+    items.add(
+        DropdownMenuItem(value: type as String?, child: Text(type as String)));
+  }
+  return items;
+}
+
+void changedEnginesDropDownItem(String? selectedEngine, TtsBloc ttsBloc) async {
+  ttsBloc.engine = selectedEngine!;
+}
+
+Widget _enginesDropDownSection(dynamic engines, TtsBloc ttsBloc) => Container(
+      padding: const EdgeInsets.only(top: 50.0),
+      child: DropdownButton(
+        value: ttsBloc.engine,
+        items: getEnginesDropDownMenuItems(engines),
+        onChanged: (value) =>
+            changedEnginesDropDownItem(value as String?, ttsBloc),
+      ),
+    );
