@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:flutter/material.dart';
@@ -26,45 +24,49 @@ class _TtsSettings extends State<TtsSettings> {
         }, builder: (BuildContext context, state) {
           TtsBloc ttsBloc = context.read<TtsBloc>();
           return Form(
-            key: _formKey,
-            child: ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                const Text(ttsText),
-                Slider(
-                    value: ttsBloc.volume,
-                    onChanged: (newVolume) {
-                      ttsBloc.volume = newVolume;
-                    },
-                    min: 0.0,
-                    max: 1.0,
-                    divisions: 10,
-                    label: "Volume: $ttsBloc.volume"),
-                Slider(
-                  value: ttsBloc.pitch,
-                  onChanged: (newPitch) {
-                    ttsBloc.pitch = newPitch;
-                  },
-                  min: 0.5,
-                  max: 2.0,
-                  divisions: 15,
-                  label: "Pitch: $ttsBloc.pitch",
-                  activeColor: Colors.red,
+              key: _formKey,
+              child: Card(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    const Text(ttsText, textAlign: TextAlign.center),
+                    Text("Volume: ${ttsBloc.volume}"),
+                    Slider(
+                        value: ttsBloc.volume,
+                        onChanged: (newVolume) {
+                          ttsBloc.volume = newVolume;
+                        },
+                        min: 0.0,
+                        max: 1.0,
+                        divisions: 10,
+                        label: "Volume: ${ttsBloc.volume}"),
+                    Text("Pitch: ${ttsBloc.pitch}"),
+                    Slider(
+                      value: ttsBloc.pitch,
+                      onChanged: (newPitch) {
+                        ttsBloc.pitch = newPitch;
+                      },
+                      min: 0.5,
+                      max: 2.0,
+                      divisions: 15,
+                      label: "Pitch: ${ttsBloc.pitch}",
+                      activeColor: Colors.red,
+                    ),
+                    Text("Rate: ${ttsBloc.speechRate}"),
+                    Slider(
+                      value: ttsBloc.speechRate,
+                      onChanged: (newRate) {
+                        ttsBloc.speechRate = newRate;
+                      },
+                      min: 0.0,
+                      max: 1.0,
+                      divisions: 10,
+                      label: "Rate: ${ttsBloc.speechRate}",
+                      activeColor: Colors.green,
+                    )
+                  ],
                 ),
-                Slider(
-                  value: ttsBloc.speechRate,
-                  onChanged: (newRate) {
-                    ttsBloc.speechRate = newRate;
-                  },
-                  min: 0.0,
-                  max: 1.0,
-                  divisions: 10,
-                  label: "Rate: $ttsBloc.speechRate",
-                  activeColor: Colors.green,
-                )
-              ],
-            ),
-          );
+              ));
         }));
   }
 }
