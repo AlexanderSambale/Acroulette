@@ -23,7 +23,7 @@ class _VoiceRecognitionSettings extends State<VoiceRecognitionSettings> {
         ...textSettingsFormField(previousPosition),
         ...textSettingsFormField(currentPosition),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
           child: ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
