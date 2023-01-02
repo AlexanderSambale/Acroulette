@@ -9,3 +9,5 @@ const ttsText = 'Text to Speech';
 const volumeKey = 'Spech volume';
 const rateKey = 'Speech rate';
 const pitchKey = 'Speech pitch';
+const languageKey = 'Tts language';
+const engineKey = 'Tts engine';

@@ -21,8 +21,13 @@ class _SettingsState extends State<Settings> {
       key: _formKey,
       child: ListView(
         children: <Widget>[
-          const VoiceRecognitionSettings(),
-          TtsSettings(ttsBloc: widget.ttsBloc)
+          const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: VoiceRecognitionSettings()),
+          Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: TtsSettings(ttsBloc: widget.ttsBloc)),
         ],
       ),
     );
