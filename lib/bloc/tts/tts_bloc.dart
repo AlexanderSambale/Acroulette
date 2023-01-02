@@ -15,8 +15,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
 
   late double _volume, _rate, _pitch;
 
-  String? language;
-  String? engine;
+  String? _language, _engine;
   late bool isCurrentLanguageInstalled = false;
 
   late final Future<dynamic> languages;
@@ -48,13 +47,17 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     _setAwaitOptions();
   }
 
+  bool get isAndroid => !kIsWeb && Platform.isAndroid;
   double get volume => round(_volume);
   double get speechRate => round(_rate);
   double get pitch => round(_pitch);
+  String? get language => _language;
+  String? get engine => _engine;
   set volume(double newVolume) => setVolume(newVolume);
   set speechRate(double newRate) => setSpeechRate(newRate);
   set pitch(double newPitch) => setPitch(newPitch);
-  bool get isAndroid => !kIsWeb && Platform.isAndroid;
+  set language(String? newLanguage) => setLanguage(newLanguage);
+  set engine(String? newLanguage) => setEngine(newLanguage);
 
   Future _setAwaitOptions() async {
     await flutterTts.awaitSpeakCompletion(true);
@@ -79,6 +82,24 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     add(const TtsChangeEvent(pitchKey));
     objectbox.putSettingsPairValueByKey(pitchKey, pitch.toString());
     await flutterTts.setPitch(pitch);
+  }
+
+  Future<void> setLanguage(String? newLanguage) async {
+    if (newLanguage != null) {
+      _language = newLanguage;
+      add(const TtsChangeEvent(languageKey));
+      objectbox.putSettingsPairValueByKey(languageKey, newLanguage);
+      await flutterTts.setLanguage(newLanguage);
+    }
+  }
+
+  Future<void> setEngine(String? newEngine) async {
+    if (newEngine != null) {
+      _engine = newEngine;
+      add(const TtsChangeEvent(engineKey));
+      objectbox.putSettingsPairValueByKey(engineKey, newEngine);
+      await flutterTts.setEngine(newEngine);
+    }
   }
 
   Future<void> speak(String text) async {
