@@ -31,35 +31,6 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
   AcrouletteBloc(this.ttsBloc, ObjectBox objectbox, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
-    // initialize blocs
-    modeBloc = ModeBloc(objectbox);
-    washingMachineBloc = WashingMachineBloc(objectbox);
-
-    // initialize transitionBloc
-    List<String> possibleFigures = [];
-    if (mode == acroulette) {
-      possibleFigures = objectbox.possiblePositions();
-    }
-    transitionBloc = TransitionBloc(onTransitionChange, possibleFigures);
-    if (mode == washingMachine) {
-      List<String> figures = objectbox.flowPositions();
-      transitionBloc.add(InitFlowTransitionEvent(figures));
-    }
-
-    // when Model is loaded call onInitiated
-    voiceRecognitionBloc.initialize(onInitiated);
-
-    // get settings
-    HashMap<String, String> settingsMap =
-        SettingsPair.toMap(objectbox.settingsBox.getAll());
-
-    // set regex for voice commands
-    rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
-    rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
-    rPreviousPosition =
-        RegExp(settingsMap[previousPosition] ?? previousPosition);
-    rCurrentPosition = RegExp(settingsMap[currentPosition] ?? currentPosition);
-
     on<AcrouletteStart>((event, emit) {
       voiceRecognitionBloc.add(
           VoiceRecognitionStart(onData, onInitiated, onRecognitionStarted));
@@ -125,6 +96,34 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
               .add(InitFlowTransitionEvent(objectbox.flowPositions()))));
       emit(AcrouletteFlowState(event.machine));
     });
+    // initialize blocs
+    modeBloc = ModeBloc(objectbox);
+    washingMachineBloc = WashingMachineBloc(objectbox);
+
+    // initialize transitionBloc
+    List<String> possibleFigures = [];
+    if (mode == acroulette) {
+      possibleFigures = objectbox.possiblePositions();
+    }
+    transitionBloc = TransitionBloc(onTransitionChange, possibleFigures);
+    if (mode == washingMachine) {
+      List<String> figures = objectbox.flowPositions();
+      transitionBloc.add(InitFlowTransitionEvent(figures));
+    }
+
+    // when Model is loaded call onInitiated
+    voiceRecognitionBloc.initialize(onInitiated);
+
+    // get settings
+    HashMap<String, String> settingsMap =
+        SettingsPair.toMap(objectbox.settingsBox.getAll());
+
+    // set regex for voice commands
+    rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
+    rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
+    rPreviousPosition =
+        RegExp(settingsMap[previousPosition] ?? previousPosition);
+    rCurrentPosition = RegExp(settingsMap[currentPosition] ?? currentPosition);
   }
 
   String get mode {
