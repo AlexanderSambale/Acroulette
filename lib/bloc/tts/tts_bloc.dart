@@ -119,7 +119,9 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     flutterTts.stop();
   }
 
-  isLanguageInstalled(String language) {}
+  Future<dynamic> isLanguageInstalled(String language) {
+    return flutterTts.isLanguageInstalled(language);
+  }
 }
 
 double round(double value) {
