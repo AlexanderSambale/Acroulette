@@ -86,13 +86,7 @@ class _HomeState extends State<Home> {
                     height: 50,
                   ),
                   if (mode == washingMachine)
-                    DropdownButton<String>(
-                        value: machine,
-                        items: getWashingMachineItems(objectbox),
-                        onChanged: (value) {
-                          if (value == null || machine == value) return;
-                          acrouletteBloc.add(AcrouletteChangeMachine(value));
-                        }),
+                    washingMachineDropdown(machine, acrouletteBloc),
                   if (currentFigure != "")
                     showPositions(previousFigure, currentFigure, nextFigure),
                   Row(
@@ -253,4 +247,14 @@ Widget showPositions(
                     )))
     ],
   );
+}
+
+Widget washingMachineDropdown(String machine, AcrouletteBloc acrouletteBloc) {
+  return DropdownButton<String>(
+      value: machine,
+      items: getWashingMachineItems(objectbox),
+      onChanged: (value) {
+        if (value == null || machine == value) return;
+        acrouletteBloc.add(AcrouletteChangeMachine(value));
+      });
 }
