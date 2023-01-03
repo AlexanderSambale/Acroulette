@@ -119,7 +119,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   Future<dynamic> _getDefaultEngine() async =>
       await flutterTts.getDefaultEngine;
 
-  Future _getDefaultVoice() async => await flutterTts.getDefaultVoice;
+  Future<dynamic> _getDefaultVoice() async => await flutterTts.getDefaultVoice;
 
   dispose() {
     flutterTts.stop();
