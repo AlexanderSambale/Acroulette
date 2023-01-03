@@ -77,7 +77,7 @@ class _HomeState extends State<Home> {
             }
 
             return Container(
-                padding: const EdgeInsets.only(top: 50.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Column(children: [
                   modeSelect(mode, acrouletteBloc),
                   Text(text,
@@ -94,40 +94,7 @@ class _HomeState extends State<Home> {
                           acrouletteBloc.add(AcrouletteChangeMachine(value));
                         }),
                   if (currentFigure != "")
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Card(
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16.0, horizontal: 16.0),
-                                child: previousFigure == ""
-                                    ? noPosture()
-                                    : Text(
-                                        previousFigure,
-                                        textAlign: TextAlign.center,
-                                        style: displayTextStyle,
-                                      ))),
-                        Container(
-                          width: 10,
-                        ),
-                        postureMiddle(currentFigure),
-                        Container(
-                          width: 10,
-                        ),
-                        Card(
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16.0, horizontal: 16.0),
-                                child: nextFigure == ""
-                                    ? noPosture()
-                                    : Text(
-                                        nextFigure,
-                                        textAlign: TextAlign.center,
-                                        style: displayTextStyle,
-                                      )))
-                      ],
-                    ),
+                    showPositions(previousFigure, currentFigure, nextFigure),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [getControls(state, acrouletteBloc, mode)]),
@@ -247,5 +214,43 @@ Widget modeSelect(String mode, AcrouletteBloc acrouletteBloc) {
       if (value == null || mode == value) return;
       acrouletteBloc.add(AcrouletteChangeMode(value));
     },
+  );
+}
+
+Widget showPositions(
+    String previousFigure, String currentFigure, String nextFigure) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Card(
+          child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: previousFigure == ""
+                  ? noPosture()
+                  : Text(
+                      previousFigure,
+                      textAlign: TextAlign.center,
+                      style: displayTextStyle,
+                    ))),
+      Container(
+        height: 10,
+      ),
+      postureMiddle(currentFigure),
+      Container(
+        height: 10,
+      ),
+      Card(
+          child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: nextFigure == ""
+                  ? noPosture()
+                  : Text(
+                      nextFigure,
+                      textAlign: TextAlign.center,
+                      style: displayTextStyle,
+                    )))
+    ],
   );
 }
