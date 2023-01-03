@@ -92,6 +92,10 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
       add(const TtsChangeEvent(languageKey));
       objectbox.putSettingsPairValueByKey(languageKey, newLanguage);
       await flutterTts.setLanguage(newLanguage);
+      if (isAndroid) {
+        var isInstalled = await isLanguageInstalled(newLanguage);
+        isCurrentLanguageInstalled = (isInstalled as bool);
+      }
     }
   }
 

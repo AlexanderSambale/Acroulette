@@ -127,11 +127,6 @@ List<DropdownMenuItem<String>> getLanguageDropDownMenuItems(dynamic languages) {
 void changedLanguageDropDownItem(String? selectedType, TtsBloc ttsBloc) {
   var language = selectedType!;
   ttsBloc.language = language;
-  if (ttsBloc.isAndroid) {
-    ttsBloc
-        .isLanguageInstalled(language)
-        .then((value) => ttsBloc.isCurrentLanguageInstalled = (value as bool));
-  }
 }
 
 Widget _engineSection(TtsBloc ttsBloc) {
