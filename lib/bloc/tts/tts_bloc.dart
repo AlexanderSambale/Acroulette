@@ -27,6 +27,8 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     _volume = double.parse(objectbox.getSettingsPairValueByKey(volumeKey));
     _rate = double.parse(objectbox.getSettingsPairValueByKey(rateKey));
     _pitch = double.parse(objectbox.getSettingsPairValueByKey(pitchKey));
+    _language = objectbox.getSettingsPairValueByKey(languageKey);
+    _engine = objectbox.getSettingsPairValueByKey(engineKey);
     initTts();
     languages = _getLanguages();
     engines = _getEngines();
