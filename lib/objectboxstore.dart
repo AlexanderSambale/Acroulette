@@ -54,7 +54,7 @@ class ObjectBox {
 
     if (flowNodeBox.isEmpty()) {
       FlowNode flowNode = FlowNode('ninja star',
-          ['sidestar', 'reverse bird', 'sidestar', 'straddle bat']);
+          ['side star', 'reverse bird', 'side star', 'straddle bat']);
       int flowNodeId = flowNodeBox.put(flowNode);
       putSettingsPairValueByKey(flowIndex, flowNodeId.toString());
     }
@@ -72,6 +72,8 @@ class ObjectBox {
     setDefaultValue(rateKey, "0.5");
     setDefaultValue(pitchKey, "0.5");
     setDefaultValue(volumeKey, "0.5");
+    setDefaultValue(languageKey, "en-US");
+    setDefaultValue(engineKey, "");
   }
 
   void setDefaultValue(String key, String value) {
