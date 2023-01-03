@@ -103,11 +103,15 @@ Widget _languageDropDownSection(dynamic languages, TtsBloc ttsBloc) =>
     Container(
         padding: const EdgeInsets.only(top: 10.0),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Text("Language output:"),
           DropdownButton(
             value: ttsBloc.language,
             items: getLanguageDropDownMenuItems(languages),
             onChanged: (value) =>
                 changedLanguageDropDownItem(value as String?, ttsBloc),
+          ),
+          Container(
+            width: 10,
           ),
           Visibility(
             visible: ttsBloc.isAndroid,
@@ -161,11 +165,12 @@ void changedEnginesDropDownItem(String? selectedEngine, TtsBloc ttsBloc) async {
 }
 
 Widget _enginesDropDownSection(dynamic engines, TtsBloc ttsBloc) => Container(
-      padding: const EdgeInsets.only(top: 50.0),
-      child: DropdownButton(
+    padding: const EdgeInsets.only(top: 50.0),
+    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      DropdownButton(
         value: ttsBloc.engine,
         items: getEnginesDropDownMenuItems(engines),
         onChanged: (value) =>
             changedEnginesDropDownItem(value as String?, ttsBloc),
       ),
-    );
+    ]));
