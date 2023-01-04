@@ -80,15 +80,12 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.all(10.0),
                 child: Column(children: [
                   modeSelect(mode, acrouletteBloc),
-                  Text(text,
-                      textAlign: TextAlign.center, style: displayTextStyle),
-                  Container(
-                    height: 50,
-                  ),
                   if (mode == washingMachine)
                     washingMachineDropdown(machine, acrouletteBloc),
                   if (currentFigure != "")
-                    showPositions(previousFigure, currentFigure, nextFigure),
+                    Text(text,
+                        textAlign: TextAlign.center, style: displayTextStyle),
+                  showPositions(previousFigure, currentFigure, nextFigure),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [getControls(state, acrouletteBloc, mode)]),
