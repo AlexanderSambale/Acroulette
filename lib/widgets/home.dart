@@ -109,12 +109,12 @@ Column _controls(List<Widget> rowChildren, Widget stateWidgetLabel) {
 }
 
 Widget controlButton(
-    Color color, Color splashColor, IconData icon, Function func) {
+    Color color, Color splashColor, IconData icon, void Function()? func) {
   return IconButton(
       icon: Icon(icon, size: 36.0),
       color: color,
       splashColor: splashColor,
-      onPressed: () => func());
+      onPressed: func);
 }
 
 Widget stateWidgetLabel(Color color, String label) {
