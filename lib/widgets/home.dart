@@ -85,7 +85,8 @@ class _HomeState extends State<Home> {
                   if (currentFigure != "")
                     Text(text,
                         textAlign: TextAlign.center, style: displayTextStyle),
-                  showPositions(previousFigure, currentFigure, nextFigure),
+                  showPositions(previousFigure, currentFigure, nextFigure,
+                      MediaQuery.of(context).size.width),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [getControls(state, acrouletteBloc, mode)]),
@@ -121,21 +122,29 @@ Widget stateWidgetLabel(Color color, String label) {
               fontSize: 36.0, fontWeight: FontWeight.w400, color: color)));
 }
 
-TextStyle displayTextStyle =
-    const TextStyle(fontSize: 36.0, fontWeight: FontWeight.w400);
+const TextStyle displayTextStyle =
+    TextStyle(fontSize: 36.0, fontWeight: FontWeight.w400);
 
 TextStyle displayCurrentPostureStyle = const TextStyle(
     fontSize: 36.0, fontWeight: FontWeight.w400, color: Colors.blue);
 
-Widget postureMiddle(String figure) {
-  return Card(
-      child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-          child: Text(
-            figure,
-            textAlign: TextAlign.center,
-            style: displayCurrentPostureStyle,
-          )));
+Widget posture(String figure, double width,
+    {TextStyle style = displayTextStyle}) {
+  return SizedBox(
+      width: width,
+      child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: figure == ""
+                  ? noPosture()
+                  : Text(
+                      figure,
+                      textAlign: TextAlign.center,
+                      style: style,
+                    ))));
 }
 
 Widget noPosture() {
@@ -198,7 +207,7 @@ Column getControls(
 Widget modeSelect(String mode, AcrouletteBloc acrouletteBloc) {
   return DropdownButton<String>(
     value: mode,
-    items: [
+    items: const [
       DropdownMenuItem(
           value: acroulette, child: Text(acroulette, style: displayTextStyle)),
       DropdownMenuItem(
@@ -213,39 +222,19 @@ Widget modeSelect(String mode, AcrouletteBloc acrouletteBloc) {
 }
 
 Widget showPositions(
-    String previousFigure, String currentFigure, String nextFigure) {
+    String previousFigure, String currentFigure, String nextFigure, width) {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Card(
-          child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-              child: previousFigure == ""
-                  ? noPosture()
-                  : Text(
-                      previousFigure,
-                      textAlign: TextAlign.center,
-                      style: displayTextStyle,
-                    ))),
+      posture(previousFigure, width),
       Container(
         height: 10,
       ),
-      postureMiddle(currentFigure),
+      posture(currentFigure, width, style: displayCurrentPostureStyle),
       Container(
         height: 10,
       ),
-      Card(
-          child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-              child: nextFigure == ""
-                  ? noPosture()
-                  : Text(
-                      nextFigure,
-                      textAlign: TextAlign.center,
-                      style: displayTextStyle,
-                    )))
+      posture(nextFigure, width),
     ],
   );
 }
