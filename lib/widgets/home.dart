@@ -83,10 +83,10 @@ class _HomeState extends State<Home> {
                   if (mode == washingMachine)
                     washingMachineDropdown(machine, acrouletteBloc),
                   if (currentFigure != "")
-                    Text(text,
-                        textAlign: TextAlign.center, style: displayTextStyle),
-                  showPositions(previousFigure, currentFigure, nextFigure,
-                      MediaQuery.of(context).size.width),
+                    showPositions(previousFigure, currentFigure, nextFigure,
+                        MediaQuery.of(context).size.width),
+                  Text(text,
+                      textAlign: TextAlign.center, style: displayTextStyle),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [getControls(state, acrouletteBloc, mode)]),
@@ -102,7 +102,10 @@ Column _controls(List<Widget> rowChildren, Widget stateWidgetLabel) {
   return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [Row(children: rowChildren), stateWidgetLabel]);
+      children: [
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: rowChildren),
+        stateWidgetLabel
+      ]);
 }
 
 Widget controlButton(
