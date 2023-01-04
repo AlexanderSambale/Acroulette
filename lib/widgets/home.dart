@@ -162,7 +162,7 @@ List<DropdownMenuItem<String>> getWashingMachineItems(ObjectBox objectBox) {
       .getAll()
       .map((flow) => DropdownMenuItem<String>(
           value: flow.id.toString(),
-          child: Text(flow.name, style: displayTextStyle)))
+          child: Center(child: Text(flow.name, style: displayTextStyle))))
       .toList();
 }
 
@@ -209,24 +209,29 @@ Column getControls(
 
 Widget modeSelect(String mode, AcrouletteBloc acrouletteBloc) {
   return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
-      child: DropdownButton<String>(
-        value: mode,
-        items: const [
-          DropdownMenuItem(
-              value: acroulette,
-              child: Text(acroulette, style: displayTextStyle)),
-          DropdownMenuItem(
-              value: washingMachine,
-              child: Text(washingMachine, style: displayTextStyle))
-        ],
-        onChanged: (value) {
-          if (value == null || mode == value) return;
-          acrouletteBloc.add(AcrouletteChangeMode(value));
-        },
-        isExpanded: true,
-        underline: const SizedBox(),
-      ));
+      padding: const EdgeInsets.only(bottom: 10.0, left: 8.0, right: 8.0),
+      child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: DropdownButton<String>(
+            value: mode,
+            items: const [acroulette, washingMachine]
+                .map<DropdownMenuItem<String>>(((String itemLabel) {
+              return DropdownMenuItem(
+                  value: itemLabel,
+                  child:
+                      Center(child: Text(itemLabel, style: displayTextStyle)));
+            })).toList(),
+            onChanged: (value) {
+              if (value == null || mode == value) return;
+              acrouletteBloc.add(AcrouletteChangeMode(value));
+            },
+            isExpanded: true,
+            underline: const SizedBox(),
+          )));
 }
 
 Widget showPositions(
@@ -249,15 +254,21 @@ Widget showPositions(
 
 Widget washingMachineDropdown(String machine, AcrouletteBloc acrouletteBloc) {
   return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
-      child: DropdownButton<String>(
-        value: machine,
-        items: getWashingMachineItems(objectbox),
-        onChanged: (value) {
-          if (value == null || machine == value) return;
-          acrouletteBloc.add(AcrouletteChangeMachine(value));
-        },
-        isExpanded: true,
-        underline: const SizedBox(),
-      ));
+      padding: const EdgeInsets.only(bottom: 10.0, left: 8.0, right: 8.0),
+      child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: DropdownButton<String>(
+            value: machine,
+            items: getWashingMachineItems(objectbox),
+            onChanged: (value) {
+              if (value == null || machine == value) return;
+              acrouletteBloc.add(AcrouletteChangeMachine(value));
+            },
+            isExpanded: true,
+            underline: const SizedBox(),
+          )));
 }
