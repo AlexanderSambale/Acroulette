@@ -152,7 +152,8 @@ List<DropdownMenuItem<String>> getWashingMachineItems(ObjectBox objectBox) {
   return objectBox.flowNodeBox
       .getAll()
       .map((flow) => DropdownMenuItem<String>(
-          value: flow.id.toString(), child: Text(flow.name)))
+          value: flow.id.toString(),
+          child: Text(flow.name, style: displayTextStyle)))
       .toList();
 }
 
@@ -200,9 +201,12 @@ Column getControls(
 Widget modeSelect(String mode, AcrouletteBloc acrouletteBloc) {
   return DropdownButton<String>(
     value: mode,
-    items: const [
-      DropdownMenuItem(value: acroulette, child: Text(acroulette)),
-      DropdownMenuItem(value: washingMachine, child: Text(washingMachine))
+    items: [
+      DropdownMenuItem(
+          value: acroulette, child: Text(acroulette, style: displayTextStyle)),
+      DropdownMenuItem(
+          value: washingMachine,
+          child: Text(washingMachine, style: displayTextStyle))
     ],
     onChanged: (value) {
       if (value == null || mode == value) return;
