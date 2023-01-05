@@ -35,7 +35,7 @@ class _TtsSettings extends State<TtsSettings> {
                     Text("Volume: ${ttsBloc.volume}"),
                     Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: size, horizontal: size),
+                            vertical: size / 4, horizontal: size / 4),
                         child: Slider(
                             value: ttsBloc.volume,
                             onChanged: (newVolume) {
@@ -48,7 +48,7 @@ class _TtsSettings extends State<TtsSettings> {
                     Text("Pitch: ${ttsBloc.pitch}"),
                     Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: size, horizontal: size),
+                            vertical: size / 4, horizontal: size / 4),
                         child: Slider(
                           value: ttsBloc.pitch,
                           onChanged: (newPitch) {
@@ -63,7 +63,7 @@ class _TtsSettings extends State<TtsSettings> {
                     Text("Rate: ${ttsBloc.speechRate}"),
                     Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: size, horizontal: size),
+                            vertical: size / 4, horizontal: size / 4),
                         child: Slider(
                           value: ttsBloc.speechRate,
                           onChanged: (newRate) {
@@ -103,19 +103,21 @@ FutureBuilder<dynamic> _languageSection(TtsBloc ttsBloc) =>
 
 Widget _languageDropDownSection(dynamic languages, TtsBloc ttsBloc) =>
     Column(children: [
-      const Text("Speech language:"),
-      DropdownButton(
-        value: ttsBloc.language,
-        items: getLanguageDropDownMenuItems(languages),
-        onChanged: (value) =>
-            changedLanguageDropDownItem(value as String?, ttsBloc),
-      ),
-      Container(
-        width: 10,
+      Row(
+        children: [
+          const Text("Speech language:"),
+          DropdownButton<String?>(
+            value: ttsBloc.language,
+            items: getLanguageDropDownMenuItems(languages),
+            onChanged: (value) => changedLanguageDropDownItem(value, ttsBloc),
+          ),
+        ],
       ),
       Visibility(
         visible: ttsBloc.isAndroid,
-        child: Text("Is installed: ${ttsBloc.isCurrentLanguageInstalled}"),
+        child: Row(children: [
+          Text("Is installed: ${ttsBloc.isCurrentLanguageInstalled}")
+        ]),
       ),
     ]);
 
@@ -164,16 +166,14 @@ void changedEnginesDropDownItem(String? selectedEngine, TtsBloc ttsBloc) async {
   ttsBloc.engine = selectedEngine!;
 }
 
-Widget _enginesDropDownSection(dynamic engines, TtsBloc ttsBloc) => Container(
-    padding: const EdgeInsets.only(top: 50.0),
-    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      DropdownButton(
+Widget _enginesDropDownSection(dynamic engines, TtsBloc ttsBloc) =>
+    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      DropdownButton<String?>(
         value: ttsBloc.engine,
         items: getEnginesDropDownMenuItems(engines),
-        onChanged: (value) =>
-            changedEnginesDropDownItem(value as String?, ttsBloc),
+        onChanged: (value) => changedEnginesDropDownItem(value, ttsBloc),
       ),
-    ]));
+    ]);
 
 FutureBuilder<dynamic> _defaultEngine(TtsBloc ttsBloc) =>
     FutureBuilder<dynamic>(
