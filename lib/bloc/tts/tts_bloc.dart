@@ -25,7 +25,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
 
   TtsBloc(this.objectbox) : super(TtsIdleState()) {
     on<TtsChangeEvent>((event, emit) {
-      emit(TtsChangeState());
+      emit(TtsChangeState(event.property));
       add(const TtsIdleEvent());
     });
     on<TtsIdleEvent>((event, emit) {
