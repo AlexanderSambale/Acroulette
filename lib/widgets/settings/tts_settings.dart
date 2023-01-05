@@ -1,5 +1,6 @@
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
+import 'package:acroulette/constants/widgets.dart';
 import 'package:acroulette/widgets/formWidgets/heading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +35,7 @@ class _TtsSettings extends State<TtsSettings> {
                     Text("Volume: ${ttsBloc.volume}"),
                     Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 16.0),
+                            vertical: size, horizontal: size),
                         child: Slider(
                             value: ttsBloc.volume,
                             onChanged: (newVolume) {
@@ -47,7 +48,7 @@ class _TtsSettings extends State<TtsSettings> {
                     Text("Pitch: ${ttsBloc.pitch}"),
                     Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 16.0),
+                            vertical: size, horizontal: size),
                         child: Slider(
                           value: ttsBloc.pitch,
                           onChanged: (newPitch) {
@@ -62,7 +63,7 @@ class _TtsSettings extends State<TtsSettings> {
                     Text("Rate: ${ttsBloc.speechRate}"),
                     Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 16.0),
+                            vertical: size, horizontal: size),
                         child: Slider(
                           value: ttsBloc.speechRate,
                           onChanged: (newRate) {

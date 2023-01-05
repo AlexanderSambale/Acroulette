@@ -2,12 +2,11 @@ import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
+import 'package:acroulette/constants/widgets.dart';
 import 'package:acroulette/main.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-const double size = 18.0;
 
 class Home extends StatefulWidget {
   const Home(
