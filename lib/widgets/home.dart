@@ -169,16 +169,6 @@ List<DropdownMenuItem<String>> getWashingMachineItems(ObjectBox objectBox) {
 Column getControls(
     BaseAcrouletteState state, AcrouletteBloc acrouletteBloc, String mode) {
   switch (state.runtimeType) {
-    case AcrouletteInitialState:
-    case AcrouletteInitModel:
-      {
-        Color color = Colors.amber;
-        Color splashColor = Colors.amberAccent;
-        return _controls([
-          controlButton(color, splashColor, Icons.launch,
-              () => acrouletteBloc.add(AcrouletteStart()))
-        ], stateWidgetLabel(color, 'Initialize Model'));
-      }
     case AcrouletteModelInitiatedState:
       {
         Color color = Colors.green;

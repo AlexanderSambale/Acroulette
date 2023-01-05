@@ -52,7 +52,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
         });
     on<AcrouletteStop>((event, emit) {
       voiceRecognitionBloc.add(VoiceRecognitionStop());
-      emit(AcrouletteInitialState());
+      emit(AcrouletteModelInitiatedState());
     });
     on<AcrouletteTransition>((event, emit) {
       switch (event.transition) {
