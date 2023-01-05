@@ -75,11 +75,11 @@ class _TtsSettings extends State<TtsSettings> {
                           label: "Rate: ${ttsBloc.speechRate}",
                           activeColor: Colors.green,
                         )),
-                    _futureBuilder(ttsBloc),
+                    _languageSection(ttsBloc),
                     _engineSection(ttsBloc),
                     if (ttsBloc.isAndroid) ...[
-                      Text("Default engine: ${ttsBloc.defaultEngine}"),
-                      Text("Default voice: ${ttsBloc.defaultVoice}")
+                      _defaultEngine(ttsBloc),
+                      _defaultVoice(ttsBloc),
                     ]
                   ],
                 ),
@@ -88,37 +88,36 @@ class _TtsSettings extends State<TtsSettings> {
   }
 }
 
-Widget _futureBuilder(TtsBloc ttsBloc) => FutureBuilder<dynamic>(
-    future: ttsBloc.languages,
-    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-      if (snapshot.hasData) {
-        return _languageDropDownSection(snapshot.data, ttsBloc);
-      } else if (snapshot.hasError) {
-        return const Text('Error loading languages...');
-      } else {
-        return const Text('Loading Languages...');
-      }
-    });
+FutureBuilder<dynamic> _languageSection(TtsBloc ttsBloc) =>
+    FutureBuilder<dynamic>(
+        future: ttsBloc.languages,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return _languageDropDownSection(snapshot.data, ttsBloc);
+          } else if (snapshot.hasError) {
+            return const Text('Error loading languages...');
+          } else {
+            return const Text('Loading Languages...');
+          }
+        });
 
 Widget _languageDropDownSection(dynamic languages, TtsBloc ttsBloc) =>
-    Container(
-        padding: const EdgeInsets.only(top: 10.0),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Text("Language output:"),
-          DropdownButton(
-            value: ttsBloc.language,
-            items: getLanguageDropDownMenuItems(languages),
-            onChanged: (value) =>
-                changedLanguageDropDownItem(value as String?, ttsBloc),
-          ),
-          Container(
-            width: 10,
-          ),
-          Visibility(
-            visible: ttsBloc.isAndroid,
-            child: Text("Is installed: ${ttsBloc.isCurrentLanguageInstalled}"),
-          ),
-        ]));
+    Column(children: [
+      const Text("Speech language:"),
+      DropdownButton(
+        value: ttsBloc.language,
+        items: getLanguageDropDownMenuItems(languages),
+        onChanged: (value) =>
+            changedLanguageDropDownItem(value as String?, ttsBloc),
+      ),
+      Container(
+        width: 10,
+      ),
+      Visibility(
+        visible: ttsBloc.isAndroid,
+        child: Text("Is installed: ${ttsBloc.isCurrentLanguageInstalled}"),
+      ),
+    ]);
 
 List<DropdownMenuItem<String>> getLanguageDropDownMenuItems(dynamic languages) {
   var items = <DropdownMenuItem<String>>[];
@@ -175,3 +174,28 @@ Widget _enginesDropDownSection(dynamic engines, TtsBloc ttsBloc) => Container(
             changedEnginesDropDownItem(value as String?, ttsBloc),
       ),
     ]));
+
+FutureBuilder<dynamic> _defaultEngine(TtsBloc ttsBloc) =>
+    FutureBuilder<dynamic>(
+        future: ttsBloc.defaultEngine,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return Text("Default engine: ${snapshot.data}");
+          } else if (snapshot.hasError) {
+            return const Text('Error loading default engine.');
+          } else {
+            return const Text('Loading default engine...');
+          }
+        });
+
+FutureBuilder<dynamic> _defaultVoice(TtsBloc ttsBloc) => FutureBuilder<dynamic>(
+    future: ttsBloc.defaultVoice,
+    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      if (snapshot.hasData) {
+        return Text("Default voice: ${snapshot.data}");
+      } else if (snapshot.hasError) {
+        return const Text('Error default language.');
+      } else {
+        return const Text('Loading default language...');
+      }
+    });
