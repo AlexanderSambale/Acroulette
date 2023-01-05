@@ -111,6 +111,7 @@ Column _controls(List<Widget> rowChildren, Widget stateWidgetLabel) {
 Widget controlButton(
     Color color, Color splashColor, IconData icon, void Function()? func) {
   return IconButton(
+      padding: const EdgeInsets.all(0),
       icon: Icon(icon, size: 36.0),
       color: color,
       splashColor: splashColor,
