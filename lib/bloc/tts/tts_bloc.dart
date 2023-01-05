@@ -32,21 +32,17 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
       emit(TtsIdleState());
     });
 
+    flutterTts = FlutterTts();
+    _setAwaitOptions();
     volume = double.parse(objectbox.getSettingsPairValueByKey(volumeKey));
     speechRate = double.parse(objectbox.getSettingsPairValueByKey(rateKey));
     pitch = double.parse(objectbox.getSettingsPairValueByKey(pitchKey));
-    language = objectbox.getSettingsPairValueByKey(languageKey);
     engine = objectbox.getSettingsPairValueByKey(engineKey);
-    initTts();
+    language = objectbox.getSettingsPairValueByKey(languageKey);
     languages = _getLanguages();
     engines = _getEngines();
     defaultEngine = _getDefaultEngine();
     defaultVoice = _getDefaultVoice();
-  }
-
-  initTts() {
-    flutterTts = FlutterTts();
-    _setAwaitOptions();
   }
 
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
@@ -89,22 +85,22 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   Future<void> setLanguage(String? newLanguage) async {
     if (newLanguage != null) {
       _language = newLanguage;
-      add(const TtsChangeEvent(languageKey));
       objectbox.putSettingsPairValueByKey(languageKey, newLanguage);
       await flutterTts.setLanguage(newLanguage);
       if (isAndroid) {
         var isInstalled = await isLanguageInstalled(newLanguage);
         isCurrentLanguageInstalled = (isInstalled as bool);
       }
+      add(const TtsChangeEvent(languageKey));
     }
   }
 
   Future<void> setEngine(String? newEngine) async {
     if (newEngine != null) {
       _engine = newEngine;
-      add(const TtsChangeEvent(engineKey));
       objectbox.putSettingsPairValueByKey(engineKey, newEngine);
       await flutterTts.setEngine(newEngine);
+      add(const TtsChangeEvent(engineKey));
     }
   }
 
