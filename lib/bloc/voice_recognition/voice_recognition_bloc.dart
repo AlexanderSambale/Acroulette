@@ -13,8 +13,6 @@ class VoiceRecognitionBloc
   bool isModelLoaded = false;
 
   VoiceRecognitionBloc() : super(const VoiceRecognitionState.initial()) {
-    initModel();
-
     on<VoiceRecognitionStart>((event, emit) async {
       await VoskFlutterPlugin.start();
       event.onRecognitionStarted();
@@ -25,6 +23,8 @@ class VoiceRecognitionBloc
       VoskFlutterPlugin.stop();
       emit(state.copyWith(isRecognizing: false));
     });
+
+    initModel();
   }
 
   Future<void> initModel() async {
