@@ -24,17 +24,6 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   late final Future<dynamic> defaultVoice;
 
   TtsBloc(this.objectbox) : super(TtsIdleState()) {
-    _volume = double.parse(objectbox.getSettingsPairValueByKey(volumeKey));
-    _rate = double.parse(objectbox.getSettingsPairValueByKey(rateKey));
-    _pitch = double.parse(objectbox.getSettingsPairValueByKey(pitchKey));
-    _language = objectbox.getSettingsPairValueByKey(languageKey);
-    _engine = objectbox.getSettingsPairValueByKey(engineKey);
-    initTts();
-    languages = _getLanguages();
-    engines = _getEngines();
-    defaultEngine = _getDefaultEngine();
-    defaultVoice = _getDefaultVoice();
-
     on<TtsChangeEvent>((event, emit) {
       emit(TtsChangeState());
       add(const TtsIdleEvent());
@@ -42,6 +31,17 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     on<TtsIdleEvent>((event, emit) {
       emit(TtsIdleState());
     });
+
+    volume = double.parse(objectbox.getSettingsPairValueByKey(volumeKey));
+    speechRate = double.parse(objectbox.getSettingsPairValueByKey(rateKey));
+    pitch = double.parse(objectbox.getSettingsPairValueByKey(pitchKey));
+    language = objectbox.getSettingsPairValueByKey(languageKey);
+    engine = objectbox.getSettingsPairValueByKey(engineKey);
+    initTts();
+    languages = _getLanguages();
+    engines = _getEngines();
+    defaultEngine = _getDefaultEngine();
+    defaultVoice = _getDefaultVoice();
   }
 
   initTts() {
