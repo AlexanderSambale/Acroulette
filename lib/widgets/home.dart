@@ -7,6 +7,8 @@ import 'package:acroulette/objectboxstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+const double size = 18.0;
+
 class Home extends StatefulWidget {
   const Home(
       {Key? key, required this.voiceRecognitionBloc, required this.ttsBloc})
@@ -106,7 +108,7 @@ Widget controlButton(
     Color color, Color splashColor, IconData icon, void Function()? func) {
   return IconButton(
       padding: const EdgeInsets.all(0),
-      icon: Icon(icon, size: 36.0),
+      icon: Icon(icon, size: 2.5 * size),
       color: color,
       splashColor: splashColor,
       onPressed: func);
@@ -117,14 +119,14 @@ Widget stateWidgetLabel(Color color, String label) {
       margin: const EdgeInsets.only(top: 8.0),
       child: Text(label,
           style: TextStyle(
-              fontSize: 36.0, fontWeight: FontWeight.w400, color: color)));
+              fontSize: size, fontWeight: FontWeight.w400, color: color)));
 }
 
 const TextStyle displayTextStyle =
-    TextStyle(fontSize: 36.0, fontWeight: FontWeight.w400);
+    TextStyle(fontSize: size, fontWeight: FontWeight.w400);
 
 TextStyle displayCurrentPostureStyle = const TextStyle(
-    fontSize: 36.0, fontWeight: FontWeight.w400, color: Colors.blue);
+    fontSize: size, fontWeight: FontWeight.w400, color: Colors.blue);
 
 Widget posture(String figure, double width,
     {TextStyle style = displayTextStyle}) {
@@ -148,7 +150,7 @@ Widget posture(String figure, double width,
 Widget noPosture() {
   return const Icon(
     Icons.warning,
-    size: 36.0,
+    size: size,
   );
 }
 
