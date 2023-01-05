@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
               widget.ttsBloc, objectbox, widget.voiceRecognitionBloc),
           child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
               buildWhen: (previous, current) {
-            return true;
+            return current.runtimeType != AcrouletteFlowState;
           }, builder: (BuildContext context, state) {
             String text;
             String currentFigure = "";
@@ -63,9 +63,6 @@ class _HomeState extends State<Home> {
                 currentFigure = currentState.currentFigure;
                 previousFigure = currentState.previousFigure;
                 nextFigure = currentState.nextFigure;
-                text = "Listening to voice commands!";
-                break;
-              case AcrouletteRecognizeCommandState:
                 text = "Listening to voice commands!";
                 break;
               default:

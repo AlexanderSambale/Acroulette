@@ -16,14 +16,6 @@ class AcrouletteModelInitiatedState extends BaseAcrouletteState {}
 
 class AcrouletteStopState extends BaseAcrouletteState {}
 
-class AcrouletteRecognizeCommandState extends BaseAcrouletteState {
-  @override
-  bool operator ==(Object other) => identical(this, other);
-
-  @override
-  int get hashCode => props.hashCode;
-}
-
 class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
   final String currentFigure;
   final String nextFigure;
