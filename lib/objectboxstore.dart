@@ -73,7 +73,7 @@ class ObjectBox {
     setDefaultValue(pitchKey, "0.5");
     setDefaultValue(volumeKey, "0.5");
     setDefaultValue(languageKey, "en-US");
-    setDefaultValue(engineKey, "");
+    setDefaultValue(engineKey, "com.google.android.tts");
   }
 
   void setDefaultValue(String key, String value) {
