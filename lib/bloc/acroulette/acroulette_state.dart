@@ -14,8 +14,6 @@ class AcrouletteInitModel extends BaseAcrouletteState {}
 
 class AcrouletteModelInitiatedState extends BaseAcrouletteState {}
 
-class AcrouletteVoiceRecognitionStartedState extends BaseAcrouletteState {}
-
 class AcrouletteStopState extends BaseAcrouletteState {}
 
 class AcrouletteRecognizeCommandState extends BaseAcrouletteState {
@@ -39,6 +37,9 @@ class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
 
   @override
   int get hashCode => props.hashCode;
+
+  @override
+  List<Object> get props => [currentFigure, nextFigure, previousFigure, mode];
 }
 
 class AcrouletteFlowState extends BaseAcrouletteState {

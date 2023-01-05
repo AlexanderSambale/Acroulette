@@ -6,8 +6,6 @@ class AcrouletteStart extends AcrouletteEvent {}
 
 class AcrouletteInitModelEvent extends AcrouletteEvent {}
 
-class AcrouletteStartVoiceRecognitionEvent extends AcrouletteEvent {}
-
 class AcrouletteCommandRecognizedEvent extends AcrouletteEvent {
   final String currentFigure;
   final String nextFigure;

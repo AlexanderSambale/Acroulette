@@ -65,7 +65,6 @@ class _HomeState extends State<Home> {
                 nextFigure = currentState.nextFigure;
                 text = "Listening to voice commands!";
                 break;
-              case AcrouletteVoiceRecognitionStartedState:
               case AcrouletteRecognizeCommandState:
                 text = "Listening to voice commands!";
                 break;
@@ -228,13 +227,7 @@ Widget showPositions(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
       posture(previousFigure, width),
-      Container(
-        height: 10,
-      ),
       posture(currentFigure, width, style: displayCurrentPostureStyle),
-      Container(
-        height: 10,
-      ),
       posture(nextFigure, width),
     ],
   );

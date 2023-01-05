@@ -45,6 +45,8 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
       }
     });
     on<CurrentTransitionEvent>((event, emit) {
+      emit(TransitionState(
+          state.figures, state.index, TransitionStatus.changingStateProps));
       // just call out the name of the current figure
       emit(TransitionState(
           state.figures, state.index, TransitionStatus.current));
