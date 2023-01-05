@@ -7,13 +7,13 @@ part 'transition_event.dart';
 part 'transition_state.dart';
 
 class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
-  TransitionBloc(this.externalOnChange, this.possibleFigures)
+  TransitionBloc(this.externalOnChange)
       : super(const TransitionState.initial()) {
     on<NewTransitionEvent>((event, emit) {
       final newFigures = List<String>.empty(growable: true);
       newFigures.addAll(state.figures);
       int index = newFigures.length;
-      newFigures.add(getRandomFigure(
+      newFigures.add(getRandomFigure(event.possibleFigures,
           sameAllowed: false,
           lastFigure: state.figures.isEmpty ? '' : state.figures.last));
       emit(TransitionState(
@@ -58,10 +58,8 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
     });
 
     on<InitAcrouletteTransitionEvent>((event, emit) {
-      possibleFigures.clear();
-      possibleFigures.addAll(event.possibleFigures);
-      emit(TransitionState(
-          [getRandomFigure()], 0, TransitionStatus.changingStateProps));
+      emit(TransitionState([getRandomFigure(event.possibleFigures)], 0,
+          TransitionStatus.changingStateProps));
       add(CurrentTransitionEvent());
     });
   }
@@ -74,13 +72,14 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
 
   final void Function(TransitionStatus status) externalOnChange;
   final rng = Random();
-  late final List<String> possibleFigures;
 
-  String getRandomFigure({bool sameAllowed = false, String lastFigure = ''}) {
+  String getRandomFigure(List<String> possibleFigures,
+      {bool sameAllowed = false, String lastFigure = ''}) {
     final newFigureIndex = rng.nextInt(possibleFigures.length);
     final newFigure = possibleFigures[newFigureIndex];
     if (newFigure == lastFigure) {
-      return getRandomFigure(sameAllowed: sameAllowed, lastFigure: lastFigure);
+      return getRandomFigure(possibleFigures,
+          sameAllowed: sameAllowed, lastFigure: lastFigure);
     }
     return newFigure;
   }

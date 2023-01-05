@@ -32,8 +32,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   AcrouletteBloc(this.ttsBloc, ObjectBox objectbox, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
     on<AcrouletteStart>((event, emit) {
-      voiceRecognitionBloc.add(
-          VoiceRecognitionStart(onData, onInitiated, onRecognitionStarted));
+      voiceRecognitionBloc.add(VoiceRecognitionStart(
+          onData, onInitiated, () => onRecognitionStarted(objectbox)));
       emit(AcrouletteInitModel());
     });
     on<AcrouletteInitModelEvent>((event, emit) {
@@ -55,7 +55,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     on<AcrouletteTransition>((event, emit) {
       switch (event.transition) {
         case newPosition:
-          transitionBloc.add(NewTransitionEvent());
+          transitionBloc.add(NewTransitionEvent(objectbox.possiblePositions()));
           break;
         case nextPosition:
           transitionBloc.add(NextTransitionEvent());
@@ -99,15 +99,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     washingMachineBloc = WashingMachineBloc(objectbox);
 
     // initialize transitionBloc
-    List<String> possibleFigures = [];
-    if (mode == acroulette) {
-      possibleFigures = objectbox.possiblePositions();
-    }
-    transitionBloc = TransitionBloc(onTransitionChange, possibleFigures);
-    if (mode == washingMachine) {
-      List<String> figures = objectbox.flowPositions();
-      transitionBloc.add(InitFlowTransitionEvent(figures));
-    }
+    transitionBloc = TransitionBloc(onTransitionChange);
+    setTransitionsDependingOnMode(objectbox);
 
     // when Model is loaded call onInitiated
     voiceRecognitionBloc.initialize(onInitiated);
@@ -153,8 +146,18 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     add(AcrouletteInitModelEvent());
   }
 
-  void onRecognitionStarted() {
-    add(AcrouletteTransition(currentPosition));
+  void setTransitionsDependingOnMode(ObjectBox objectBox) {
+    if (mode == washingMachine) {
+      transitionBloc.add(InitFlowTransitionEvent(objectBox.flowPositions()));
+    }
+    if (mode == acroulette) {
+      transitionBloc
+          .add(InitAcrouletteTransitionEvent(objectBox.possiblePositions()));
+    }
+  }
+
+  void onRecognitionStarted(ObjectBox objectBox) {
+    setTransitionsDependingOnMode(objectBox);
   }
 
   void recognizeCommand(String command) {

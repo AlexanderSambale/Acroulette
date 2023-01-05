@@ -12,7 +12,10 @@ class PreviousTransitionEvent extends TransitionEvent {}
 class CurrentTransitionEvent extends TransitionEvent {}
 
 /// Triggers adding a new figure to the transitions list
-class NewTransitionEvent extends TransitionEvent {}
+class NewTransitionEvent extends TransitionEvent {
+  late List<String> possibleFigures;
+  NewTransitionEvent(this.possibleFigures);
+}
 
 class InitFlowTransitionEvent extends TransitionEvent {
   late List<String> figures;
