@@ -126,7 +126,7 @@ const TextStyle displayTextStyle =
     TextStyle(fontSize: size, fontWeight: FontWeight.w400);
 
 TextStyle displayCurrentPostureStyle = const TextStyle(
-    fontSize: size, fontWeight: FontWeight.w400, color: Colors.blue);
+    fontSize: 1.5 * size, fontWeight: FontWeight.w400, color: Colors.blue);
 
 Widget posture(String figure, double width,
     {TextStyle style = displayTextStyle}) {
@@ -203,7 +203,8 @@ Widget modeSelect(String mode, AcrouletteBloc acrouletteBloc) {
             borderRadius: BorderRadius.circular(5.0),
             color: Colors.white,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: size / 4),
           child: DropdownButton<String>(
             value: mode,
             items: const [acroulette, washingMachine]
@@ -242,7 +243,8 @@ Widget washingMachineDropdown(String machine, AcrouletteBloc acrouletteBloc) {
             borderRadius: BorderRadius.circular(5.0),
             color: Colors.white,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: size / 4),
           child: DropdownButton<String>(
             value: machine,
             items: getWashingMachineItems(objectbox),
