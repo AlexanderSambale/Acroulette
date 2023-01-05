@@ -54,11 +54,8 @@ class _HomeState extends State<Home> {
             var mode = acrouletteBloc.mode;
             var machine = acrouletteBloc.machine;
             switch (state.runtimeType) {
-              case AcrouletteInitModel:
-                text = "Loading languagemodel!";
-                break;
               case AcrouletteModelInitiatedState:
-                text = "Starting voice recognition!";
+                text = "Click the play button to start!";
                 break;
               case AcrouletteCommandRecognizedState:
                 AcrouletteCommandRecognizedState currentState =
@@ -73,7 +70,7 @@ class _HomeState extends State<Home> {
                 text = "Listening to voice commands!";
                 break;
               default:
-                text = "Click the play button to start the game!";
+                text = "Click the play button to start!";
             }
 
             return Container(
