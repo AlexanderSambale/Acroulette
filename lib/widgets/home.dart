@@ -44,7 +44,8 @@ class _HomeState extends State<Home> {
               widget.ttsBloc, objectbox, widget.voiceRecognitionBloc),
           child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
               buildWhen: (previous, current) {
-            return current.runtimeType != AcrouletteFlowState;
+            return ![AcrouletteFlowState, AcrouletteInitModel]
+                .contains(current.runtimeType);
           }, builder: (BuildContext context, state) {
             String text;
             String currentFigure = "";
