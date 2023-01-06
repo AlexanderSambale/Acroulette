@@ -95,7 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      if (_selectedIndex != index) {
+        voiceRecognitionBloc.add(VoiceRecognitionStop());
+        _selectedIndex = index;
+      }
     });
   }
 
