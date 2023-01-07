@@ -8,8 +8,6 @@ part 'mode_state.dart';
 
 class ModeBloc extends Bloc<ModeEvent, ModeState> {
   ModeBloc(ObjectBox objectbox) : super(const ModeInitial()) {
-    mode = objectbox.getSettingsPairValueByKey(appMode);
-
     on<ModeChange>((event, emit) {
       if (mode != event.mode) {
         objectbox.putSettingsPairValueByKey(appMode, event.mode);
@@ -18,6 +16,8 @@ class ModeBloc extends Bloc<ModeEvent, ModeState> {
       }
       emit(Mode(event.mode));
     });
+
+    mode = objectbox.getSettingsPairValueByKey(appMode);
   }
 
   late String mode;

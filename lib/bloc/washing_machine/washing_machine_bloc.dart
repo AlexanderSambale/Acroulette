@@ -10,8 +10,6 @@ class WashingMachineBloc
     extends Bloc<WashingMachineEvent, WashingMachineState> {
   WashingMachineBloc(ObjectBox objectbox)
       : super(const WashingMachineInitial()) {
-    machine = objectbox.getSettingsPairValueByKey(flowIndex);
-
     on<WashingMachineChange>((event, emit) {
       if (machine != event.machine) {
         objectbox.putSettingsPairValueByKey(flowIndex, event.machine);
@@ -20,6 +18,8 @@ class WashingMachineBloc
       }
       emit(WashingMachine(event.machine));
     });
+
+    machine = objectbox.getSettingsPairValueByKey(flowIndex);
   }
 
   late String machine;
