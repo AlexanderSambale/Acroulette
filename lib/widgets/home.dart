@@ -45,8 +45,11 @@ class _HomeState extends State<Home> {
               widget.ttsBloc, objectbox, widget.voiceRecognitionBloc),
           child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
               buildWhen: (previous, current) {
-            return ![AcrouletteFlowState, AcrouletteInitModel]
-                .contains(current.runtimeType);
+            return ![
+              AcrouletteFlowState,
+              AcrouletteInitModel,
+              AcrouletteInitialState
+            ].contains(current.runtimeType);
           }, builder: (BuildContext context, state) {
             String text;
             String currentFigure = "";
@@ -68,7 +71,7 @@ class _HomeState extends State<Home> {
                 text = "Listening to voice commands!";
                 break;
               default:
-                text = "Click the play button to start!";
+                return Container();
             }
 
             return Container(
