@@ -37,4 +37,7 @@ class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
 class AcrouletteFlowState extends BaseAcrouletteState {
   final String flowName;
   const AcrouletteFlowState(this.flowName);
+
+  @override
+  List<Object> get props => [flowName];
 }
