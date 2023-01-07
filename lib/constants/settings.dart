@@ -11,3 +11,4 @@ const rateKey = 'Speech rate';
 const pitchKey = 'Speech pitch';
 const languageKey = 'Tts language';
 const engineKey = 'Tts engine';
+const playingKey = 'playing';
