@@ -45,11 +45,8 @@ class _HomeState extends State<Home> {
               widget.ttsBloc, objectbox, widget.voiceRecognitionBloc),
           child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
               buildWhen: (previous, current) {
-            return ![
-              AcrouletteFlowState,
-              AcrouletteInitModel,
-              AcrouletteInitialState
-            ].contains(current.runtimeType);
+            return ![AcrouletteInitModel, AcrouletteInitialState]
+                .contains(current.runtimeType);
           }, builder: (BuildContext context, state) {
             String text;
             String currentFigure = "";
@@ -60,6 +57,10 @@ class _HomeState extends State<Home> {
             var machine = acrouletteBloc.machine;
             switch (state.runtimeType) {
               case AcrouletteModelInitiatedState:
+              case AcrouletteFlowState:
+                if (objectbox.getSettingsPairValueByKey(playingKey) == "true") {
+                  return Container();
+                }
                 text = "Click the play button to start!";
                 break;
               case AcrouletteCommandRecognizedState:
@@ -170,6 +171,7 @@ Column getControls(
   switch (state.runtimeType) {
     case AcrouletteInitialState:
     case AcrouletteModelInitiatedState:
+    case AcrouletteFlowState:
       {
         Color color = Colors.green;
         Color splashColor = Colors.greenAccent;

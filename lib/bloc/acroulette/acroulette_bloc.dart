@@ -32,8 +32,9 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   AcrouletteBloc(this.ttsBloc, ObjectBox objectbox, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
     on<AcrouletteStart>((event, emit) {
-      voiceRecognitionBloc.add(VoiceRecognitionStart(
-          onData, onInitiated, () => onRecognitionStarted(objectbox)));
+      objectbox.putSettingsPairValueByKey(playingKey, "true");
+      voiceRecognitionBloc.add(
+          VoiceRecognitionStart(onData, () => onRecognitionStarted(objectbox)));
       emit(AcrouletteInitModel());
     });
     on<AcrouletteInitModelEvent>((event, emit) {
@@ -49,6 +50,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           mode: mode));
     });
     on<AcrouletteStop>((event, emit) {
+      objectbox.putSettingsPairValueByKey(playingKey, "false");
       voiceRecognitionBloc.add(VoiceRecognitionStop());
       emit(AcrouletteModelInitiatedState());
     });
@@ -100,7 +102,9 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     // initialize transitionBloc
     transitionBloc = TransitionBloc(onTransitionChange);
-    setTransitionsDependingOnMode(objectbox);
+    if (objectbox.getSettingsPairValueByKey(playingKey) == "true") {
+      add(AcrouletteStart());
+    }
 
     // when Model is loaded call onInitiated
     voiceRecognitionBloc.initialize(onInitiated);
@@ -126,6 +130,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   }
 
   void onTransitionChange(TransitionStatus status) {
+    if (!voiceRecognitionBloc.state.isRecognizing) return;
     if (status == TransitionStatus.created ||
         status == TransitionStatus.next ||
         status == TransitionStatus.current ||
