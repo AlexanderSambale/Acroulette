@@ -34,7 +34,7 @@ class PostureTree extends StatelessWidget {
     newPath.add(tree.label!);
     if (tree.isLeaf) {
       return Container(
-          margin: const EdgeInsets.only(left: 24),
+          margin: const EdgeInsets.only(left: 16),
           child: PostureListItem(
               isSwitched: tree.value.target!.isSwitched,
               postureLabel: tree.label!,

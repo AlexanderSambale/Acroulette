@@ -30,12 +30,11 @@ class FlowItem extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
               tooltip: isExpanded ? 'collapse' : 'expand',
               onPressed: toggleExpand,
-            ),
-            Container(
-              width: 10,
             ),
             categoryIcon,
             Container(
@@ -44,6 +43,8 @@ class FlowItem extends StatelessWidget {
             Center(child: Text(flowLabel)),
             const Spacer(),
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: const Icon(Icons.add_circle_rounded),
               tooltip: 'Add position',
               onPressed: () {
@@ -60,12 +61,16 @@ class FlowItem extends StatelessWidget {
               },
             ),
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: const Icon(Icons.edit),
               tooltip: 'Edit flow name',
               onPressed: () => showEditFlowDialog(
                   context, flowLabel, onEditClick, validator),
             ),
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: const Icon(Icons.delete),
               tooltip: 'Delete flow',
               onPressed: () => showDeleteFlowDialog(context),

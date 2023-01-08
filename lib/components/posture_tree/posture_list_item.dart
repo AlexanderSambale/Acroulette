@@ -32,7 +32,7 @@ class PostureListItem extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 10,
+                  width: 5,
                 ),
                 postureIcon,
                 Container(
@@ -41,6 +41,8 @@ class PostureListItem extends StatelessWidget {
                 Center(child: Text(postureLabel)),
                 const Spacer(),
                 IconButton(
+                  constraints: const BoxConstraints(minWidth: 32),
+                  padding: const EdgeInsets.all(0),
                   icon: const Icon(Icons.edit),
                   tooltip: 'Edit position',
                   onPressed: () {
@@ -59,14 +61,19 @@ class PostureListItem extends StatelessWidget {
                     });
                   },
                 ),
-                Switch(
-                  value: isSwitched,
-                  onChanged: enabled ? onChanged : null,
-                  activeColor: enabled
-                      ? theme.toggleableActiveColor
-                      : theme.toggleButtonsTheme.disabledColor,
-                ),
+                SizedBox(
+                    height: 24.0,
+                    width: 32.0,
+                    child: Switch(
+                      value: isSwitched,
+                      onChanged: enabled ? onChanged : null,
+                      activeColor: enabled
+                          ? theme.toggleableActiveColor
+                          : theme.toggleButtonsTheme.disabledColor,
+                    )),
                 IconButton(
+                  constraints: const BoxConstraints(minWidth: 32),
+                  padding: const EdgeInsets.all(0),
                   icon: const Icon(Icons.delete),
                   tooltip: 'Delete position',
                   onPressed: () => showDeletePositionDialog(context),

@@ -19,9 +19,6 @@ class FlowPositionItem extends StatelessWidget {
             height: 50,
             child: Row(
               children: [
-                Container(
-                  width: 10,
-                ),
                 postureIcon,
                 Container(
                   width: 10,
@@ -29,11 +26,15 @@ class FlowPositionItem extends StatelessWidget {
                 Center(child: Text(positionLabel)),
                 const Spacer(),
                 IconButton(
+                  constraints: const BoxConstraints(minWidth: 32),
+                  padding: const EdgeInsets.all(0),
                   icon: const Icon(Icons.edit),
                   tooltip: 'Edit position',
                   onPressed: () => showEditPositionDialog(context),
                 ),
                 IconButton(
+                  constraints: const BoxConstraints(minWidth: 32),
+                  padding: const EdgeInsets.all(0),
                   icon: const Icon(Icons.delete),
                   tooltip: 'Delete position',
                   onPressed: () => showDeletePositionDialog(context),

@@ -44,12 +44,11 @@ class PostureCategoryItem extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
               tooltip: isExpanded ? 'collapse' : 'expand',
               onPressed: toggleExpand,
-            ),
-            Container(
-              width: 10,
             ),
             categoryIcon,
             Container(
@@ -58,6 +57,8 @@ class PostureCategoryItem extends StatelessWidget {
             Center(child: Text(categoryLabel)),
             const Spacer(),
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: const Icon(Icons.add_circle_rounded),
               tooltip: 'Add position',
               onPressed: () {
@@ -77,6 +78,8 @@ class PostureCategoryItem extends StatelessWidget {
               },
             ),
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: const Icon(Icons.add_box),
               tooltip: 'Add Category',
               onPressed: () {
@@ -97,6 +100,8 @@ class PostureCategoryItem extends StatelessWidget {
               },
             ),
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: const Icon(Icons.edit),
               tooltip: 'Edit category name',
               onPressed: () {
@@ -115,14 +120,19 @@ class PostureCategoryItem extends StatelessWidget {
                 });
               },
             ),
-            Switch(
-              value: isSwitched,
-              onChanged: enabled ? onChanged : null,
-              activeColor: enabled
-                  ? theme.toggleableActiveColor
-                  : theme.toggleButtonsTheme.disabledColor,
-            ),
+            SizedBox(
+                height: 24.0,
+                width: 32.0,
+                child: Switch(
+                  value: isSwitched,
+                  onChanged: enabled ? onChanged : null,
+                  activeColor: enabled
+                      ? theme.toggleableActiveColor
+                      : theme.toggleButtonsTheme.disabledColor,
+                )),
             IconButton(
+              constraints: const BoxConstraints(minWidth: 32),
+              padding: const EdgeInsets.all(0),
               icon: const Icon(Icons.delete),
               tooltip: 'Delete category',
               onPressed: () {
