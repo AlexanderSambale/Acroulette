@@ -1,10 +1,7 @@
 part of 'washing_machine_bloc.dart';
 
-abstract class WashingMachineEvent extends Equatable {
+abstract class WashingMachineEvent {
   const WashingMachineEvent();
-
-  @override
-  List<Object> get props => [];
 }
 
 class WashingMachineChange extends WashingMachineEvent {

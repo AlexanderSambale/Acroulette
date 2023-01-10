@@ -1,10 +1,7 @@
 part of 'position_administration_bloc.dart';
 
-abstract class PositionAdministrationEvent extends Equatable {
+abstract class PositionAdministrationEvent {
   const PositionAdministrationEvent();
-
-  @override
-  List<Object> get props => [];
 }
 
 // nodes and acro nodes change

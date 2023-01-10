@@ -1,10 +1,7 @@
 part of 'flow_administration_bloc.dart';
 
-abstract class FlowAdministrationEvent extends Equatable {
+abstract class FlowAdministrationEvent {
   const FlowAdministrationEvent();
-
-  @override
-  List<Object> get props => [];
 }
 
 // nodes and acro nodes change

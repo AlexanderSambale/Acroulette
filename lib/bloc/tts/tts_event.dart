@@ -1,10 +1,7 @@
 part of 'tts_bloc.dart';
 
-abstract class TtsEvent extends Equatable {
+abstract class TtsEvent {
   const TtsEvent();
-
-  @override
-  List<Object> get props => [];
 }
 
 class TtsChangeEvent extends TtsEvent {
