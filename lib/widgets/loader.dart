@@ -27,8 +27,8 @@ class _LoaderState extends State<Loader> with TickerProviderStateMixin {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Image.file(
-          File("assets/images/washing_mashine.jpg"),
+        const Image(
+          image: AssetImage("assets/images/washing_machine.jpg"),
           alignment: Alignment.center,
         ),
         AnimatedBuilder(
