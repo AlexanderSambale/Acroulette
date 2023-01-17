@@ -5,6 +5,7 @@ import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/constants/widgets.dart';
 import 'package:acroulette/main.dart';
 import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,76 +25,62 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      // Column is also a layout widget. It takes a list of children and
-      // arranges them vertically. By default, it sizes itself to fit its
-      // children horizontally, and tries to be as tall as its parent.
-      //
-      // Invoke "debug painting" (press "p" in the console, choose the
-      // "Toggle Debug Paint" action from the Flutter Inspector in Android
-      // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-      // to see the wireframe for each widget.
-      //
-      // Column has various properties to control how it sizes itself and
-      // how it positions its children. Here we use mainAxisAlignment to
-      // center the children vertically; the main axis here is the vertical
-      // axis because Columns are vertical (the cross axis would be
-      // horizontal).
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        BlocProvider(
-          create: (_) => AcrouletteBloc(
-              widget.ttsBloc, objectbox, widget.voiceRecognitionBloc),
-          child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
-              buildWhen: (previous, current) {
-            return ![AcrouletteInitModel, AcrouletteInitialState]
-                .contains(current.runtimeType);
-          }, builder: (BuildContext context, state) {
-            String text;
-            String currentFigure = "";
-            String nextFigure = "";
-            String previousFigure = "";
-            AcrouletteBloc acrouletteBloc = context.read<AcrouletteBloc>();
-            var mode = acrouletteBloc.mode;
-            var machine = acrouletteBloc.machine;
-            switch (state.runtimeType) {
-              case AcrouletteModelInitiatedState:
-              case AcrouletteFlowState:
-                if (objectbox.getSettingsPairValueByKey(playingKey) == "true") {
-                  return Container();
-                }
-                text = "Click the play button to start!";
-                break;
-              case AcrouletteCommandRecognizedState:
-                AcrouletteCommandRecognizedState currentState =
-                    (state as AcrouletteCommandRecognizedState);
-                currentFigure = currentState.currentFigure;
-                previousFigure = currentState.previousFigure;
-                nextFigure = currentState.nextFigure;
-                text = "Listening to voice commands!";
-                break;
-              default:
-                return Container();
-            }
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          BlocProvider(
+            create: (_) => AcrouletteBloc(
+                widget.ttsBloc, objectbox, widget.voiceRecognitionBloc),
+            child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
+                buildWhen: (previous, current) {
+              return ![AcrouletteInitModel, AcrouletteInitialState]
+                  .contains(current.runtimeType);
+            }, builder: (BuildContext context, state) {
+              String text;
+              String currentFigure = "";
+              String nextFigure = "";
+              String previousFigure = "";
+              AcrouletteBloc acrouletteBloc = context.read<AcrouletteBloc>();
+              var mode = acrouletteBloc.mode;
+              var machine = acrouletteBloc.machine;
+              switch (state.runtimeType) {
+                case AcrouletteModelInitiatedState:
+                case AcrouletteFlowState:
+                  if (objectbox.getSettingsPairValueByKey(playingKey) ==
+                      "true") {
+                    return const Loader();
+                  }
+                  text = "Click the play button to start!";
+                  break;
+                case AcrouletteCommandRecognizedState:
+                  AcrouletteCommandRecognizedState currentState =
+                      (state as AcrouletteCommandRecognizedState);
+                  currentFigure = currentState.currentFigure;
+                  previousFigure = currentState.previousFigure;
+                  nextFigure = currentState.nextFigure;
+                  text = "Listening to voice commands!";
+                  break;
+                default:
+                  return const Loader();
+              }
 
-            return Container(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(children: [
-                  modeSelect(mode, acrouletteBloc),
-                  if (mode == washingMachine)
-                    washingMachineDropdown(machine, acrouletteBloc),
-                  if (currentFigure != "")
-                    showPositions(previousFigure, currentFigure, nextFigure,
-                        MediaQuery.of(context).size.width),
-                  Text(text,
-                      textAlign: TextAlign.center, style: displayTextStyle),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [getControls(state, acrouletteBloc, mode)]),
-                ]));
-          }),
-        )
-      ],
-    );
+              return Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(children: [
+                    modeSelect(mode, acrouletteBloc),
+                    if (mode == washingMachine)
+                      washingMachineDropdown(machine, acrouletteBloc),
+                    if (currentFigure != "")
+                      showPositions(previousFigure, currentFigure, nextFigure,
+                          MediaQuery.of(context).size.width),
+                    Text(text,
+                        textAlign: TextAlign.center, style: displayTextStyle),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [getControls(state, acrouletteBloc, mode)]),
+                  ]));
+            }),
+          )
+        ]);
   }
 }
 
