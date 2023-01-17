@@ -10,6 +10,7 @@ import 'package:acroulette/components/posture_tree/posture_tree.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
+import 'package:acroulette/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
@@ -105,6 +106,11 @@ class HotReload extends StatelessWidget {
                       )),
             ],
           ),
+          WidgetbookComponent(name: 'Loader', useCases: [
+            WidgetbookUseCase(
+                name: 'Show loader animation',
+                builder: (context) => const Loader()),
+          ])
         ], folders: [
           WidgetbookFolder(
             name: 'Posture selection',
