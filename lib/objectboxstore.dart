@@ -98,7 +98,7 @@ class ObjectBox {
           ['side star', 'reverse bird', 'side star', 'straddle bat']);
       int flowNodeId = flowNodeBox.put(flowNode);
       putSettingsPairValueByKey(flowIndex, flowNodeId.toString());
-      flowNode = FlowNode('extra mile', [
+      flowNodeBox.put(FlowNode('extra mile', [
         'bird',
         'bird side star',
         'goofy star',
@@ -106,9 +106,8 @@ class ObjectBox {
         'reverse bird',
         'ganesha side star',
         'bird'
-      ]);
-      flowNodeBox.put(flowNode);
-      flowNode = FlowNode('icing on the cake', [
+      ]));
+      flowNodeBox.put(FlowNode('icing on the cake', [
         'buddha',
         'ninja side star',
         'mono reverse throne',
@@ -116,18 +115,17 @@ class ObjectBox {
         'reverse bird',
         'ninja side star',
         'buddha',
-      ]);
-      flowNode = FlowNode('illusion', [
+      ]));
+      flowNodeBox.put(FlowNode('illusion', [
         'star',
         'backbird',
         'ninja side star',
         'reverse bird',
         'ganesha side star',
         'star',
-      ]);
-      flowNode = FlowNode(
-          'twisted star child', ['bird', 'shin to foot', 'star', 'bird']);
-      flowNodeBox.put(flowNode);
+      ]));
+      flowNodeBox.put(FlowNode(
+          'twisted star child', ['bird', 'shin to foot', 'star', 'bird']));
     }
 
     setDefaultValue(appMode, acroulette);
