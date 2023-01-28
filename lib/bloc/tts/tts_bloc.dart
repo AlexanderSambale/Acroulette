@@ -62,6 +62,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   }
 
   Future<void> setVolume(double volume) async {
+    if (_volume == volume) return;
     _volume = volume;
     add(const TtsChangeEvent(volumeKey));
     objectbox.putSettingsPairValueByKey(volumeKey, volume.toString());
@@ -69,6 +70,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   }
 
   Future<void> setSpeechRate(double rate) async {
+    if (_rate == rate) return;
     _rate = rate;
     add(const TtsChangeEvent(rateKey));
     objectbox.putSettingsPairValueByKey(rateKey, rate.toString());
@@ -76,6 +78,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   }
 
   Future<void> setPitch(double pitch) async {
+    if (_pitch == pitch) return;
     _pitch = pitch;
     add(const TtsChangeEvent(pitchKey));
     objectbox.putSettingsPairValueByKey(pitchKey, pitch.toString());
@@ -83,7 +86,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   }
 
   Future<void> setLanguage(String? newLanguage) async {
-    if (newLanguage == null) return;
+    if (newLanguage == null || _language == newLanguage) return;
     _language = newLanguage;
     objectbox.putSettingsPairValueByKey(languageKey, newLanguage);
     if (_engine == null) return;
@@ -100,7 +103,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   }
 
   Future<void> setEngine(String? newEngine) async {
-    if (newEngine == null) return;
+    if (newEngine == null || _engine == newEngine) return;
     _engine = newEngine;
     objectbox.putSettingsPairValueByKey(engineKey, newEngine);
     await flutterTts.setEngine(newEngine);
