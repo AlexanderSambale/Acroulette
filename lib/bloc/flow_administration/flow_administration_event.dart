@@ -5,7 +5,7 @@ abstract class FlowAdministrationEvent {
 }
 
 // nodes and acro nodes change
-class FlowBDStartChangeEvent extends FlowAdministrationEvent {}
+class FlowDBStartChangeEvent extends FlowAdministrationEvent {}
 
 // no sync with db is pending
 class FlowDBIsIdleEvent extends FlowAdministrationEvent {}
