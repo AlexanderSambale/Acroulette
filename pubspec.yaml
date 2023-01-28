@@ -63,7 +63,9 @@ dev_dependencies:
   mocktail: ^0.3.0
   build_runner: ^2.2.0
   objectbox_generator: ^1.6.0
-  widgetbook:
+  widgetbook: ^2.4.1
+  flutter_launcher_icons: ^0.11.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -113,3 +115,9 @@ flutter:
 objectbox:
   # Writes objectbox-model.json and objectbox.g.dart to lib/custom (and test/custom).
   output_dir: database
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_ios: "assets/launcher/acroulette_icon.png"
+  image_path_android: "assets/launcher/acroulette_icon.png"
