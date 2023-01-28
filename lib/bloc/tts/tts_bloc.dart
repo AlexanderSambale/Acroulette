@@ -61,28 +61,28 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     await flutterTts.awaitSpeakCompletion(true);
   }
 
-  Future<void> setVolume(double volume) async {
-    if (_volume == volume) return;
-    _volume = volume;
+  Future<void> setVolume(double newVolume) async {
+    if (_volume == newVolume) return;
+    _volume = newVolume;
     add(const TtsChangeEvent(volumeKey));
-    objectbox.putSettingsPairValueByKey(volumeKey, volume.toString());
-    await flutterTts.setVolume(volume);
+    objectbox.putSettingsPairValueByKey(volumeKey, _volume.toString());
+    await flutterTts.setVolume(_volume);
   }
 
-  Future<void> setSpeechRate(double rate) async {
-    if (_rate == rate) return;
-    _rate = rate;
+  Future<void> setSpeechRate(double newRate) async {
+    if (_rate == newRate) return;
+    _rate = newRate;
     add(const TtsChangeEvent(rateKey));
-    objectbox.putSettingsPairValueByKey(rateKey, rate.toString());
-    await flutterTts.setSpeechRate(rate);
+    objectbox.putSettingsPairValueByKey(rateKey, _rate.toString());
+    await flutterTts.setSpeechRate(_rate);
   }
 
-  Future<void> setPitch(double pitch) async {
-    if (_pitch == pitch) return;
-    _pitch = pitch;
+  Future<void> setPitch(double newPitch) async {
+    if (_pitch == newPitch) return;
+    _pitch = newPitch;
     add(const TtsChangeEvent(pitchKey));
-    objectbox.putSettingsPairValueByKey(pitchKey, pitch.toString());
-    await flutterTts.setPitch(pitch);
+    objectbox.putSettingsPairValueByKey(pitchKey, _pitch.toString());
+    await flutterTts.setPitch(_pitch);
   }
 
   Future<void> setLanguage(String? newLanguage) async {
