@@ -13,7 +13,8 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   late FlutterTts flutterTts;
   late ObjectBox objectbox;
 
-  late double _volume, _rate, _pitch;
+  // initialized so that we can check in the setter
+  double _volume = 0.0, _rate = 0.0, _pitch = 0.0;
 
   String? _language, _engine;
   late bool isCurrentLanguageInstalled = false;
