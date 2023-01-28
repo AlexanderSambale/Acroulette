@@ -37,8 +37,8 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     volume = double.parse(objectbox.getSettingsPairValueByKey(volumeKey));
     speechRate = double.parse(objectbox.getSettingsPairValueByKey(rateKey));
     pitch = double.parse(objectbox.getSettingsPairValueByKey(pitchKey));
+    _language = objectbox.getSettingsPairValueByKey(languageKey);
     engine = objectbox.getSettingsPairValueByKey(engineKey);
-    language = objectbox.getSettingsPairValueByKey(languageKey);
     languages = _getLanguages();
     engines = _getEngines();
     defaultEngine = _getDefaultEngine();
@@ -83,25 +83,29 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   }
 
   Future<void> setLanguage(String? newLanguage) async {
-    if (newLanguage != null) {
-      _language = newLanguage;
-      objectbox.putSettingsPairValueByKey(languageKey, newLanguage);
-      await flutterTts.setLanguage(newLanguage);
-      if (isAndroid) {
-        var isInstalled = await isLanguageInstalled(newLanguage);
-        isCurrentLanguageInstalled = (isInstalled as bool);
-      }
-      add(const TtsChangeEvent(languageKey));
+    if (newLanguage == null) return;
+    _language = newLanguage;
+    objectbox.putSettingsPairValueByKey(languageKey, newLanguage);
+    if (_engine == null) return;
+    setLanguageShortened(newLanguage);
+  }
+
+  Future<void> setLanguageShortened(String newLanguage) async {
+    await flutterTts.setLanguage(newLanguage);
+    if (isAndroid) {
+      var isInstalled = await isLanguageInstalled(newLanguage);
+      isCurrentLanguageInstalled = (isInstalled as bool);
     }
+    add(const TtsChangeEvent(languageKey));
   }
 
   Future<void> setEngine(String? newEngine) async {
-    if (newEngine != null) {
-      _engine = newEngine;
-      objectbox.putSettingsPairValueByKey(engineKey, newEngine);
-      await flutterTts.setEngine(newEngine);
-      add(const TtsChangeEvent(engineKey));
-    }
+    if (newEngine == null) return;
+    _engine = newEngine;
+    objectbox.putSettingsPairValueByKey(engineKey, newEngine);
+    await flutterTts.setEngine(newEngine);
+    await setLanguageShortened(_language!); // should implicitly be not null
+    add(const TtsChangeEvent(engineKey));
   }
 
   Future<void> speak(String text) async {
