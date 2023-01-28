@@ -11,7 +11,7 @@ class FlowAdministrationBloc
     extends Bloc<FlowAdministrationEvent, BaseFlowAdministrationState> {
   FlowAdministrationBloc(this.objectbox)
       : super(const FlowAdministrationInitialState()) {
-    on<FlowBDStartChangeEvent>((event, emit) {
+    on<FlowDBStartChangeEvent>((event, emit) {
       emit(const FlowAdministrationState());
     });
     on<FlowDBIsIdleEvent>((event, emit) {
@@ -22,48 +22,48 @@ class FlowAdministrationBloc
   late ObjectBox objectbox;
 
   void toggleExpand(FlowNode flow) {
-    add(FlowBDStartChangeEvent());
+    add(FlowDBStartChangeEvent());
     flow.isExpanded = !flow.isExpanded;
     objectbox.putFlowNode(flow);
     add(FlowDBIsIdleEvent());
   }
 
   void createPosture(FlowNode flowNode, String posture) {
-    add(FlowBDStartChangeEvent());
+    add(FlowDBStartChangeEvent());
     flowNode.positions.add(posture);
     objectbox.putFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void editPosture(FlowNode flowNode, int index, String label) {
-    add(FlowBDStartChangeEvent());
+    add(FlowDBStartChangeEvent());
     flowNode.positions[index] = label;
     objectbox.putFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void editFlow(FlowNode flowNode, String label) {
-    add(FlowBDStartChangeEvent());
+    add(FlowDBStartChangeEvent());
     flowNode.name = label;
     objectbox.putFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void deletePosture(FlowNode flowNode, int index) {
-    add(FlowBDStartChangeEvent());
+    add(FlowDBStartChangeEvent());
     flowNode.positions.removeAt(index);
     objectbox.putFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void deleteFlow(FlowNode flowNode) {
-    add(FlowBDStartChangeEvent());
+    add(FlowDBStartChangeEvent());
     objectbox.removeFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void createFlow(String flow) {
-    add(FlowBDStartChangeEvent());
+    add(FlowDBStartChangeEvent());
     objectbox.putFlowNode(FlowNode(flow, []));
     add(FlowDBIsIdleEvent());
   }
