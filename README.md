@@ -40,6 +40,10 @@ You need <https://github.com/objectbox/objectbox-c> installed.
 ### Build and deploy
 
 ```bash
+flutter build appbundle -v 
+```
+
+```bash
 bundletool build-apks --bundle=./build/app/outputs/bundle/release/app-release.aab --output=./build/app/outputs/apks/release/app-release.apks --ks=~/upload-keystore.jks --ks-key-alias=upload
 ```
 
