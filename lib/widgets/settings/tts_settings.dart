@@ -170,7 +170,8 @@ Widget _enginesDropDownSection(dynamic engines, TtsBloc ttsBloc) =>
     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       DropdownButton<String?>(
         value: ttsBloc.engine,
-        items: getEnginesDropDownMenuItems(engines),
+        // until fixed :https://github.com/dlutton/flutter_tts/issues/289
+        items: getEnginesDropDownMenuItems([engines[0]]),
         onChanged: (value) => changedEnginesDropDownItem(value, ttsBloc),
       ),
     ]);
