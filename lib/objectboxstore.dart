@@ -30,17 +30,58 @@ class ObjectBox {
       List<Node> children = [];
       for (var element in [
         "bird",
-        "star",
-        "stradle bat",
-        "triangle",
         "backbird",
-        "reversebird",
+        "reverse backbird",
+        "reverse bird",
+        "bird on hands",
+        "backbird on hands",
+        "reverse bird on hands",
+        "reverse backbird on hands",
+        "star",
+        "reverse star",
+        "buddha",
+        "floating pashi",
         "throne",
+        "reverse throne",
         "chair",
         "folded leaf",
         "side star",
         "vishnus couch",
-        "high flying whale"
+        "high flying whale",
+        "throne on hands",
+        "reverse throne on hands",
+        "pidgeon",
+        "floating camel",
+        "tuck sit",
+        "hangle dangle",
+        "table top",
+        "low foot 2 hand",
+        "reverse low foot 2 hand",
+        "foot 2 hand",
+        "reverse foot 2 hand",
+        "foot 2 foot",
+        "reverse foot 2 foot",
+        "hand 2 hand",
+        "reverse hand 2 hand",
+        "low hand 2 hand",
+        "low reverse hand 2 hand",
+        "hand 2 foot",
+        "reverse hand 2 foot",
+        "inner peace",
+        "peace",
+        "siddhi sidestar",
+        "ganesha sidestar",
+        "ninja sidestar",
+        "bird sidestar",
+        "shiva",
+        "shoulderstand",
+        "reverse shoulderstand",
+        "foot 2 shin",
+        "log",
+        "shin on hands",
+        "shin",
+        "goofy star",
+        "mono reverse throne"
       ]) {
         AcroNode acroNode = AcroNode(true, element, predefined: true);
         acroNodeBox.put(acroNode);
@@ -57,6 +98,36 @@ class ObjectBox {
           ['side star', 'reverse bird', 'side star', 'straddle bat']);
       int flowNodeId = flowNodeBox.put(flowNode);
       putSettingsPairValueByKey(flowIndex, flowNodeId.toString());
+      flowNode = FlowNode('extra mile', [
+        'bird',
+        'bird side star',
+        'goofy star',
+        'ganesha side star',
+        'reverse bird',
+        'ganesha side star',
+        'bird'
+      ]);
+      flowNodeBox.put(flowNode);
+      flowNode = FlowNode('icing on the cake', [
+        'buddha',
+        'ninja side star',
+        'mono reverse throne',
+        'ninja side star',
+        'reverse bird',
+        'ninja side star',
+        'buddha',
+      ]);
+      flowNode = FlowNode('illusion', [
+        'star',
+        'backbird',
+        'ninja side star',
+        'reverse bird',
+        'ganesha side star',
+        'star',
+      ]);
+      flowNode = FlowNode(
+          'twisted star child', ['bird', 'shin to foot', 'star', 'bird']);
+      flowNodeBox.put(flowNode);
     }
 
     setDefaultValue(appMode, acroulette);
