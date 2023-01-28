@@ -190,6 +190,7 @@ class ObjectBox {
     if (keyQueryFirstValue == null) {
       settingsBox.put(SettingsPair(key, value));
     } else {
+      if (keyQueryFirstValue.value == value) return;
       keyQueryFirstValue.value = value;
       settingsBox.put(keyQueryFirstValue);
     }
