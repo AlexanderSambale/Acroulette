@@ -36,3 +36,13 @@ flutter build apk
 ### objectbox test
 
 You need <https://github.com/objectbox/objectbox-c> installed.
+
+### Build and deploy
+
+```bash
+bundletool build-apks --bundle=./build/app/outputs/bundle/release/app-release.aab --output=./build/app/outputs/apks/release/app-release.apks --ks=~/upload-keystore.jks --ks-key-alias=upload
+```
+
+```bash
+bundletool install-apks --apks=./build/app/outputs/apks/release/app-release.apks
+```
