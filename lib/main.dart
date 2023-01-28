@@ -106,8 +106,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-      ),
+          centerTitle: true,
+          leading: Image.asset("assets/launcher/acroulette_icon.png",
+              fit: BoxFit.contain),
+          title: Text(widget.title)),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
