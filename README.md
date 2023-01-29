@@ -43,6 +43,14 @@ You need <https://github.com/objectbox/objectbox-c> installed.
 flutter build appbundle -v 
 ```
 
+#### Install on device
+
+If file exists
+
+```bash
+rm ./build/app/outputs/apks/release/app-release.apks
+```
+
 ```bash
 bundletool build-apks --bundle=./build/app/outputs/bundle/release/app-release.aab --output=./build/app/outputs/apks/release/app-release.apks --ks=~/upload-keystore.jks --ks-key-alias=upload
 ```
