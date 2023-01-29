@@ -15,25 +15,28 @@ class _VoiceRecognitionSettings extends State<VoiceRecognitionSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListView(shrinkWrap: true, children: [
-        const Heading(headingLabel: "Voice recognition commands"),
-        ...textSettingsFormField(newPosition),
-        ...textSettingsFormField(nextPosition),
-        ...textSettingsFormField(previousPosition),
-        ...textSettingsFormField(currentPosition),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-          child: ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-              }
-            },
-            child: const Text('Submit'),
-          ),
-        ),
-      ]),
-    );
+    return Form(
+        key: _formKey,
+        child: Card(
+          child: ListView(shrinkWrap: true, children: [
+            const Heading(headingLabel: "Voice recognition commands"),
+            ...textSettingsFormField(newPosition),
+            ...textSettingsFormField(nextPosition),
+            ...textSettingsFormField(previousPosition),
+            ...textSettingsFormField(currentPosition),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ),
+          ]),
+        ));
   }
 }
