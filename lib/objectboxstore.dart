@@ -96,7 +96,7 @@ class ObjectBox {
 
     if (flowNodeBox.isEmpty()) {
       FlowNode flowNode = FlowNode('ninja star',
-          ['side star', 'reverse bird', 'side star', 'straddle bat']);
+          ['ninja side star', 'reverse bird', 'ninja side star', 'buddha']);
       int flowNodeId = flowNodeBox.put(flowNode);
       putSettingsPairValueByKey(flowIndex, flowNodeId.toString());
       flowNodeBox.put(FlowNode('extra mile', [
