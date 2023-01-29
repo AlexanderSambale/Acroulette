@@ -90,8 +90,9 @@ class ObjectBox {
       AcroNode acroNodeRoot = AcroNode(true, basicPostures, predefined: true);
       acroNodeBox.put(acroNodeRoot);
       nodeBox.put(Node.createCategory(children, acroNodeRoot));
-      regeneratePositionsList();
     }
+
+    regeneratePositionsList();
 
     if (flowNodeBox.isEmpty()) {
       FlowNode flowNode = FlowNode('ninja star',
@@ -157,8 +158,12 @@ class ObjectBox {
   void regeneratePositionsList() {
     List<Node> nodes = nodeBox.getAll();
     Set<String> setOfPositions = {};
-    setOfPositions.addAll(
-        nodes.where((element) => element.isLeaf).map<String>((e) => e.label!));
+    setOfPositions.addAll(nodes
+        .where((element) =>
+            element.isLeaf &&
+            element.value.target!.isEnabled &&
+            element.value.target!.isSwitched)
+        .map<String>((e) => e.label!));
     positionBox.removeAll();
     positionBox.putMany(setOfPositions.map((e) => Position(e)).toList());
   }
