@@ -4,6 +4,7 @@ import 'package:acroulette/objectboxstore.dart';
 import 'package:acroulette/widgets/flows.dart';
 import 'package:acroulette/widgets/home.dart';
 import 'package:acroulette/widgets/positions.dart';
+import 'package:acroulette/widgets/privacy_policy.dart';
 import 'package:acroulette/widgets/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -91,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Settings(
       ttsBloc: ttsBloc,
     ),
+    const PrivacyPolicy()
   ];
 
   void _onItemTapped(int index) {
@@ -130,6 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings, color: Colors.black),
             label: 'Settings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info, color: Colors.black),
+            label: 'Privacy Policy',
           ),
         ],
         currentIndex: _selectedIndex,

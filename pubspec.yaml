@@ -54,7 +54,7 @@ dependencies:
   objectbox: ^1.6.0
   objectbox_flutter_libs: ^1.6.0
   flat_buffers: ^2.0.5
-
+  flutter_markdown: ^0.6.13
 
 dev_dependencies:
   flutter_test:
@@ -94,6 +94,7 @@ flutter:
     - assets/models/
     - assets/images/
     - assets/launcher/
+    - assets/docs/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
