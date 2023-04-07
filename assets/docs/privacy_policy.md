@@ -1,22 +1,25 @@
-# Privacy Policy
-
+---
+layout: ../../layouts/RequiredDocs.astro
+description: Privacy Policy - Acroulette App 
+title: Privacy Policy - Acroulette App
+---
 ## Permissions
 
 ### Audio recording
 
 We need access to realtime audio recording data for speech recognition.
 
-The recording is processed live and only used to **recognize command words**
+The recording is **continuous**, when you touch the *play* button and stops if you press the *stop* button. It will only be used to **recognize command words**
 by which you can control the app.
 
-After **a couple of seconds** when the command is recognized or no command was recognized, the recording will be deleted.
+The recording of **a couple of seconds** is buffered and deleted when words are recognized or no words were recognized.
 
-If you say for example "new position"
-the app can change state and display a random position.
+If you say for example "new position" with default settings
+the app can change state and display and announce a random position.
 
 There is **no data transfer** to a server or third party.
 
-We use **privacy friendly offline** models for voice recognition called Vosk speech recognition.
+We use **privacy friendly offline models** for voice recognition called Vosk.
 
 <https://alphacephei.com/vosk/>
 
@@ -29,14 +32,19 @@ The plugin used for this functionality is
 
 Alexander Sambale
 
-04229 Leipzig
-
 Wachsmuthstraße 5
 
-0163 4770474
+04229 Leipzig
 
-email
+Deutschland
+
+### Kontakt
+
+Telefon: +49 163 4770474
+
+E-Mail: m4sx3l4@gmail.com
+
 
 ## Date of last modification
 
-05.02.2023
+25.02.2023
