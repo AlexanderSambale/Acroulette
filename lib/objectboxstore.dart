@@ -127,6 +127,8 @@ class ObjectBox {
       ]));
       flowNodeBox.put(FlowNode(
           'twisted star child', ['bird', 'shin to foot', 'star', 'bird']));
+      flowNodeBox.put(FlowNode(
+          'creeper', ['back bird', 'upper arm stand', 'reverse throne on hands', 'back bird']));
     }
 
     setDefaultValue(appMode, acroulette);
