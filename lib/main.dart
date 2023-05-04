@@ -77,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
+    voiceRecognitionBloc.dispose();
     ttsBloc.dispose();
     super.dispose();
   }

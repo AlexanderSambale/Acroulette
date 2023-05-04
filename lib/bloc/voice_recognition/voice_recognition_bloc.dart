@@ -46,4 +46,8 @@ class VoiceRecognitionBloc
   void initialize(void Function() onInitiated) {
     isModelLoaded ? onInitiated() : this.onInitiated = onInitiated;
   }
+
+  void dispose() {
+    speechService.stop();
+  }
 }
