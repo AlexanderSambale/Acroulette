@@ -1,4 +1,5 @@
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
+import 'package:acroulette/widgets/settings/import_export_settings.dart';
 import 'package:acroulette/widgets/settings/tts_settings.dart';
 import 'package:acroulette/widgets/settings/voice_recognition_settings.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,9 @@ class _SettingsState extends State<Settings> {
       key: _formKey,
       child: ListView(
         children: <Widget>[
+          const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: ImportExportSettings()),
           const Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
               child: VoiceRecognitionSettings()),

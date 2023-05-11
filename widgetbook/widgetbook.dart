@@ -10,6 +10,7 @@ import 'package:acroulette/components/posture_tree/posture_tree.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
+import 'package:acroulette/widgets/formWidgets/import_export_settings_view.dart';
 import 'package:acroulette/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
@@ -23,6 +24,8 @@ void onEditClick(String? newValue) {}
 void onDeleteClickPostureTree(Node child) {}
 void onSaveClickPostureTree(Node child, bool isPosture, String? newValue) {}
 void onEditClickPostureTree(Node child, bool isPosture, String? newValue) {}
+void import() {}
+void export() {}
 List<Pair> listAllNodesRecursively() {
   return [];
 }
@@ -255,6 +258,17 @@ class HotReload extends StatelessWidget {
                         showEditPositionDialog: showEditPositionDialog)),
               ],
             )
+          ]),
+          WidgetbookFolder(name: 'ImportExport', widgets: [
+            WidgetbookComponent(
+              name: 'Export',
+              useCases: [
+                WidgetbookUseCase(
+                    name: 'ShowExport',
+                    builder: (context) => const ImportExportSettingsView(
+                        import: import, export: export))
+              ],
+            ),
           ])
         ]),
       ],
