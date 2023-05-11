@@ -51,6 +51,7 @@ dependencies:
   objectbox_flutter_libs: ^2.0.0
   flat_buffers: ^2.0.5
   flutter_markdown: ^0.6.13
+  pick_or_save: ^2.2.4
 
 dev_dependencies:
   flutter_test:
