@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:objectbox/objectbox.dart';
+
+const String cIsSwitched = "isSwitched";
+const String cLabel = "label";
 
 @Entity()
 class AcroNode {
@@ -11,4 +16,14 @@ class AcroNode {
   String label;
   // initial Node, set by developer to true, else it should be false
   bool predefined;
+
+  @override
+  String toString() {
+    return '''{"$cIsSwitched": $isSwitched, "$cLabel": "$label"}''';
+  }
+
+  static AcroNode createFromString(String source) {
+    Map decoded = jsonDecode(source);
+    return AcroNode(decoded[cIsSwitched], decoded[cLabel]);
+  }
 }
