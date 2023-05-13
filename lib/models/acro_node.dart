@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:objectbox/objectbox.dart';
 
-const String cIsSwitched = "isSwitched";
-const String cLabel = "label";
+const String isSwitchedKey = "isSwitched";
+const String labelKey = "label";
+const String isEnabledKey = "isEnabled";
 
 @Entity()
 class AcroNode {
@@ -19,11 +20,29 @@ class AcroNode {
 
   @override
   String toString() {
-    return '''{"$cIsSwitched": $isSwitched, "$cLabel": "$label"}''';
+    return '''{"$isSwitchedKey": $isSwitched, "$labelKey": "$label", "$isEnabledKey": $isEnabled}''';
   }
 
   static AcroNode createFromString(String source) {
     Map decoded = jsonDecode(source);
-    return AcroNode(decoded[cIsSwitched], decoded[cLabel]);
+    return createFromMap(decoded);
   }
+
+  static AcroNode createFromMap(Map decoded) {
+    return AcroNode(decoded[isSwitchedKey], decoded[labelKey],
+        isEnabled: decoded[isEnabledKey]);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! AcroNode) return false;
+    if (other.isEnabled != isEnabled) return false;
+    if (other.isSwitched != isSwitched) return false;
+    if (other.label != label) return false;
+    return true;
+  }
+
+  @override
+  int get hashCode => Object.hash(isSwitched.hashCode, isEnabled.hashCode,
+      label.hashCode, predefined.hashCode);
 }
