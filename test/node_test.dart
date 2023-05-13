@@ -23,4 +23,34 @@ void main() {
     expect(category.value.target, equals(rootAcroNode));
     expect(category.children.contains(leaf3), equals(true));
   });
+
+  test('convert Node, which is a category, to String and back', () {
+    const String leafLabel = 'leaf';
+    AcroNode rootAcroNode = AcroNode(true, "root");
+    Node leaf1 = Node.createLeaf(AcroNode(false, "${leafLabel}1"));
+    Node leaf2 = Node.createLeaf(AcroNode(false, "${leafLabel}2"));
+    Node leaf3 = Node.createLeaf(AcroNode(false, "${leafLabel}3"));
+    Node category = Node.createCategory([leaf1, leaf2, leaf3], rootAcroNode);
+    category.isExpanded = false;
+    String categoryAsJsonString = category.toString();
+    Node categoryTransformed = Node.createFromString(categoryAsJsonString);
+    expect(category.children.isEmpty, categoryTransformed.children.isEmpty);
+    expect(category.children.length, categoryTransformed.children.length);
+    expect(category.isLeaf, categoryTransformed.isLeaf);
+    expect(category.value.target, categoryTransformed.value.target);
+    expect(category.children[2], categoryTransformed.children[2]);
+  });
+
+  test('convert Node, which is a leaf, to String and back', () {
+    const String leafLabel = 'leaf';
+    AcroNode rootAcroNode = AcroNode(false, leafLabel);
+    Node leaf = Node.createLeaf(rootAcroNode);
+    String leafAsJsonString = leaf.toString();
+    Node leafTransformed = Node.createFromString(leafAsJsonString);
+    expect(leafTransformed.children.isEmpty, leaf.children.isEmpty);
+    expect(leafTransformed.isLeaf, leaf.isLeaf);
+    expect(leafTransformed.value.target, leaf.value.target);
+    expect(leafTransformed.isExpanded, leaf.isExpanded);
+    expect(leafTransformed.label, leaf.label);
+  });
 }
