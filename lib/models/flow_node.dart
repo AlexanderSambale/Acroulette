@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:objectbox/objectbox.dart';
 
-const String cName = "name";
-const String cPositions = "positions";
+const String nameKey = "name";
+const String positionsKey = "positions";
 
 @Entity()
 class FlowNode {
@@ -17,15 +17,15 @@ class FlowNode {
 
   @override
   String toString() {
-    return '''{"$cName":"$name", "$cPositions":${jsonEncode(positions)}}''';
+    return '''{"$nameKey":"$name", "$positionsKey":${jsonEncode(positions)}}''';
   }
 
   static FlowNode createFromString(String source) {
     Map decoded = jsonDecode(source);
     List<String> flowPositions = [];
-    for (var position in decoded[cPositions]) {
+    for (var position in decoded[positionsKey]) {
       flowPositions.add(position);
     }
-    return FlowNode(decoded[cName], flowPositions);
+    return FlowNode(decoded[nameKey], flowPositions);
   }
 }
