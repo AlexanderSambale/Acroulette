@@ -9,7 +9,7 @@ TableRow createLicenseTableRowHeader() {
   ]);
 }
 
-Text styleLicenseText(String text) {
+Text styleLicenseText(String text, {double fontSize = size}) {
   return Text(text,
-      style: const TextStyle(fontSize: size, fontWeight: FontWeight.w400));
+      style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w400));
 }
