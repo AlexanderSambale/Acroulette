@@ -22,6 +22,10 @@ class FlowNode {
 
   static FlowNode createFromString(String source) {
     Map decoded = jsonDecode(source);
+    return createFromMap(decoded);
+  }
+
+  static FlowNode createFromMap(Map decoded) {
     List<String> flowPositions = [];
     for (var position in decoded[positionsKey]) {
       flowPositions.add(position);
