@@ -58,3 +58,9 @@ bundletool build-apks --bundle=./build/app/outputs/bundle/release/app-release.aa
 ```bash
 bundletool install-apks --apks=./build/app/outputs/apks/release/app-release.apks
 ```
+
+## Regenerate Licenses
+
+```bash
+flutter pub run flutter_oss_licenses:generate.dart
+```
