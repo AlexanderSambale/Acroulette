@@ -52,6 +52,7 @@ dependencies:
   flat_buffers: ^2.0.5
   flutter_markdown: ^0.6.13
   pick_or_save: ^2.2.4
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:
