@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 TableRow createLicenseTableRow(Package package, BuildContext context) {
+  String homepage = package.homepage == null
+      ? 'https://pub.dev/packages/${package.name}'
+      : package.homepage!;
   return TableRow(
     children: <Widget>[
       Text(package.name),
@@ -25,16 +28,14 @@ TableRow createLicenseTableRow(Package package, BuildContext context) {
                   style: const TextStyle(
                     color: Colors.blue,
                   ))),
-      package.homepage == null
-          ? Container()
-          : RichText(
-              text: TextSpan(
-                  text: package.homepage!,
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () => {launchUrl(Uri.parse(package.homepage!))},
-                  style: const TextStyle(
-                    color: Colors.blue,
-                  )))
+      RichText(
+          text: TextSpan(
+              text: homepage,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => {launchUrl(Uri.parse(homepage))},
+              style: const TextStyle(
+                color: Colors.blue,
+              )))
     ],
   );
 }
