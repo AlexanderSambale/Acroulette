@@ -1,20 +1,25 @@
 import 'dart:typed_data';
 
+import 'package:acroulette/constants/import_export.dart';
+import 'package:acroulette/objectboxstore.dart';
 import 'package:pick_or_save/pick_or_save.dart';
 
-void export() async {
-  Uint8List uint8List = getData();
+void export(ObjectBox objectBox) async {
+  Uint8List uint8List = getData(objectBox);
   await PickOrSave().fileSaver(
       params: FileSaverParams(
     saveFiles: [
-      SaveFileInfo(fileData: uint8List),
+      SaveFileInfo(fileData: uint8List, fileName: "AcrouletteExport"),
     ],
   ));
 }
 
-Uint8List getData() {
-  Uint8List result;
-  return result;
+Uint8List getData(ObjectBox objectBox) {
+  String result = '''{
+  "$nodesKey": ${objectBox.findRoot().toString()},
+  "$flowsKey": ${objectBox.flowNodeBox.getAll().toString()}
+}''';
+  return convertStringToUint8List(result);
 }
 
 Uint8List convertStringToUint8List(String str) {
