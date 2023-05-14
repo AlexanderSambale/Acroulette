@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'simple_bloc_observer.dart';
+import 'widgets/license.dart';
 
 late ObjectBox objectbox;
 
@@ -93,7 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Settings(
       ttsBloc: ttsBloc,
     ),
-    const PrivacyPolicy()
+    const PrivacyPolicy(),
+    const License()
   ];
 
   void _onItemTapped(int index) {
@@ -137,6 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.info, color: Colors.black),
             label: 'Privacy Policy',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.copyright, color: Colors.black),
+            label: 'License',
           ),
         ],
         currentIndex: _selectedIndex,
