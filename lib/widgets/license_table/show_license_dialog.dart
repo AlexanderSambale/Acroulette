@@ -12,13 +12,22 @@ class ShowLicenseDialog extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        child: ListView(
-          children: [
-            Text(license),
-            ElevatedButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Go Back'))
-          ],
-        ));
+        child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment
+                    .spaceBetween, // place the logout at the end of the drawer
+                children: <Widget>[
+                  Flexible(
+                      child: ListView(
+                    children: [
+                      Text(license),
+                    ],
+                  )),
+                  ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text('Go Back'))
+                ])));
   }
 }
