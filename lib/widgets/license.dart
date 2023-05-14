@@ -13,6 +13,11 @@ class License extends StatelessWidget {
 
     return ListView(children: [
       Table(
+        columnWidths: const {
+          0: FlexColumnWidth(7),
+          1: FlexColumnWidth(2),
+          2: FlexColumnWidth(11),
+        },
         children: rows,
       )
     ]);
