@@ -84,11 +84,9 @@ class ObjectBox {
         "mono reverse throne"
       ]) {
         AcroNode acroNode = AcroNode(true, element, predefined: true);
-        acroNodeBox.put(acroNode);
         children.add(Node.createLeaf(acroNode));
       }
       AcroNode acroNodeRoot = AcroNode(true, basicPostures, predefined: true);
-      acroNodeBox.put(acroNodeRoot);
       nodeBox.put(Node.createCategory(children, acroNodeRoot));
     }
 
@@ -127,14 +125,18 @@ class ObjectBox {
       ]));
       flowNodeBox.put(FlowNode(
           'twisted star child', ['bird', 'shin to foot', 'star', 'bird']));
-      flowNodeBox.put(FlowNode(
-          'creeper', ['back bird', 'biceps stand', 'reverse bird', 'reverse throne on hands', 'back bird']));
+      flowNodeBox.put(FlowNode('creeper', [
+        'back bird',
+        'biceps stand',
+        'reverse bird',
+        'reverse throne on hands',
+        'back bird'
+      ]));
     }
 
     setDefaultValue(appMode, acroulette);
 
     // voice recognition
-
     setDefaultValue(newPosition, newPosition);
     setDefaultValue(nextPosition, nextPosition);
     setDefaultValue(previousPosition, previousPosition);
@@ -212,10 +214,6 @@ class ObjectBox {
   void removeManyAcroNodes(List<AcroNode> acroNodes) {
     acroNodeBox
         .removeMany(acroNodes.map<int>((element) => element.id).toList());
-  }
-
-  void putManyAcroNodes(List<AcroNode> acroNodes) {
-    acroNodeBox.putMany(acroNodes);
   }
 
   void putNode(Node node) {

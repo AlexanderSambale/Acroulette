@@ -39,9 +39,6 @@ Node setupComplexTree(ObjectBox objectbox) {
   List<Node> nodes = objectbox.getAllChildrenRecursive(complexTree)
     ..add(complexTree)
     ..add(root);
-  List<AcroNode> acroNodes =
-      nodes.map<AcroNode>((element) => element.value.target!).toList();
-  objectbox.putManyAcroNodes(acroNodes);
   objectbox.putManyNodes(nodes);
   return complexTree;
 }

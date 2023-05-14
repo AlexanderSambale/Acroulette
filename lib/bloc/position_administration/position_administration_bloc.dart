@@ -35,15 +35,13 @@ class PositionAdministrationBloc
   /// disable switch on| enable on, enable others| /
   /// enabled switch off| /| disable off, nothing else
   /// disable switch off| enable off, nothing else|/
-  void enableOrDisableAndAddAcroNodes(
-      List<AcroNode> acroNodes, Node tree, bool isSwitched) {
+  void enableOrDisable(Node tree, bool isSwitched) {
     for (var node in tree.children) {
       AcroNode acroNode = node.value.target!;
       if (acroNode.isSwitched) {
-        enableOrDisableAndAddAcroNodes(acroNodes, node, isSwitched);
+        enableOrDisable(node, isSwitched);
       }
       acroNode.isEnabled = isSwitched;
-      acroNodes.add(acroNode);
     }
   }
 
@@ -51,12 +49,8 @@ class PositionAdministrationBloc
     add(PositionsBDStartChangeEvent());
     AcroNode acroNode = tree.value.target!;
     acroNode.isSwitched = switched;
-    List<AcroNode> acroNodes = [];
-    enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
+    enableOrDisable(tree, switched);
     regeneratePositionsList();
-    acroNodes.add(acroNode);
-
-    objectbox.putManyAcroNodes(acroNodes);
     objectbox.putNode(tree);
     add(PositionsDBIsIdleEvent());
   }
@@ -77,7 +71,6 @@ class PositionAdministrationBloc
     AcroNode acroNode = AcroNode(true, posture);
     Node newPosture = Node.createLeaf(acroNode);
     parent.addNode(newPosture);
-    objectbox.putAcroNode(acroNode);
     objectbox.putNode(parent);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
@@ -135,7 +128,6 @@ class PositionAdministrationBloc
     AcroNode acroNode = AcroNode(true, category);
     Node newPosture = Node.createCategory([], acroNode);
     parent.addNode(newPosture);
-    objectbox.putAcroNode(acroNode);
     objectbox.putNode(parent);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
