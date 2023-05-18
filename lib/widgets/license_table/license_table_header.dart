@@ -3,9 +3,8 @@ import 'package:flutter/widgets.dart';
 
 TableRow createLicenseTableRowHeader() {
   return TableRow(children: <Widget>[
-    Center(child: styleLicenseText("Package Name")),
+    Center(child: styleLicenseText("Project and Link")),
     styleLicenseText("License"),
-    Center(child: styleLicenseText("Website")),
   ]);
 }
 

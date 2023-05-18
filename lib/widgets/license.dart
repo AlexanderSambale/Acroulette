@@ -73,9 +73,8 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
       Container(height: 0.5 * size),
       Table(
         columnWidths: const {
-          0: FlexColumnWidth(7),
-          1: FlexColumnWidth(2),
-          2: FlexColumnWidth(11),
+          0: FlexColumnWidth(3),
+          1: FlexColumnWidth(1),
         },
         children: rows,
       )

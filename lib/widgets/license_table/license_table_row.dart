@@ -10,7 +10,14 @@ TableRow createLicenseTableRow(Package package, BuildContext context) {
       : package.homepage!;
   return TableRow(
     children: <Widget>[
-      Text(package.name),
+      RichText(
+          text: TextSpan(
+              text: package.name,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => {launchUrl(Uri.parse(homepage))},
+              style: const TextStyle(
+                color: Colors.blue,
+              ))),
       package.license == null
           ? Container()
           : RichText(
@@ -21,21 +28,15 @@ TableRow createLicenseTableRow(Package package, BuildContext context) {
                             context: context,
                             builder: (BuildContext context) {
                               return ShowLicenseDialog(
-                                  license: package.license!);
+                                license: package.license!,
+                                projectName: package.name,
+                              );
                             }).then((exit) {
                           if (exit) return;
                         }),
                   style: const TextStyle(
                     color: Colors.blue,
-                  ))),
-      RichText(
-          text: TextSpan(
-              text: homepage,
-              recognizer: TapGestureRecognizer()
-                ..onTap = () => {launchUrl(Uri.parse(homepage))},
-              style: const TextStyle(
-                color: Colors.blue,
-              )))
+                  )))
     ],
   );
 }
