@@ -18,7 +18,7 @@ class PositionAdministrationBloc
       emit(PositionAdministrationState(state.tree));
     });
     on<PositionsDBIsIdleEvent>((event, emit) {
-      emit(PositionAdministrationInitialState.withTree(objectbox.findRoot()));
+      emit(PositionAdministrationInitialState(objectbox.findRoot()));
     });
   }
 
