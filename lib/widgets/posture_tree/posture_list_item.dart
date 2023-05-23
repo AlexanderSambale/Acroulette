@@ -1,5 +1,5 @@
-import 'package:acroulette/components/dialogs/posture_dialog/edit_posture_dialog.dart';
-import 'package:acroulette/components/icons/icons.dart';
+import 'package:acroulette/widgets/dialogs/posture_dialog/edit_posture_dialog.dart';
+import 'package:acroulette/widgets/icons/icons.dart';
 import 'package:flutter/material.dart';
 
 class PostureListItem extends StatelessWidget {

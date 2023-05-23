@@ -1,8 +1,8 @@
-import 'package:acroulette/components/dialogs/flow_dialog/show_delete_flow_dialog.dart';
-import 'package:acroulette/components/dialogs/posture_dialog/show_delete_posture_dialog.dart';
-import 'package:acroulette/components/dialogs/posture_dialog/show_edit_posture_dialog.dart';
-import 'package:acroulette/components/flows/flow_item.dart';
-import 'package:acroulette/components/flows/flow_position_item.dart';
+import 'package:acroulette/widgets/dialogs/flow_dialog/show_delete_flow_dialog.dart';
+import 'package:acroulette/widgets/dialogs/posture_dialog/show_delete_posture_dialog.dart';
+import 'package:acroulette/widgets/dialogs/posture_dialog/show_edit_posture_dialog.dart';
+import 'package:acroulette/widgets/flows/flow_item.dart';
+import 'package:acroulette/widgets/flows/flow_position_item.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:flutter/material.dart';
 

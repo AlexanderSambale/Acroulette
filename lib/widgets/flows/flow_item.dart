@@ -1,6 +1,6 @@
-import 'package:acroulette/components/dialogs/flow_dialog/show_edit_flow_dialog.dart';
-import 'package:acroulette/components/dialogs/posture_dialog/create_posture_dialog.dart';
-import 'package:acroulette/components/icons/icons.dart';
+import 'package:acroulette/widgets/dialogs/flow_dialog/show_edit_flow_dialog.dart';
+import 'package:acroulette/widgets/dialogs/posture_dialog/create_posture_dialog.dart';
+import 'package:acroulette/widgets/icons/icons.dart';
 import 'package:flutter/material.dart';
 
 class FlowItem extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:acroulette/bloc/flow_administration/flow_administration_bloc.dart';
-import 'package:acroulette/components/dialogs/flow_dialog/create_flow_dialog.dart';
-import 'package:acroulette/components/flows/flow_view.dart';
+import 'package:acroulette/widgets/dialogs/flow_dialog/create_flow_dialog.dart';
+import 'package:acroulette/widgets/flows/flow_view.dart';
 import 'package:acroulette/main.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:flutter/material.dart';

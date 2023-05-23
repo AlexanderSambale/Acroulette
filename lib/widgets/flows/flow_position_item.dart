@@ -1,4 +1,4 @@
-import 'package:acroulette/components/icons/icons.dart';
+import 'package:acroulette/widgets/icons/icons.dart';
 import 'package:flutter/material.dart';
 
 class FlowPositionItem extends StatelessWidget {

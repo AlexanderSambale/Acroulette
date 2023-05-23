@@ -1,4 +1,4 @@
-import 'package:acroulette/components/dialogs/flow_dialog/delete_flow_dialog.dart';
+import 'package:acroulette/widgets/dialogs/flow_dialog/delete_flow_dialog.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:flutter/material.dart';
 
