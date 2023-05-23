@@ -83,10 +83,10 @@ class ObjectBox {
         "goofy star",
         "mono reverse throne"
       ]) {
-        AcroNode acroNode = AcroNode(true, element, predefined: true);
+        AcroNode acroNode = AcroNode(true, element);
         children.add(Node.createLeaf(acroNode));
       }
-      AcroNode acroNodeRoot = AcroNode(true, basicPostures, predefined: true);
+      AcroNode acroNodeRoot = AcroNode(true, basicPostures);
       nodeBox.put(Node.createCategory(children, acroNodeRoot));
     }
 

@@ -8,15 +8,12 @@ const String isEnabledKey = "isEnabled";
 
 @Entity()
 class AcroNode {
-  AcroNode(this.isSwitched, this.label,
-      {this.isEnabled = true, this.predefined = false});
+  AcroNode(this.isSwitched, this.label, {this.isEnabled = true});
 
   int id = 0;
   bool isSwitched;
   bool isEnabled;
   String label;
-  // initial Node, set by developer to true, else it should be false
-  bool predefined;
 
   @override
   String toString() {
@@ -43,6 +40,6 @@ class AcroNode {
   }
 
   @override
-  int get hashCode => Object.hash(isSwitched.hashCode, isEnabled.hashCode,
-      label.hashCode, predefined.hashCode);
+  int get hashCode =>
+      Object.hash(isSwitched.hashCode, isEnabled.hashCode, label.hashCode);
 }
