@@ -21,23 +21,21 @@ class Flows extends StatelessWidget {
               FlowAdministrationBloc bloc =
                   context.read<FlowAdministrationBloc>();
               return Stack(children: [
-                Card(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: flows.length,
-                      itemBuilder: (context, index) {
-                        return FlowView(
-                          flow: flows[index],
-                          toggleExpand: bloc.toggleExpand,
-                          deletePosture: bloc.deletePosture,
-                          deleteFlow: bloc.deleteFlow,
-                          onEditClick: bloc.onEditClick,
-                          onEditFlowClick: bloc.onEditFlowClick,
-                          validator: bloc.validatorFlow,
-                          onSavePostureClick: bloc.onSavePostureClick,
-                        );
-                      }),
-                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: flows.length,
+                    itemBuilder: (context, index) {
+                      return FlowView(
+                        flow: flows[index],
+                        toggleExpand: bloc.toggleExpand,
+                        deletePosture: bloc.deletePosture,
+                        deleteFlow: bloc.deleteFlow,
+                        onEditClick: bloc.onEditClick,
+                        onEditFlowClick: bloc.onEditFlowClick,
+                        validator: bloc.validatorFlow,
+                        onSavePostureClick: bloc.onSavePostureClick,
+                      );
+                    }),
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: SizedBox(

@@ -33,13 +33,10 @@ Node createComplexTree() {
 }
 
 Node setupComplexTree(ObjectBox objectbox) {
-  Node root = objectbox.findRoot();
+  Node root = objectbox.findNodesWithoutParent()[0];
   Node complexTree = createComplexTree();
   root.children.add(complexTree);
-  List<Node> nodes = objectbox.getAllChildrenRecursive(complexTree)
-    ..add(complexTree)
-    ..add(root);
-  objectbox.putManyNodes(nodes);
+  objectbox.putNode(root);
   return complexTree;
 }
 
@@ -64,7 +61,7 @@ void main() {
     test('delete leaf', () async {
       PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
       Node child = objectbox.nodeBox.getAll().last;
-      Node parent = objectbox.findParent(child);
+      Node parent = objectbox.findParent(child)!;
       expect(parent.children.containsElementWithId(child.id), true);
       int length = parent.children.length;
       expect(
@@ -106,7 +103,9 @@ void main() {
   });
   test('onSaveClick', () async {
     PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
-    Node root = objectbox.findRoot();
+    List<Node> nodesWithoutParent = objectbox.findNodesWithoutParent();
+    int numberOfNodesWithoutParents = nodesWithoutParent.length;
+    Node root = nodesWithoutParent[0];
     int length = root.children.length;
     String postureName = 'newPosture';
     expect(
@@ -128,6 +127,8 @@ void main() {
     root = objectbox.nodeBox.get(root.id)!;
     expect(root.children.containsElementWithLabel(true, postureName), true);
     expect(root.children.length, length + 1);
+    expect(
+        numberOfNodesWithoutParents, objectbox.findNodesWithoutParent().length);
   });
 
   test('onEditClick', () async {
@@ -157,7 +158,7 @@ void main() {
     test('validate posture', () async {
       PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
       Node last = objectbox.nodeBox.getAll().last;
-      Node parent = objectbox.findParent(last);
+      Node parent = objectbox.findParent(last)!;
       String testLabel = "testPosture";
       expect(bloc.validator(parent, true, ''), enterText);
       expect(bloc.validator(parent, true, last.label),
@@ -170,8 +171,7 @@ void main() {
       Node complexTree = setupComplexTree(objectbox);
       String testLabel = "testCategory";
       expect(bloc.validator(complexTree, false, ''), enterText);
-      expect(bloc.validator(complexTree, false, complexTree.label),
-          existsText(categoryLabel, complexTree.label!));
+      expect(bloc.validator(complexTree, false, complexTree.label), null);
       expect(bloc.validator(complexTree, false, testLabel), null);
     });
   });

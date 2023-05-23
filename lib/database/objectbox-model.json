@@ -28,18 +28,13 @@
           "id": "4:8738587954000365537",
           "name": "label",
           "type": 9
-        },
-        {
-          "id": "5:105323891657185322",
-          "name": "predefined",
-          "type": 1
         }
       ],
       "relations": []
     },
     {
       "id": "3:6380265456224756441",
-      "lastPropertyId": "4:3134229336453548263",
+      "lastPropertyId": "7:2073892781758890488",
       "name": "Node",
       "properties": [
         {
@@ -65,11 +60,19 @@
           "id": "4:3134229336453548263",
           "name": "isLeaf",
           "type": 1
+        },
+        {
+          "id": "7:2073892781758890488",
+          "name": "parentId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "4:2042966278746452331",
+          "relationTarget": "Node"
         }
       ],
       "relations": [
         {
-          "id": "1:9076478931846036150",
+          "id": "2:2862389692357435301",
           "name": "children",
           "targetId": "3:6380265456224756441"
         }
@@ -149,20 +152,28 @@
     }
   ],
   "lastEntityId": "6:2188687721460847867",
-  "lastIndexId": "1:1394569529412347974",
-  "lastRelationId": "1:9076478931846036150",
+  "lastIndexId": "4:2042966278746452331",
+  "lastRelationId": "2:2862389692357435301",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [
     193142498004548856
   ],
-  "retiredIndexUids": [],
+  "retiredIndexUids": [
+    4875747075297680334,
+    6884459713001424514
+  ],
   "retiredPropertyUids": [
     2447411586676293608,
     2166612337000267658,
-    6015013169389664181
+    6015013169389664181,
+    105323891657185322,
+    1254014504646914144,
+    6283528832643699740
   ],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    9076478931846036150
+  ],
   "version": 1
 }

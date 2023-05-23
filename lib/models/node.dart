@@ -13,6 +13,8 @@ class Node {
   int id = 0;
 
   bool isLeaf;
+
+  final parent = ToOne<Node>();
   ToMany<Node> children = ToMany<Node>();
   ToOne<AcroNode> value = ToOne<AcroNode>();
   bool isExpanded;
@@ -22,12 +24,18 @@ class Node {
       {this.isLeaf = false, this.isExpanded = true});
 
   Node.createCategory(List<Node> children, AcroNode acroNode,
-      {this.isLeaf = false, this.isExpanded = true}) {
+      {this.isLeaf = false, this.isExpanded = true, Node? parent}) {
+    for (var child in children) {
+      child.parent.target = this;
+    }
     this.children.addAll(children);
+    this.parent.target = parent;
     value.target = acroNode;
   }
 
-  Node.createLeaf(acroNode, {this.isLeaf = true, this.isExpanded = true}) {
+  Node.createLeaf(AcroNode acroNode,
+      {this.isLeaf = true, this.isExpanded = true, Node? parent}) {
+    this.parent.target = parent;
     value.target = acroNode;
   }
 

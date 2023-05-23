@@ -11,26 +11,56 @@ class Positions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => PositionAdministrationBloc(objectbox),
-      child: BlocBuilder<PositionAdministrationBloc,
-              BasePositionAdministrationState>(
+        create: (_) => PositionAdministrationBloc(objectbox),
+        child: BlocBuilder<PositionAdministrationBloc,
+            BasePositionAdministrationState>(
           buildWhen: (previous, current) =>
               current is PositionAdministrationInitialState,
           builder: (BuildContext context, state) {
             PositionAdministrationBloc positionAdministrationBloc =
                 context.read<PositionAdministrationBloc>();
-            return PostureTree(
-                tree: state.tree,
-                onSwitched: positionAdministrationBloc.onSwitch,
-                toggleExpand: positionAdministrationBloc.toggleExpand,
-                onDeleteClick: positionAdministrationBloc.onDeleteClick,
-                onEditClick: positionAdministrationBloc.onEditClick,
-                onSaveClick: positionAdministrationBloc.onSaveClick,
-                path: const [],
-                listAllNodesRecursively:
-                    positionAdministrationBloc.listAllNodesRecursively,
-                validator: positionAdministrationBloc.validator);
-          }),
-    );
+            return Stack(children: [
+              ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: state.trees.length,
+                  itemBuilder: (context, index) {
+                    return PostureTree(
+                        tree: state.trees[index],
+                        onSwitched: positionAdministrationBloc.onSwitch,
+                        toggleExpand: positionAdministrationBloc.toggleExpand,
+                        onDeleteClick: positionAdministrationBloc.onDeleteClick,
+                        onEditClick: positionAdministrationBloc.onEditClick,
+                        onSaveClick: positionAdministrationBloc.onSaveClick,
+                        path: const [],
+                        listAllNodesRecursively:
+                            positionAdministrationBloc.listAllNodesRecursively,
+                        validator: positionAdministrationBloc.validator);
+                  }),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    child: ElevatedButton(
+                        child: const Icon(Icons.add_circle_rounded),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CreateCategory(
+                                    path: const [],
+                                    onSaveClick: (category) =>
+                                        positionAdministrationBloc.onSaveClick(
+                                            null, false, category),
+                                    validator: (category) {
+                                      positionAdministrationBloc
+                                          .validatorRootCategory(category);
+                                    });
+                              }).then((exit) {
+                            if (exit) return;
+                          });
+                        }),
+                  ))
+            ]);
+          },
+        ));
   }
 }

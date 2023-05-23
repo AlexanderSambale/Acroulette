@@ -13,12 +13,14 @@ part 'position_administration_state.dart';
 class PositionAdministrationBloc
     extends Bloc<PositionAdministrationEvent, BasePositionAdministrationState> {
   PositionAdministrationBloc(this.objectbox)
-      : super(PositionAdministrationInitialState(objectbox.findRoot())) {
+      : super(PositionAdministrationInitialState(
+            objectbox.findNodesWithoutParent())) {
     on<PositionsBDStartChangeEvent>((event, emit) {
-      emit(PositionAdministrationState(state.tree));
+      emit(PositionAdministrationState(state.trees));
     });
     on<PositionsDBIsIdleEvent>((event, emit) {
-      emit(PositionAdministrationInitialState(objectbox.findRoot()));
+      emit(PositionAdministrationInitialState(
+          objectbox.findNodesWithoutParent()));
     });
   }
 
@@ -69,7 +71,7 @@ class PositionAdministrationBloc
   void createPosture(Node parent, String posture) {
     add(PositionsBDStartChangeEvent());
     AcroNode acroNode = AcroNode(true, posture);
-    Node newPosture = Node.createLeaf(acroNode);
+    Node newPosture = Node.createLeaf(parent: parent, acroNode);
     parent.addNode(newPosture);
     objectbox.putNode(parent);
     regeneratePositionsList();
@@ -87,10 +89,12 @@ class PositionAdministrationBloc
 
   void deletePosture(Node child) {
     add(PositionsBDStartChangeEvent());
-    Node parent = objectbox.findParent(child);
+    Node? parent = objectbox.findParent(child);
     AcroNode acroNode = child.value.target!;
-    parent.children.remove(child);
-    objectbox.putNode(parent);
+    if (parent != null) {
+      parent.children.remove(child);
+      objectbox.putNode(parent);
+    }
     objectbox.removeNode(child);
     objectbox.removeAcroNode(acroNode);
     regeneratePositionsList();
@@ -114,21 +118,27 @@ class PositionAdministrationBloc
       ..add(category);
     List<AcroNode> toRemoveAcro =
         toRemove.map<AcroNode>((element) => element.value.target!).toList();
-    Node parent = objectbox.findParent(category);
-    parent.children.remove(category);
-    objectbox.putNode(parent);
+    Node? parent = objectbox.findParent(category);
+    if (parent != null) {
+      parent.children.remove(category);
+      objectbox.putNode(parent);
+    }
     objectbox.removeManyAcroNodes(toRemoveAcro);
     objectbox.removeManyNodes(toRemove);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
 
-  void createCategory(Node parent, String category) {
+  void createCategory(Node? parent, String category) {
     add(PositionsBDStartChangeEvent());
     AcroNode acroNode = AcroNode(true, category);
-    Node newPosture = Node.createCategory([], acroNode);
-    parent.addNode(newPosture);
-    objectbox.putNode(parent);
+    Node newPosture = Node.createCategory(parent: parent, [], acroNode);
+    if (parent != null) {
+      parent.addNode(newPosture);
+      objectbox.putNode(parent);
+    } else {
+      objectbox.putNode(newPosture);
+    }
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
@@ -141,9 +151,12 @@ class PositionAdministrationBloc
     deleteCategory(child);
   }
 
-  void onSaveClick(Node parent, bool isPosture, String? label) {
+  void onSaveClick(Node? parent, bool isPosture, String? label) {
     if (label == null || label.isEmpty) return;
     if (isPosture) {
+      if (parent == null) {
+        throw Exception("Creating a posture without parent is not allowed!");
+      }
       createPosture(parent, label);
       return;
     }
@@ -163,11 +176,21 @@ class PositionAdministrationBloc
   }
 
   String? validatorCategory(Node category, String label) {
-    if (objectbox
-        .findParent(category)
-        .children
-        .containsElementWithLabel(false, label)) {
+    Node? parent = objectbox.findParent(category);
+    if (parent == null) return null;
+    if (parent.children.containsElementWithLabel(false, label)) {
       return existsText('Category', label);
+    }
+    return null;
+  }
+
+  String? validatorRootCategory(String? label) {
+    if (label == null || label.isEmpty) return enterText;
+    List<Node> rootCategories = objectbox.findNodesWithoutParent();
+    for (var category in rootCategories) {
+      if (category.value.target!.label == label) {
+        return existsText('Category', label);
+      }
     }
     return null;
   }

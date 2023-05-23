@@ -251,28 +251,14 @@ class ObjectBox {
     }
   }
 
-  Node findRoot() {
-    QueryBuilder<Node> builder = nodeBox.query();
-    builder.link(
-        Node_.value,
-        AcroNode_.predefined.equals(true) &
-            AcroNode_.label.equals(basicPostures));
-    Query<Node> query = builder.build();
-    Node? tmpTree = query.findUnique();
-    query.close();
-    // Error handling ToDo
-    if (tmpTree == null) {
-      throw Error();
-    }
-    return tmpTree;
+  List<Node> findNodesWithoutParent() {
+    QueryBuilder<Node> queryBuilder = nodeBox.query(Node_.parent.equals(0));
+    Query<Node> query = queryBuilder.build();
+    return query.find();
   }
 
-  Node findParent(Node child) {
-    QueryBuilder<Node> queryBuilder = nodeBox.query();
-    queryBuilder.linkMany(Node_.children, Node_.id.equals(child.id));
-    Node? parent = queryBuilder.build().findUnique();
-    if (parent == null) return findRoot();
-    return parent;
+  Node? findParent(Node child) {
+    return child.parent.target;
   }
 
   List<Node> getAllChildrenRecursive(Node child) {

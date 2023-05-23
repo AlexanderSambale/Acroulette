@@ -16,7 +16,7 @@ void export(ObjectBox objectBox) async {
 
 Uint8List getData(ObjectBox objectBox) {
   String result = '''{
-  "$nodesKey": ${objectBox.findRoot().toString()},
+  "$nodesKey": ${objectBox.findNodesWithoutParent().toString()},
   "$flowsKey": ${objectBox.flowNodeBox.getAll().toString()}
 }''';
   return convertStringToUint8List(result);

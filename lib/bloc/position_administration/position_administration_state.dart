@@ -1,8 +1,8 @@
 part of 'position_administration_bloc.dart';
 
 abstract class BasePositionAdministrationState extends Equatable {
-  const BasePositionAdministrationState(this.tree);
-  final Node tree;
+  const BasePositionAdministrationState(this.trees);
+  final List<Node> trees;
 
   @override
   List<Object> get props => [];
@@ -10,9 +10,9 @@ abstract class BasePositionAdministrationState extends Equatable {
 
 class PositionAdministrationInitialState
     extends BasePositionAdministrationState {
-  const PositionAdministrationInitialState(Node tree) : super(tree);
+  const PositionAdministrationInitialState(List<Node> trees) : super(trees);
 }
 
 class PositionAdministrationState extends BasePositionAdministrationState {
-  const PositionAdministrationState(Node tree) : super(tree);
+  const PositionAdministrationState(List<Node> trees) : super(trees);
 }
