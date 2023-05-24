@@ -51,7 +51,7 @@ class Positions extends StatelessWidget {
                                         positionAdministrationBloc.onSaveClick(
                                             null, false, category),
                                     validator: (category) {
-                                      positionAdministrationBloc
+                                      return positionAdministrationBloc
                                           .validatorRootCategory(category);
                                     });
                               }).then((exit) {
