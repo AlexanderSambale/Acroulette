@@ -2,7 +2,7 @@ import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late ToMany<Node> children;
