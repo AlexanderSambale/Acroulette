@@ -72,9 +72,23 @@ class Node {
     return result;
   }
 
-  static Node createFromString(String source) {
-    Map decoded = jsonDecode(source);
-    return createFromMap(decoded);
+  static List<Node> createFromString(String source) {
+    var decoded = jsonDecode(source);
+    if (decoded is List<Map<String, dynamic>>) {
+      return createFromListOfMaps(decoded);
+    }
+    if (decoded is Map<String, dynamic>) {
+      return [createFromMap(decoded)];
+    }
+    throw Exception("Cannot be decoded, not correct type!");
+  }
+
+  static List<Node> createFromListOfMaps(List<Map<String, dynamic>> decoded) {
+    List<Node> nodes = [];
+    for (var map in decoded) {
+      nodes.add(createFromMap(map));
+    }
+    return nodes;
   }
 
   static Node createFromMap(Map decoded) {

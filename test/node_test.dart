@@ -33,7 +33,7 @@ void main() {
     Node category = Node.createCategory([leaf1, leaf2, leaf3], rootAcroNode);
     category.isExpanded = false;
     String categoryAsJsonString = category.toString();
-    Node categoryTransformed = Node.createFromString(categoryAsJsonString);
+    Node categoryTransformed = Node.createFromString(categoryAsJsonString)[0];
     expect(category.children.isEmpty, categoryTransformed.children.isEmpty);
     expect(category.children.length, categoryTransformed.children.length);
     expect(category.isLeaf, categoryTransformed.isLeaf);
@@ -46,7 +46,7 @@ void main() {
     AcroNode rootAcroNode = AcroNode(false, leafLabel);
     Node leaf = Node.createLeaf(rootAcroNode);
     String leafAsJsonString = leaf.toString();
-    Node leafTransformed = Node.createFromString(leafAsJsonString);
+    Node leafTransformed = Node.createFromString(leafAsJsonString)[0];
     expect(leafTransformed.children.isEmpty, leaf.children.isEmpty);
     expect(leafTransformed.isLeaf, leaf.isLeaf);
     expect(leafTransformed.value.target, leaf.value.target);

@@ -28,6 +28,6 @@ void importData(String data, ObjectBox objectBox) {
   for (Map flow in decoded[flowsKey]) {
     flows.add(FlowNode.createFromMap(flow));
   }
-  objectBox.nodeBox.put(Node.createFromMap(decoded[nodesKey]));
+  objectBox.nodeBox.putMany(Node.createFromListOfMaps(decoded[nodesKey]));
   objectBox.flowNodeBox.putMany(flows);
 }
