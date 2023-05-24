@@ -1,17 +1,19 @@
 import 'dart:io';
 
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
+import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/objectboxstore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 import 'package:mocktail/mocktail.dart';
 
-class MockFlutterTts extends Mock implements FlutterTts {}
+class MockFlutterTts extends Mock implements TtsBloc {}
+
+class MockVoiceRecognitionBloc extends Mock implements VoiceRecognitionBloc {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +28,8 @@ void main() {
       await dir.create();
       store = await openStore(directory: dir.path);
       objectbox = await ObjectBox.create(store);
-      acrouletteBloc = AcrouletteBloc(MockFlutterTts(), objectbox);
+      acrouletteBloc = AcrouletteBloc(
+          MockFlutterTts(), objectbox, MockVoiceRecognitionBloc());
     });
 
     tearDown(() {
@@ -43,8 +46,7 @@ void main() {
       'emits [AcrouletteInitModel()] when AcrouletteStart is added',
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteStart()),
-      expect: () =>
-          [AcrouletteInitModel(), AcrouletteVoiceRecognitionStartedState()],
+      expect: () => [AcrouletteInitModel()],
     );
   });
 
@@ -72,7 +74,9 @@ void main() {
         }
       });
 
-      acrouletteBloc = AcrouletteBloc(MockFlutterTts(), objectbox);
+      acrouletteBloc = AcrouletteBloc(
+          MockFlutterTts(), objectbox, MockVoiceRecognitionBloc());
+
       acrouletteBloc.add(AcrouletteStart());
     });
 
