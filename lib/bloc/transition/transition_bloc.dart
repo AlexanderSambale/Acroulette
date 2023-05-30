@@ -7,7 +7,7 @@ part 'transition_event.dart';
 part 'transition_state.dart';
 
 class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
-  TransitionBloc(this.externalOnChange)
+  TransitionBloc(this.externalOnChange, this.rng)
       : super(const TransitionState.initial()) {
     on<NewTransitionEvent>((event, emit) {
       final newFigures = List<String>.empty(growable: true);
@@ -29,7 +29,7 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
       } else {
         /// no next figure is available
         emit(TransitionState(
-            state.figures, state.index, TransitionStatus.nomove));
+            state.figures, state.index, TransitionStatus.noMove));
       }
     });
     on<PreviousTransitionEvent>((event, emit) {
@@ -41,7 +41,7 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
       } else {
         /// no previous figure is available
         emit(TransitionState(
-            state.figures, state.index, TransitionStatus.nomove));
+            state.figures, state.index, TransitionStatus.noMove));
       }
     });
     on<CurrentTransitionEvent>((event, emit) {
@@ -71,7 +71,7 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
   }
 
   final void Function(TransitionStatus status) externalOnChange;
-  final rng = Random();
+  final Random rng;
 
   String getRandomFigure(List<String> possibleFigures,
       {bool sameAllowed = false, String lastFigure = ''}) {

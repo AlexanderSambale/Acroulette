@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:acroulette/bloc/mode/mode_bloc.dart';
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
@@ -101,7 +102,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     washingMachineBloc = WashingMachineBloc(objectbox);
 
     // initialize transitionBloc
-    transitionBloc = TransitionBloc(onTransitionChange);
+    transitionBloc = TransitionBloc(onTransitionChange, Random());
     if (objectbox.getSettingsPairValueByKey(playingKey) == "true") {
       add(AcrouletteStart());
     }

@@ -6,7 +6,7 @@ enum TransitionStatus {
   initial,
   next,
   previous,
-  nomove,
+  noMove,
   current
 }
 
