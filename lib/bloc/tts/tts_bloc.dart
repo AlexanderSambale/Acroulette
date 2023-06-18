@@ -12,6 +12,7 @@ part 'tts_state.dart';
 class TtsBloc extends Bloc<TtsEvent, TtsState> {
   late FlutterTts flutterTts;
   late ObjectBox objectbox;
+  bool notAvailable = true;
 
   // initialized so that we can check in the setter
   double _volume = 0.0, _rate = 0.0, _pitch = 0.0;
@@ -34,16 +35,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     });
 
     flutterTts = FlutterTts();
-    _setAwaitOptions();
-    volume = double.parse(objectbox.getSettingsPairValueByKey(volumeKey));
-    speechRate = double.parse(objectbox.getSettingsPairValueByKey(rateKey));
-    pitch = double.parse(objectbox.getSettingsPairValueByKey(pitchKey));
-    _language = objectbox.getSettingsPairValueByKey(languageKey);
-    engine = objectbox.getSettingsPairValueByKey(engineKey);
-    languages = _getLanguages();
-    engines = _getEngines();
-    defaultEngine = _getDefaultEngine();
-    defaultVoice = _getDefaultVoice();
+    init(objectbox).then((value) => notAvailable = false);
   }
 
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
@@ -57,6 +49,23 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   set pitch(double newPitch) => setPitch(newPitch);
   set language(String? newLanguage) => setLanguage(newLanguage);
   set engine(String? newLanguage) => setEngine(newLanguage);
+
+  Future init(ObjectBox objectbox) async {
+    try {
+      await _setAwaitOptions();
+      volume = double.parse(objectbox.getSettingsPairValueByKey(volumeKey));
+      speechRate = double.parse(objectbox.getSettingsPairValueByKey(rateKey));
+      pitch = double.parse(objectbox.getSettingsPairValueByKey(pitchKey));
+      _language = objectbox.getSettingsPairValueByKey(languageKey);
+      engine = objectbox.getSettingsPairValueByKey(engineKey);
+      languages = _getLanguages();
+      engines = _getEngines();
+      defaultEngine = _getDefaultEngine();
+      defaultVoice = _getDefaultVoice();
+    } on Exception catch (e) {
+      return Future.error(e, StackTrace.current);
+    }
+  }
 
   Future _setAwaitOptions() async {
     await flutterTts.awaitSpeakCompletion(true);
@@ -113,6 +122,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   }
 
   Future<void> speak(String text) async {
+    if (notAvailable) return;
     await flutterTts.speak(text);
   }
 

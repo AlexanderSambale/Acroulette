@@ -189,6 +189,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   }
 
   Future _speak(String text) async {
+    if (ttsBloc.notAvailable) return;
     await ttsBloc.speak(text);
   }
 }
