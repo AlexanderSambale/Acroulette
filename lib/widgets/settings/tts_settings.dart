@@ -25,7 +25,9 @@ class _TtsSettings extends State<TtsSettings> {
           return true;
         }, builder: (BuildContext context, state) {
           TtsBloc ttsBloc = context.read<TtsBloc>();
-          if (ttsBloc.notAvailable) return const Spacer();
+          if (ttsBloc.notAvailable) {
+            return Form(key: _formKey, child: const Spacer());
+          }
           return Form(
               key: _formKey,
               child: Card(
