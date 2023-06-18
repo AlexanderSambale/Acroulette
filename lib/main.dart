@@ -92,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const Positions(),
     const Flows(),
     Settings(
+      voiceRecognitionBloc: voiceRecognitionBloc,
       ttsBloc: ttsBloc,
     ),
     const PrivacyPolicy(),

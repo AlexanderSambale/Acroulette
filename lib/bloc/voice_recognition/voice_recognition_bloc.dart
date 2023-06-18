@@ -17,30 +17,39 @@ class VoiceRecognitionBloc
 
   VoiceRecognitionBloc() : super(const VoiceRecognitionState.initial()) {
     on<VoiceRecognitionStart>((event, emit) async {
+      if (!isModelLoaded) {
+        event.onRecognitionStarted();
+        return;
+      }
       await speechService.start();
       event.onRecognitionStarted();
       speechService.onResult().listen(event.onData);
       emit(state.copyWith(isRecognizing: true));
     });
     on<VoiceRecognitionStop>((event, emit) {
+      if (!isModelLoaded) return;
       speechService.stop();
       emit(state.copyWith(isRecognizing: false));
     });
 
-    initModel();
+    initModel().then((value) => isModelLoaded = true);
   }
 
   Future<void> initModel() async {
-    final enSmallModelPath = await ModelLoader()
-        .loadFromAssets('assets/models/vosk-model-small-en-us-0.15.zip');
-    model = await vosk.createModel(enSmallModelPath);
-    final recognizer = await vosk.createRecognizer(
-      model: model,
-      sampleRate: sampleRate,
-    );
-    speechService = await vosk.initSpeechService(recognizer);
-    isModelLoaded = true;
-    onInitiated();
+    try {
+      final enSmallModelPath = await ModelLoader()
+          .loadFromAssets('assets/models/vosk-model-small-en-us-0.15.zip');
+      model = await vosk.createModel(enSmallModelPath);
+      final recognizer = await vosk.createRecognizer(
+        model: model,
+        sampleRate: sampleRate,
+      );
+      speechService = await vosk.initSpeechService(recognizer);
+    } on Exception catch (e) {
+      return Future.error(e, StackTrace.current);
+    } finally {
+      onInitiated();
+    }
   }
 
   void initialize(void Function() onInitiated) {
@@ -48,6 +57,7 @@ class VoiceRecognitionBloc
   }
 
   void dispose() {
+    if (!isModelLoaded) return;
     speechService.stop();
   }
 }

@@ -131,7 +131,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   }
 
   void onTransitionChange(TransitionStatus status) {
-    if (!voiceRecognitionBloc.state.isRecognizing) return;
+    if (!voiceRecognitionBloc.state.isRecognizing &&
+        voiceRecognitionBloc.isModelLoaded) return;
     if (status == TransitionStatus.created ||
         status == TransitionStatus.next ||
         status == TransitionStatus.current ||
