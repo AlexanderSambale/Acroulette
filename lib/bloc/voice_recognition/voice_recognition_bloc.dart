@@ -10,6 +10,7 @@ class VoiceRecognitionBloc
     extends Bloc<VoiceRecognitionEvent, VoiceRecognitionState> {
   void Function() onInitiated = () {};
   bool isModelLoaded = false;
+  bool isDisabled = false;
   VoskFlutterPlugin vosk = VoskFlutterPlugin.instance();
   late Model model;
   late int sampleRate = 44100;
@@ -17,7 +18,7 @@ class VoiceRecognitionBloc
 
   VoiceRecognitionBloc() : super(const VoiceRecognitionState.initial()) {
     on<VoiceRecognitionStart>((event, emit) async {
-      if (!isModelLoaded) {
+      if (isDisabled) {
         event.onRecognitionStarted();
         return;
       }
@@ -27,12 +28,14 @@ class VoiceRecognitionBloc
       emit(state.copyWith(isRecognizing: true));
     });
     on<VoiceRecognitionStop>((event, emit) {
-      if (!isModelLoaded) return;
+      if (isDisabled) return;
       speechService.stop();
       emit(state.copyWith(isRecognizing: false));
     });
 
-    initModel().then((value) => isModelLoaded = true);
+    initModel()
+        .then((value) => isDisabled = false)
+        .catchError((error, stack) => isDisabled = true);
   }
 
   Future<void> initModel() async {
@@ -45,6 +48,7 @@ class VoiceRecognitionBloc
         sampleRate: sampleRate,
       );
       speechService = await vosk.initSpeechService(recognizer);
+      isModelLoaded = true;
     } on Exception catch (e) {
       return Future.error(e, StackTrace.current);
     } finally {
@@ -57,7 +61,7 @@ class VoiceRecognitionBloc
   }
 
   void dispose() {
-    if (!isModelLoaded) return;
+    if (isDisabled) return;
     speechService.stop();
   }
 }

@@ -108,7 +108,11 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     }
 
     // when Model is loaded call onInitiated
-    voiceRecognitionBloc.initialize(onInitiated);
+    if (voiceRecognitionBloc.isDisabled) {
+      onInitiated();
+    } else {
+      voiceRecognitionBloc.initialize(onInitiated);
+    }
 
     // get settings
     HashMap<String, String> settingsMap =
