@@ -1,0 +1,62 @@
+{
+  "flows": [
+    {
+      "name": "ninja star",
+      "positions": [
+        "ninja side star",
+        "reverse bird",
+        "ninja side star",
+        "buddha"
+      ]
+    },
+    {
+      "name": "extra mile",
+      "positions": [
+        "bird",
+        "bird side star",
+        "goofy star",
+        "ganesha side star",
+        "reverse bird",
+        "ganesha side star",
+        "bird"
+      ]
+    },
+    {
+      "name": "icing on the cake",
+      "positions": [
+        "buddha",
+        "ninja side star",
+        "mono reverse throne",
+        "ninja side star",
+        "reverse bird",
+        "ninja side star",
+        "buddha"
+      ]
+    },
+    {
+      "name": "illusion",
+      "positions": [
+        "star",
+        "backbird",
+        "ninja side star",
+        "reverse bird",
+        "ganesha side star",
+        "star"
+      ]
+    },
+    {
+      "name": "twisted star child",
+      "positions": ["bird", "shin to foot", "star", "bird"]
+    },
+    {
+      "name": "creeper",
+      "positions": [
+        "back bird",
+        "biceps stand",
+        "reverse bird",
+        "reverse throne on hands",
+        "back bird"
+      ]
+    }
+  ]
+}
