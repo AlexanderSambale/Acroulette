@@ -8,7 +8,7 @@ import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/position.dart';
-import 'package:flutter/services.dart';
+import 'models/helper/io/assets.dart';
 
 class ObjectBox {
   /// The Store of this app.
@@ -190,9 +190,5 @@ class ObjectBox {
 
   List<String> possiblePositions() {
     return positionBox.getAll().map<String>((element) => element.name).toList();
-  }
-
-  Future<String> loadAsset(String asset) async {
-    return await rootBundle.loadString('assets/$asset');
   }
 }

@@ -1,10 +1,6 @@
+import 'package:acroulette/models/helper/io/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-
-Future<String> loadAsset(BuildContext context) async {
-  return await DefaultAssetBundle.of(context)
-      .loadString('assets/docs/privacy_policy.md');
-}
 
 class PrivacyPolicy extends StatelessWidget {
   const PrivacyPolicy({Key? key}) : super(key: key);
@@ -12,7 +8,7 @@ class PrivacyPolicy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-        future: loadAsset(context),
+        future: loadPrivacyPolicy(context),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
             return Markdown(data: replaceHeader(snapshot.data));
