@@ -140,5 +140,44 @@ void main() {
                         (state) => state.previousFigure, 'previousFigure', ''),
               ]);
     });
+
+    group('ChangeMode', () {
+      blocTest<AcrouletteBloc, BaseAcrouletteState>(
+          'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
+          build: () {
+            objectbox.putSettingsPairValueByKey(appMode, acroulette);
+            return acrouletteBloc;
+          },
+          act: (bloc) {
+            when(() => bloc.voiceRecognitionBloc.state)
+                .thenReturn(const VoiceRecognitionState(true));
+            when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
+            bloc.add(AcrouletteChangeMode(acroulette));
+            bloc.add(AcrouletteChangeMode(washingMachine));
+            bloc.add(AcrouletteChangeMode(acroulette));
+          },
+          expect: () => [
+                isA<AcrouletteFlowState>().having(
+                    (state) => state.flowName, 'flowName', 'ninja side star'),
+                // is fired immediately because of the test AcrouletteChangeMode(acroulette)
+                isA<AcrouletteFlowState>().having(
+                    (state) => state.flowName, 'flowName', isA<String>()),
+                isA<AcrouletteCommandRecognizedState>()
+                    .having((state) => state.currentFigure, 'currentFigure',
+                        'ninja side star')
+                    .having((state) => state.nextFigure, 'nextFigure',
+                        'reverse bird')
+                    .having(
+                        (state) => state.previousFigure, 'previousFigure', '')
+                    .having((state) => state.mode, 'mode', acroulette),
+                isA<AcrouletteCommandRecognizedState>()
+                    .having((state) => state.currentFigure, 'currentFigure',
+                        isA<String>())
+                    .having((state) => state.nextFigure, 'nextFigure', '')
+                    .having(
+                        (state) => state.previousFigure, 'previousFigure', '')
+                    .having((state) => state.mode, 'mode', acroulette),
+              ]);
+    });
   });
 }
