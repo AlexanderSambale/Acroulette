@@ -35,6 +35,7 @@ void main() {
       ttsBloc = MockFlutterTts();
       voiceRecognitionBloc = MockVoiceRecognitionBloc();
       when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
+      when(() => ttsBloc.notAvailable).thenReturn(true);
       acrouletteBloc = AcrouletteBloc(ttsBloc, objectbox, voiceRecognitionBloc);
     });
 
