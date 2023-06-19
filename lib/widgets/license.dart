@@ -81,8 +81,3 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
     ]);
   }
 }
-
-Future<String> loadAsset(BuildContext context) async {
-  return await DefaultAssetBundle.of(context)
-      .loadString('assets/docs/privacy_policy.md');
-}
