@@ -23,14 +23,19 @@ void main() {
     late AcrouletteBloc acrouletteBloc;
     late Store store;
     late ObjectBox objectbox;
+    late TtsBloc ttsBloc;
+    late VoiceRecognitionBloc voiceRecognitionBloc;
+
     final dir = Directory('acroulette_bloc_testdata_initial');
     setUp(() async {
       if (dir.existsSync()) dir.deleteSync(recursive: true);
       await dir.create();
       store = await openStore(directory: dir.path);
       objectbox = await ObjectBox.create(store);
-      acrouletteBloc = AcrouletteBloc(
-          MockFlutterTts(), objectbox, MockVoiceRecognitionBloc());
+      ttsBloc = MockFlutterTts();
+      voiceRecognitionBloc = MockVoiceRecognitionBloc();
+      when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
+      acrouletteBloc = AcrouletteBloc(ttsBloc, objectbox, voiceRecognitionBloc);
     });
 
     tearDown(() {
@@ -58,6 +63,13 @@ void main() {
         expect: () => [AcrouletteModelInitiatedState()],
         verify: (bloc) =>
             expect(objectbox.getSettingsPairValueByKey(playingKey), "false"));
+
+    blocTest<AcrouletteBloc, BaseAcrouletteState>(
+      'emits [AcrouletteModelInitiatedState()] when AcrouletteInitModelEvent is added',
+      build: () => acrouletteBloc,
+      act: (bloc) => bloc.add(AcrouletteInitModelEvent()),
+      expect: () => [AcrouletteModelInitiatedState()],
+    );
 
     group('transitions', () {
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
