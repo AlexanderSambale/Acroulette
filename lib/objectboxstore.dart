@@ -1,13 +1,14 @@
 import 'package:acroulette/constants/model.dart';
-import 'package:acroulette/constants/nodes.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/exceptions/pair_value_exception.dart';
 import 'package:acroulette/models/flow_node.dart';
+import 'package:acroulette/models/helper/import_export/import.dart';
 import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/position.dart';
+import 'package:flutter/services.dart';
 
 class ObjectBox {
   /// The Store of this app.
@@ -27,111 +28,17 @@ class ObjectBox {
     flowNodeBox = Box<FlowNode>(store);
 
     if (nodeBox.isEmpty()) {
-      List<Node> children = [];
-      for (var element in [
-        "bird",
-        "back bird",
-        "reverse back bird",
-        "reverse bird",
-        "bird on hands",
-        "back bird on hands",
-        "reverse bird on hands",
-        "reverse backbird on hands",
-        "star",
-        "reverse star",
-        "buddha",
-        "floating pashi",
-        "throne",
-        "reverse throne",
-        "chair",
-        "folded leaf",
-        "side star",
-        "vishnus couch",
-        "high flying whale",
-        "throne on hands",
-        "reverse throne on hands",
-        "pidgeon",
-        "floating camel",
-        "tuck sit",
-        "hangle dangle",
-        "table top",
-        "low foot 2 hand",
-        "reverse low foot 2 hand",
-        "foot 2 hand",
-        "reverse foot 2 hand",
-        "foot 2 foot",
-        "reverse foot 2 foot",
-        "hand 2 hand",
-        "reverse hand 2 hand",
-        "low hand 2 hand",
-        "low reverse hand 2 hand",
-        "hand 2 foot",
-        "reverse hand 2 foot",
-        "inner peace",
-        "peace",
-        "siddhi side star",
-        "ganesha side star",
-        "ninja side star",
-        "bird side star",
-        "shiva",
-        "shoulder stand",
-        "reverse shoulder stand",
-        "foot 2 shin",
-        "log",
-        "shin on hands",
-        "shin",
-        "goofy star",
-        "mono reverse throne"
-      ]) {
-        AcroNode acroNode = AcroNode(true, element);
-        children.add(Node.createLeaf(acroNode));
-      }
-      AcroNode acroNodeRoot = AcroNode(true, basicPostures);
-      nodeBox.put(Node.createCategory(children, acroNodeRoot));
+      loadAsset('AcrouletteBasisNodes.json').then((data) {
+        importData(data, this);
+        regeneratePositionsList();
+      });
     }
 
-    regeneratePositionsList();
-
     if (flowNodeBox.isEmpty()) {
-      FlowNode flowNode = FlowNode('ninja star',
-          ['ninja side star', 'reverse bird', 'ninja side star', 'buddha']);
-      int flowNodeId = flowNodeBox.put(flowNode);
-      putSettingsPairValueByKey(flowIndex, flowNodeId.toString());
-      flowNodeBox.put(FlowNode('extra mile', [
-        'bird',
-        'bird side star',
-        'goofy star',
-        'ganesha side star',
-        'reverse bird',
-        'ganesha side star',
-        'bird'
-      ]));
-      flowNodeBox.put(FlowNode('icing on the cake', [
-        'buddha',
-        'ninja side star',
-        'mono reverse throne',
-        'ninja side star',
-        'reverse bird',
-        'ninja side star',
-        'buddha',
-      ]));
-      flowNodeBox.put(FlowNode('illusion', [
-        'star',
-        'backbird',
-        'ninja side star',
-        'reverse bird',
-        'ganesha side star',
-        'star',
-      ]));
-      flowNodeBox.put(FlowNode(
-          'twisted star child', ['bird', 'shin to foot', 'star', 'bird']));
-      flowNodeBox.put(FlowNode('creeper', [
-        'back bird',
-        'biceps stand',
-        'reverse bird',
-        'reverse throne on hands',
-        'back bird'
-      ]));
+      loadAsset('AcrouletteBasisFlows.json').then((data) {
+        importData(data, this);
+        putSettingsPairValueByKey(flowIndex, '1');
+      });
     }
 
     setDefaultValue(appMode, acroulette);
@@ -283,5 +190,9 @@ class ObjectBox {
 
   List<String> possiblePositions() {
     return positionBox.getAll().map<String>((element) => element.name).toList();
+  }
+
+  Future<String> loadAsset(String asset) async {
+    return await rootBundle.loadString('assets/$asset');
   }
 }
