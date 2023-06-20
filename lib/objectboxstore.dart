@@ -28,14 +28,14 @@ class ObjectBox {
     flowNodeBox = Box<FlowNode>(store);
 
     if (nodeBox.isEmpty()) {
-      loadAsset('AcrouletteBasisNodes.json').then((data) {
+      loadAsset('models/AcrouletteBasisNodes.json').then((data) {
         importData(data, this);
         regeneratePositionsList();
       });
     }
 
     if (flowNodeBox.isEmpty()) {
-      loadAsset('AcrouletteBasisFlows.json').then((data) {
+      loadAsset('models/AcrouletteBasisFlows.json').then((data) {
         importData(data, this);
         putSettingsPairValueByKey(flowIndex, '1');
       });

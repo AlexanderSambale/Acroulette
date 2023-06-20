@@ -24,10 +24,14 @@ String convertUint8ListToString(Uint8List uint8list) {
 
 void importData(String data, ObjectBox objectBox) {
   Map decoded = jsonDecode(data);
-  List<FlowNode> flows = [];
-  for (Map flow in decoded[flowsKey]) {
-    flows.add(FlowNode.createFromMap(flow));
+  if (decoded[flowsKey] != null) {
+    List<FlowNode> flows = [];
+    for (Map flow in decoded[flowsKey]) {
+      flows.add(FlowNode.createFromMap(flow));
+    }
+    objectBox.flowNodeBox.putMany(flows);
   }
-  objectBox.nodeBox.putMany(Node.createFromListOfMaps(decoded[nodesKey]));
-  objectBox.flowNodeBox.putMany(flows);
+  if (decoded[nodesKey] != null) {
+    objectBox.nodeBox.putMany(Node.createFromListOfMaps(decoded[nodesKey]));
+  }
 }
