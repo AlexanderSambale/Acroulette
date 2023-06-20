@@ -7,6 +7,7 @@ import 'package:acroulette/objectboxstore.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late Store store;
   late ObjectBox objectbox;
   final dir = Directory('testdata');

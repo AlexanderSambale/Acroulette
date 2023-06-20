@@ -41,6 +41,7 @@ Node setupComplexTree(ObjectBox objectbox) {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late Store store;
   late ObjectBox objectbox;
   final dir = Directory('position_administration_bloc_testdata');
