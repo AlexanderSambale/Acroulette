@@ -155,6 +155,51 @@ void main() {
     expect(child.label, testLabel);
   });
 
+  group('onSwitchClick', () {
+    test('click false', () async {
+      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+      Node simpleTree = createSimpleTree();
+      int simpleTreeId = objectbox.putNode(simpleTree);
+      Node? loadedTree = objectbox.nodeBox.get(simpleTreeId);
+      expect(loadedTree, isNotNull);
+      expect(simpleTree.value.target!.isSwitched,
+          loadedTree!.value.target!.isSwitched);
+      List<bool> enabledList = [];
+      for (Node child in loadedTree.children.toList()) {
+        enabledList.add(child.value.target!.isEnabled);
+      }
+      bloc.onSwitch(false, loadedTree);
+      expect(loadedTree.value.target!.isSwitched, false);
+      List<bool> enabledListAfter = [];
+      for (Node child in loadedTree.children.toList()) {
+        enabledListAfter.add(child.value.target!.isEnabled);
+      }
+      expect(enabledListAfter, [false, false, false]);
+    });
+
+    test('click true', () async {
+      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+      Node simpleTree = createSimpleTree();
+      simpleTree.value.target!.isSwitched = false;
+      int simpleTreeId = objectbox.putNode(simpleTree);
+      Node? loadedTree = objectbox.nodeBox.get(simpleTreeId);
+      expect(loadedTree, isNotNull);
+      expect(simpleTree.value.target!.isSwitched,
+          loadedTree!.value.target!.isSwitched);
+      List<bool> enabledList = [];
+      for (Node child in loadedTree.children.toList()) {
+        enabledList.add(child.value.target!.isEnabled);
+      }
+      bloc.onSwitch(true, loadedTree);
+      expect(loadedTree.value.target!.isSwitched, true);
+      List<bool> enabledListAfter = [];
+      for (Node child in loadedTree.children.toList()) {
+        enabledListAfter.add(child.value.target!.isEnabled);
+      }
+      expect(enabledListAfter, enabledList);
+    });
+  });
+
   group('validate', () {
     test('validate posture', () async {
       PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
