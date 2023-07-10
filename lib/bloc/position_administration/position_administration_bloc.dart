@@ -37,13 +37,15 @@ class PositionAdministrationBloc
   /// disable switch on| enable on, enable others| /
   /// enabled switch off| /| disable off, nothing else
   /// disable switch off| enable off, nothing else|/
-  void enableOrDisable(Node tree, bool isSwitched) {
+  void enableOrDisableAndAddAcroNodes(
+      List<AcroNode> acroNodes, Node tree, bool isSwitched) {
     for (var node in tree.children) {
       AcroNode acroNode = node.value.target!;
       if (acroNode.isSwitched) {
-        enableOrDisable(node, isSwitched);
+        enableOrDisableAndAddAcroNodes(acroNodes, node, isSwitched);
       }
       acroNode.isEnabled = isSwitched;
+      acroNodes.add(acroNode);
     }
   }
 
@@ -51,9 +53,13 @@ class PositionAdministrationBloc
     add(PositionsBDStartChangeEvent());
     AcroNode acroNode = tree.value.target!;
     acroNode.isSwitched = switched;
-    enableOrDisable(tree, switched);
-    regeneratePositionsList();
+    List<AcroNode> acroNodes = [];
+    enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
+    acroNodes.add(acroNode);
+
+    objectbox.putManyAcroNodes(acroNodes);
     objectbox.putNode(tree);
+    regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
 
