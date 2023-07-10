@@ -110,41 +110,45 @@ class ObjectBox {
     }
   }
 
-  void putAcroNode(AcroNode acroNode) {
-    acroNodeBox.put(acroNode);
+  int putAcroNode(AcroNode acroNode) {
+    return acroNodeBox.put(acroNode);
   }
 
-  void removeAcroNode(AcroNode acroNode) {
-    acroNodeBox.remove(acroNode.id);
+  bool removeAcroNode(AcroNode acroNode) {
+    return acroNodeBox.remove(acroNode.id);
   }
 
-  void removeManyAcroNodes(List<AcroNode> acroNodes) {
-    acroNodeBox
+  int removeManyAcroNodes(List<AcroNode> acroNodes) {
+    return acroNodeBox
         .removeMany(acroNodes.map<int>((element) => element.id).toList());
   }
 
-  void putNode(Node node) {
-    nodeBox.put(node);
+  List<int> putManyAcroNodes(List<AcroNode> acroNodes) {
+    return acroNodeBox.putMany(acroNodes);
   }
 
-  void putManyNodes(List<Node> nodes) {
-    nodeBox.putMany(nodes);
+  int putNode(Node node) {
+    return nodeBox.put(node);
   }
 
-  void removeNode(Node node) {
-    nodeBox.remove(node.id);
+  List<int> putManyNodes(List<Node> nodes) {
+    return nodeBox.putMany(nodes);
   }
 
-  void removeManyNodes(List<Node> nodes) {
-    nodeBox.removeMany(nodes.map<int>((element) => element.id).toList());
+  bool removeNode(Node node) {
+    return nodeBox.remove(node.id);
   }
 
-  void putFlowNode(FlowNode flow) {
-    flowNodeBox.put(flow);
+  int removeManyNodes(List<Node> nodes) {
+    return nodeBox.removeMany(nodes.map<int>((element) => element.id).toList());
   }
 
-  void removeFlowNode(FlowNode flow) {
-    flowNodeBox.remove(flow.id);
+  int putFlowNode(FlowNode flow) {
+    return flowNodeBox.put(flow);
+  }
+
+  bool removeFlowNode(FlowNode flow) {
+    return flowNodeBox.remove(flow.id);
   }
 
   String? getPosition(String positionName) {
