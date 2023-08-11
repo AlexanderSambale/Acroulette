@@ -78,13 +78,15 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
         positions = objectbox.possiblePositions();
         modeBloc.add(ModeChange(
             event.mode,
-            () =>
-                transitionBloc.add(InitAcrouletteTransitionEvent(positions))));
+            () => transitionBloc
+                .add(InitAcrouletteTransitionEvent(positions, false))));
       }
       if (event.mode == washingMachine) {
         positions = objectbox.flowPositions();
-        modeBloc.add(ModeChange(event.mode,
-            () => transitionBloc.add(InitFlowTransitionEvent(positions))));
+        modeBloc.add(ModeChange(
+            event.mode,
+            () =>
+                transitionBloc.add(InitFlowTransitionEvent(positions, true))));
       }
       emit(AcrouletteFlowState(positions.first));
     });
@@ -94,7 +96,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       washingMachineBloc.add(WashingMachineChange(
           event.machine,
           () => transitionBloc
-              .add(InitFlowTransitionEvent(objectbox.flowPositions()))));
+              .add(InitFlowTransitionEvent(objectbox.flowPositions(), true))));
       emit(AcrouletteFlowState(event.machine));
     });
     // initialize blocs
@@ -159,11 +161,12 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
   void setTransitionsDependingOnMode(ObjectBox objectBox) {
     if (mode == washingMachine) {
-      transitionBloc.add(InitFlowTransitionEvent(objectBox.flowPositions()));
+      transitionBloc
+          .add(InitFlowTransitionEvent(objectBox.flowPositions(), true));
     }
     if (mode == acroulette) {
-      transitionBloc
-          .add(InitAcrouletteTransitionEvent(objectBox.possiblePositions()));
+      transitionBloc.add(
+          InitAcrouletteTransitionEvent(objectBox.possiblePositions(), false));
     }
   }
 

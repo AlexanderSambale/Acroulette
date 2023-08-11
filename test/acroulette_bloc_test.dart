@@ -104,7 +104,7 @@ void main() {
                 .thenReturn(const VoiceRecognitionState(true));
             when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
             bloc.transitionBloc
-                .add(InitFlowTransitionEvent(objectbox.flowPositions()));
+                .add(InitFlowTransitionEvent(objectbox.flowPositions(), true));
             bloc.add(AcrouletteTransition(nextPosition));
             bloc.add(AcrouletteTransition(currentPosition));
             bloc.add(AcrouletteTransition(previousPosition));
@@ -115,8 +115,8 @@ void main() {
                         'ninja side star')
                     .having((state) => state.nextFigure, 'nextFigure',
                         'reverse bird')
-                    .having(
-                        (state) => state.previousFigure, 'previousFigure', ''),
+                    .having((state) => state.previousFigure, 'previousFigure',
+                        'buddha'),
                 isA<AcrouletteCommandRecognizedState>()
                     .having((state) => state.currentFigure, 'currentFigure',
                         'reverse bird')
@@ -136,8 +136,8 @@ void main() {
                         'ninja side star')
                     .having((state) => state.nextFigure, 'nextFigure',
                         'reverse bird')
-                    .having(
-                        (state) => state.previousFigure, 'previousFigure', ''),
+                    .having((state) => state.previousFigure, 'previousFigure',
+                        'buddha'),
               ]);
     });
 
@@ -167,8 +167,8 @@ void main() {
                         'ninja side star')
                     .having((state) => state.nextFigure, 'nextFigure',
                         'reverse bird')
-                    .having(
-                        (state) => state.previousFigure, 'previousFigure', '')
+                    .having((state) => state.previousFigure, 'previousFigure',
+                        'buddha')
                     .having((state) => state.mode, 'mode', acroulette),
                 isA<AcrouletteCommandRecognizedState>()
                     .having((state) => state.currentFigure, 'currentFigure',

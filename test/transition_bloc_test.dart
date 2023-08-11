@@ -85,7 +85,7 @@ void main() {
     blocTest<TransitionBloc, TransitionState>(
       'InitFlowTransitionEvent',
       build: () => transitionBloc,
-      act: (bloc) => bloc.add(InitFlowTransitionEvent(['1', '2'])),
+      act: (bloc) => bloc.add(InitFlowTransitionEvent(['1', '2'], true)),
       expect: () => [
         isA<TransitionState>()
             .having((bloc) => bloc.index, 'index', 0)

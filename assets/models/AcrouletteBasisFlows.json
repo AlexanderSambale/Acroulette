@@ -17,8 +17,7 @@
         "goofy star",
         "ganesha side star",
         "reverse bird",
-        "ganesha side star",
-        "bird"
+        "ganesha side star"
       ]
     },
     {
@@ -29,8 +28,7 @@
         "mono reverse throne",
         "ninja side star",
         "reverse bird",
-        "ninja side star",
-        "buddha"
+        "ninja side star"
       ]
     },
     {
@@ -40,13 +38,12 @@
         "backbird",
         "ninja side star",
         "reverse bird",
-        "ganesha side star",
-        "star"
+        "ganesha side star"
       ]
     },
     {
       "name": "twisted star child",
-      "positions": ["bird", "shin to foot", "star", "bird"]
+      "positions": ["bird", "shin to foot", "star"]
     },
     {
       "name": "creeper",
@@ -54,8 +51,7 @@
         "back bird",
         "biceps stand",
         "reverse bird",
-        "reverse throne on hands",
-        "back bird"
+        "reverse throne on hands"
       ]
     }
   ]

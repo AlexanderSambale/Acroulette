@@ -19,10 +19,12 @@ class NewTransitionEvent extends TransitionEvent {
 
 class InitFlowTransitionEvent extends TransitionEvent {
   late List<String> figures;
-  InitFlowTransitionEvent(this.figures);
+  late bool loop;
+  InitFlowTransitionEvent(this.figures, this.loop);
 }
 
 class InitAcrouletteTransitionEvent extends TransitionEvent {
   late List<String> possibleFigures;
-  InitAcrouletteTransitionEvent(this.possibleFigures);
+  late bool loop;
+  InitAcrouletteTransitionEvent(this.possibleFigures, this.loop);
 }
