@@ -34,6 +34,8 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+isar_version: &isar_version 3.1.0 # define the version to be used
+
 dependencies:
   flutter:
     sdk: flutter
@@ -47,12 +49,12 @@ dependencies:
   equatable: ^2.0.5
   vosk_flutter: ^0.3.48
   flutter_tts: ^3.8.5
-  objectbox: ^2.5.0
-  objectbox_flutter_libs: ^2.5.0
   flat_buffers: ^2.0.5
   flutter_markdown: ^0.6.22
   pick_or_save: ^2.2.4
   url_launcher: ^6.2.5
+  isar: *isar_version
+  isar_flutter_libs: *isar_version
 
 dev_dependencies:
   flutter_test:
@@ -67,10 +69,10 @@ dev_dependencies:
   bloc_test: ^9.1.6
   mocktail: ^0.3.0
   build_runner: ^2.4.8
-  objectbox_generator: 2.5.0
   widgetbook: ^2.4.1
   flutter_launcher_icons: ^0.13.1
   flutter_oss_licenses: ^2.0.1
+  isar_generator: *isar_version
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -117,10 +119,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-objectbox:
-  # Writes objectbox-model.json and objectbox.g.dart to lib/custom (and test/custom).
-  output_dir: database
 
 flutter_icons:
   ios: true
