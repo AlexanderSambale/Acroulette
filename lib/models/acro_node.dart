@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:isar/isar.dart';
 
 const String isSwitchedKey = "isSwitched";
 const String labelKey = "label";
 const String isEnabledKey = "isEnabled";
 
-@Entity()
+@collection
 class AcroNode {
   AcroNode(this.isSwitched, this.label, {this.isEnabled = true});
 

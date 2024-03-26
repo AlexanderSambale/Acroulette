@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:acroulette/models/acro_node.dart';
+import 'package:isar/isar.dart';
 
 const String isLeafKey = "isLeaf";
 const String isExpandedKey = "isExpanded";
 const String childrenKey = "children";
 const String valueKey = "value";
 
-@Entity()
+@collection
 class Node {
   int id = 0;
 

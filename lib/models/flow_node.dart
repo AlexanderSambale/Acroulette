@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'package:isar/isar.dart';
 
 const String nameKey = "name";
 const String positionsKey = "positions";
 
-@Entity()
+@collection
 class FlowNode {
   int id = 0;
 

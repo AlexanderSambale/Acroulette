@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:isar/isar.dart';
 
 @collection
 class SettingsPair {

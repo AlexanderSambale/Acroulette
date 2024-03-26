@@ -1,4 +1,6 @@
-@Entity()
+import 'package:isar/isar.dart';
+
+@collection
 class Position {
   int id = 0;
 
