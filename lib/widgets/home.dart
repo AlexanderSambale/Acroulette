@@ -4,7 +4,7 @@ import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/constants/widgets.dart';
 import 'package:acroulette/main.dart';
-import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:acroulette/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           BlocProvider(
             create: (_) => AcrouletteBloc(
-                widget.ttsBloc, objectbox, widget.voiceRecognitionBloc),
+                widget.ttsBloc, dbController, widget.voiceRecognitionBloc),
             child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
                 buildWhen: (previous, current) {
               return ![AcrouletteInitModel, AcrouletteInitialState]
@@ -45,7 +45,7 @@ class _HomeState extends State<Home> {
               switch (state.runtimeType) {
                 case AcrouletteModelInitiatedState:
                 case AcrouletteFlowState:
-                  if (objectbox.getSettingsPairValueByKey(playingKey) ==
+                  if (dbController.getSettingsPairValueByKey(playingKey) ==
                       "true") {
                     return const Loader();
                   }
@@ -144,8 +144,9 @@ Widget noPosture() {
   );
 }
 
-List<DropdownMenuItem<String>> getWashingMachineItems(ObjectBox objectBox) {
-  return objectBox.flowNodeBox
+List<DropdownMenuItem<String>> getWashingMachineItems(
+    DBController dbController) {
+  return dbController.flowNodeBox
       .getAll()
       .map((flow) => DropdownMenuItem<String>(
           value: flow.id.toString(),
@@ -238,7 +239,7 @@ Widget washingMachineDropdown(String machine, AcrouletteBloc acrouletteBloc) {
               const EdgeInsets.symmetric(horizontal: 16.0, vertical: size / 4),
           child: DropdownButton<String>(
             value: machine,
-            items: getWashingMachineItems(objectbox),
+            items: getWashingMachineItems(dbController),
             onChanged: (value) {
               if (value == null || machine == value) return;
               acrouletteBloc.add(AcrouletteChangeMachine(value));

@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:acroulette/constants/import_export.dart';
-import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:pick_or_save/pick_or_save.dart';
 
-void export(ObjectBox objectBox) async {
-  Uint8List uint8List = getData(objectBox);
+void export(DBController dbController) async {
+  Uint8List uint8List = getData(dbController);
   await PickOrSave().fileSaver(
       params: FileSaverParams(
     saveFiles: [
@@ -14,10 +14,10 @@ void export(ObjectBox objectBox) async {
   ));
 }
 
-Uint8List getData(ObjectBox objectBox) {
+Uint8List getData(DBController dbController) {
   String result = '''{
-  "$nodesKey": ${objectBox.findNodesWithoutParent().toString()},
-  "$flowsKey": ${objectBox.flowNodeBox.getAll().toString()}
+  "$nodesKey": ${dbController.findNodesWithoutParent().toString()},
+  "$flowsKey": ${dbController.flowNodeBox.getAll().toString()}
 }''';
   return convertStringToUint8List(result);
 }

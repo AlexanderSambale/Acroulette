@@ -5,8 +5,7 @@ import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
-import 'package:acroulette/database/objectbox.g.dart';
-import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 
@@ -22,7 +21,7 @@ void main() {
   group('acroulette bloc', () {
     late AcrouletteBloc acrouletteBloc;
     late Store store;
-    late ObjectBox objectbox;
+    late DBController dbController;
     late TtsBloc ttsBloc;
     late VoiceRecognitionBloc voiceRecognitionBloc;
 
@@ -31,12 +30,13 @@ void main() {
       if (dir.existsSync()) dir.deleteSync(recursive: true);
       await dir.create();
       store = await openStore(directory: dir.path);
-      objectbox = await ObjectBox.create(store);
+      dbController = await DBController.create(store);
       ttsBloc = MockFlutterTts();
       voiceRecognitionBloc = MockVoiceRecognitionBloc();
       when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
       when(() => ttsBloc.notAvailable).thenReturn(true);
-      acrouletteBloc = AcrouletteBloc(ttsBloc, objectbox, voiceRecognitionBloc);
+      acrouletteBloc =
+          AcrouletteBloc(ttsBloc, dbController, voiceRecognitionBloc);
     });
 
     tearDown(() {
@@ -55,15 +55,15 @@ void main() {
         act: (bloc) => bloc.add(AcrouletteStart()),
         expect: () => [AcrouletteInitModel()],
         verify: (bloc) =>
-            expect(objectbox.getSettingsPairValueByKey(playingKey), "true"));
+            expect(dbController.getSettingsPairValueByKey(playingKey), "true"));
 
     blocTest<AcrouletteBloc, BaseAcrouletteState>(
         'emits [AcrouletteModelInitiatedState()] when AcrouletteStop is added',
         build: () => acrouletteBloc,
         act: (bloc) => bloc.add(AcrouletteStop()),
         expect: () => [AcrouletteModelInitiatedState()],
-        verify: (bloc) =>
-            expect(objectbox.getSettingsPairValueByKey(playingKey), "false"));
+        verify: (bloc) => expect(
+            dbController.getSettingsPairValueByKey(playingKey), "false"));
 
     blocTest<AcrouletteBloc, BaseAcrouletteState>(
       'emits [AcrouletteModelInitiatedState()] when AcrouletteInitModelEvent is added',
@@ -103,8 +103,8 @@ void main() {
             when(() => bloc.voiceRecognitionBloc.state)
                 .thenReturn(const VoiceRecognitionState(true));
             when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
-            bloc.transitionBloc
-                .add(InitFlowTransitionEvent(objectbox.flowPositions(), true));
+            bloc.transitionBloc.add(
+                InitFlowTransitionEvent(dbController.flowPositions(), true));
             bloc.add(AcrouletteTransition(nextPosition));
             bloc.add(AcrouletteTransition(currentPosition));
             bloc.add(AcrouletteTransition(previousPosition));
@@ -145,7 +145,7 @@ void main() {
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
           'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
           build: () {
-            objectbox.putSettingsPairValueByKey(appMode, acroulette);
+            dbController.putSettingsPairValueByKey(appMode, acroulette);
             return acrouletteBloc;
           },
           act: (bloc) {

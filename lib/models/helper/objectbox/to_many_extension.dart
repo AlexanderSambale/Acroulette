@@ -1,5 +1,4 @@
 import 'package:acroulette/models/node.dart';
-import 'package:objectbox/objectbox.dart';
 
 extension ToManyExtension on ToMany<Node> {
   bool containsElementWithId(int id) {

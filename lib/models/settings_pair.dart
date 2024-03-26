@@ -1,8 +1,6 @@
 import 'dart:collection';
 
-import 'package:objectbox/objectbox.dart';
-
-@Entity()
+@collection
 class SettingsPair {
   int id = 0;
 

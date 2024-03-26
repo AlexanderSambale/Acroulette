@@ -1,11 +1,10 @@
 import 'dart:io';
 
-import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/models/helper/import_export/export.dart';
 import 'package:acroulette/models/helper/import_export/import.dart';
 import 'package:acroulette/models/helper/io/assets.dart';
-import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -24,14 +23,14 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
 
     late Store store;
-    late ObjectBox objectbox;
+    late DBController dbController;
 
     final dir = Directory('import_test');
     setUp(() async {
       if (dir.existsSync()) dir.deleteSync(recursive: true);
       await dir.create();
       store = await openStore(directory: dir.path);
-      objectbox = await ObjectBox.create(store);
+      dbController = await DBController.create(store);
     });
 
     tearDown(() {
@@ -41,15 +40,15 @@ void main() {
 
     test('import basic nodes', () {
       loadAsset('models/AcrouletteBasisNodes.json').then((data) {
-        importData(data, objectbox);
-        expect(objectbox.nodeBox.isEmpty(), false);
+        importData(data, dbController);
+        expect(dbController.nodeBox.isEmpty(), false);
       });
     });
 
     test('import basic flows', () {
       loadAsset('models/AcrouletteBasisFlows.json').then((data) {
-        importData(data, objectbox);
-        expect(objectbox.flowNodeBox.isEmpty(), false);
+        importData(data, dbController);
+        expect(dbController.flowNodeBox.isEmpty(), false);
       });
     });
   });

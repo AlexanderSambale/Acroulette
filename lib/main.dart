@@ -1,6 +1,5 @@
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
-import 'package:acroulette/objectboxstore.dart';
 import 'package:acroulette/widgets/flows.dart';
 import 'package:acroulette/widgets/home.dart';
 import 'package:acroulette/widgets/positions.dart';
@@ -12,12 +11,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'simple_bloc_observer.dart';
 import 'widgets/license.dart';
 
-late ObjectBox objectbox;
+late DBController dbController;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  objectbox = await ObjectBox.create(null);
+  dbController = await DBController.create(null);
   Bloc.observer = SimpleBlocObserver();
   runApp(const MyApp());
 }
@@ -73,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   initState() {
     super.initState();
     voiceRecognitionBloc = VoiceRecognitionBloc();
-    ttsBloc = TtsBloc(objectbox);
+    ttsBloc = TtsBloc(dbController);
   }
 
   @override

@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:objectbox/objectbox.dart';
-
 const String isSwitchedKey = "isSwitched";
 const String labelKey = "label";
 const String isEnabledKey = "isEnabled";

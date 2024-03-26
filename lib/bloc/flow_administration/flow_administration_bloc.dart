@@ -1,6 +1,6 @@
 import 'package:acroulette/constants/validator.dart';
 import 'package:acroulette/models/flow_node.dart';
-import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -9,7 +9,7 @@ part 'flow_administration_state.dart';
 
 class FlowAdministrationBloc
     extends Bloc<FlowAdministrationEvent, BaseFlowAdministrationState> {
-  FlowAdministrationBloc(this.objectbox)
+  FlowAdministrationBloc(this.dbController)
       : super(const FlowAdministrationInitialState()) {
     on<FlowDBStartChangeEvent>((event, emit) {
       emit(const FlowAdministrationState());
@@ -19,52 +19,52 @@ class FlowAdministrationBloc
     });
   }
 
-  late ObjectBox objectbox;
+  late DBController dbController;
 
   void toggleExpand(FlowNode flow) {
     add(FlowDBStartChangeEvent());
     flow.isExpanded = !flow.isExpanded;
-    objectbox.putFlowNode(flow);
+    dbController.putFlowNode(flow);
     add(FlowDBIsIdleEvent());
   }
 
   void createPosture(FlowNode flowNode, String posture) {
     add(FlowDBStartChangeEvent());
     flowNode.positions.add(posture);
-    objectbox.putFlowNode(flowNode);
+    dbController.putFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void editPosture(FlowNode flowNode, int index, String label) {
     add(FlowDBStartChangeEvent());
     flowNode.positions[index] = label;
-    objectbox.putFlowNode(flowNode);
+    dbController.putFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void editFlow(FlowNode flowNode, String label) {
     add(FlowDBStartChangeEvent());
     flowNode.name = label;
-    objectbox.putFlowNode(flowNode);
+    dbController.putFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void deletePosture(FlowNode flowNode, int index) {
     add(FlowDBStartChangeEvent());
     flowNode.positions.removeAt(index);
-    objectbox.putFlowNode(flowNode);
+    dbController.putFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void deleteFlow(FlowNode flowNode) {
     add(FlowDBStartChangeEvent());
-    objectbox.removeFlowNode(flowNode);
+    dbController.removeFlowNode(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void createFlow(String flow) {
     add(FlowDBStartChangeEvent());
-    objectbox.putFlowNode(FlowNode(flow, []));
+    dbController.putFlowNode(FlowNode(flow, []));
     add(FlowDBIsIdleEvent());
   }
 
@@ -90,7 +90,7 @@ class FlowAdministrationBloc
 
   String? validatorFlow(String? label) {
     if (label == null || label.isEmpty) return enterText;
-    if (objectbox.flowExists(label)) {
+    if (dbController.flowExists(label)) {
       return existsText('Flow', label);
     }
     return null;

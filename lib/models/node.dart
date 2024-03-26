@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:acroulette/models/acro_node.dart';
-import 'package:objectbox/objectbox.dart';
 
 const String isLeafKey = "isLeaf";
 const String isExpandedKey = "isExpanded";

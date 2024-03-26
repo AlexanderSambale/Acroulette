@@ -1,9 +1,8 @@
 import 'package:acroulette/constants/validator.dart';
 import 'package:acroulette/models/acro_node.dart';
-import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
-import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -12,19 +11,19 @@ part 'position_administration_state.dart';
 
 class PositionAdministrationBloc
     extends Bloc<PositionAdministrationEvent, BasePositionAdministrationState> {
-  PositionAdministrationBloc(this.objectbox)
+  PositionAdministrationBloc(this.dbController)
       : super(PositionAdministrationInitialState(
-            objectbox.findNodesWithoutParent())) {
+            dbController.findNodesWithoutParent())) {
     on<PositionsBDStartChangeEvent>((event, emit) {
       emit(PositionAdministrationState(state.trees));
     });
     on<PositionsDBIsIdleEvent>((event, emit) {
       emit(PositionAdministrationInitialState(
-          objectbox.findNodesWithoutParent()));
+          dbController.findNodesWithoutParent()));
     });
   }
 
-  late ObjectBox objectbox;
+  late DBController dbController;
 
   /// Depending on [isSwitched] we enable or disable recursive [acroNodes] from
   /// this [tree].
@@ -57,8 +56,8 @@ class PositionAdministrationBloc
     enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
     acroNodes.add(acroNode);
 
-    objectbox.putManyAcroNodes(acroNodes);
-    objectbox.putNode(tree);
+    dbController.putManyAcroNodes(acroNodes);
+    dbController.putNode(tree);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
@@ -66,12 +65,12 @@ class PositionAdministrationBloc
   void toggleExpand(Node tree) {
     add(PositionsBDStartChangeEvent());
     tree.isExpanded = !tree.isExpanded;
-    objectbox.putNode(tree);
+    dbController.putNode(tree);
     add(PositionsDBIsIdleEvent());
   }
 
   void regeneratePositionsList() {
-    objectbox.regeneratePositionsList();
+    dbController.regeneratePositionsList();
   }
 
   void createPosture(Node parent, String posture) {
@@ -79,7 +78,7 @@ class PositionAdministrationBloc
     AcroNode acroNode = AcroNode(true, posture);
     Node newPosture = Node.createLeaf(parent: parent, acroNode);
     parent.addNode(newPosture);
-    objectbox.putNode(parent);
+    dbController.putNode(parent);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
@@ -88,21 +87,21 @@ class PositionAdministrationBloc
     add(PositionsBDStartChangeEvent());
     AcroNode acroNode = child.value.target!;
     acroNode.label = label;
-    objectbox.putAcroNode(acroNode);
+    dbController.putAcroNode(acroNode);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
 
   void deletePosture(Node child) {
     add(PositionsBDStartChangeEvent());
-    Node? parent = objectbox.findParent(child);
+    Node? parent = dbController.findParent(child);
     AcroNode acroNode = child.value.target!;
     if (parent != null) {
       parent.children.remove(child);
-      objectbox.putNode(parent);
+      dbController.putNode(parent);
     }
-    objectbox.removeNode(child);
-    objectbox.removeAcroNode(acroNode);
+    dbController.removeNode(child);
+    dbController.removeAcroNode(acroNode);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
@@ -120,17 +119,17 @@ class PositionAdministrationBloc
 
   void deleteCategory(Node category) {
     add(PositionsBDStartChangeEvent());
-    List<Node> toRemove = objectbox.getAllChildrenRecursive(category)
+    List<Node> toRemove = dbController.getAllChildrenRecursive(category)
       ..add(category);
     List<AcroNode> toRemoveAcro =
         toRemove.map<AcroNode>((element) => element.value.target!).toList();
-    Node? parent = objectbox.findParent(category);
+    Node? parent = dbController.findParent(category);
     if (parent != null) {
       parent.children.remove(category);
-      objectbox.putNode(parent);
+      dbController.putNode(parent);
     }
-    objectbox.removeManyAcroNodes(toRemoveAcro);
-    objectbox.removeManyNodes(toRemove);
+    dbController.removeManyAcroNodes(toRemoveAcro);
+    dbController.removeManyNodes(toRemove);
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
   }
@@ -141,9 +140,9 @@ class PositionAdministrationBloc
     Node newPosture = Node.createCategory(parent: parent, [], acroNode);
     if (parent != null) {
       parent.addNode(newPosture);
-      objectbox.putNode(parent);
+      dbController.putNode(parent);
     } else {
-      objectbox.putNode(newPosture);
+      dbController.putNode(newPosture);
     }
     regeneratePositionsList();
     add(PositionsDBIsIdleEvent());
@@ -182,7 +181,7 @@ class PositionAdministrationBloc
   }
 
   String? validatorCategory(Node category, String label) {
-    Node? parent = objectbox.findParent(category);
+    Node? parent = dbController.findParent(category);
     if (parent == null) return null;
     if (parent.children.containsElementWithLabel(false, label)) {
       return existsText('Category', label);
@@ -192,7 +191,7 @@ class PositionAdministrationBloc
 
   String? validatorRootCategory(String? label) {
     if (label == null || label.isEmpty) return enterText;
-    List<Node> rootCategories = objectbox.findNodesWithoutParent();
+    List<Node> rootCategories = dbController.findNodesWithoutParent();
     for (var category in rootCategories) {
       if (category.value.target!.label == label) {
         return existsText('Category', label);

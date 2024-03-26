@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/validator.dart';
-import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/models/acro_node.dart';
-import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
-import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Node createSimpleTree(
@@ -32,25 +30,25 @@ Node createComplexTree() {
   return root;
 }
 
-Node setupComplexTree(ObjectBox objectbox) {
-  Node root = objectbox.findNodesWithoutParent()[0];
+Node setupComplexTree(DBController dbController) {
+  Node root = dbController.findNodesWithoutParent()[0];
   Node complexTree = createComplexTree();
   root.children.add(complexTree);
-  objectbox.putNode(root);
+  dbController.putNode(root);
   return complexTree;
 }
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late Store store;
-  late ObjectBox objectbox;
+  late DBController dbController;
   final dir = Directory('position_administration_bloc_testdata');
 
   setUp(() async {
     if (dir.existsSync()) dir.deleteSync(recursive: true);
     await dir.create();
     store = await openStore(directory: dir.path);
-    objectbox = await ObjectBox.create(store);
+    dbController = await DBController.create(store);
   });
 
   tearDown(() {
@@ -60,13 +58,14 @@ void main() {
 
   group('onDeleteClick', () {
     test('delete leaf', () async {
-      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
-      Node child = objectbox.nodeBox.getAll().last;
-      Node parent = objectbox.findParent(child)!;
+      PositionAdministrationBloc bloc =
+          PositionAdministrationBloc(dbController);
+      Node child = dbController.nodeBox.getAll().last;
+      Node parent = dbController.findParent(child)!;
       expect(parent.children.containsElementWithId(child.id), true);
       int length = parent.children.length;
       expect(
-          objectbox.positionBox
+          dbController.positionBox
               .query(Position_.name.equals(child.label!))
               .build()
               .find()
@@ -74,43 +73,44 @@ void main() {
           false);
       bloc.onDeleteClick(child);
       expect(
-          objectbox.positionBox
+          dbController.positionBox
               .query(Position_.name.equals(child.label!))
               .build()
               .find()
               .isEmpty,
           true);
-      parent = objectbox.nodeBox.get(parent.id)!;
+      parent = dbController.nodeBox.get(parent.id)!;
       expect(parent.children.containsElementWithId(child.id), false);
       expect(parent.children.length + 1, length);
     });
 
     test('delete node with children', () async {
-      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
-      int numberOfNodesBefore = objectbox.nodeBox.count();
-      int numberOfAcroNodesBefore = objectbox.acroNodeBox.count();
-      Node complexTree = setupComplexTree(objectbox);
-      int numberOfNodesAfterAdding = objectbox.nodeBox.count();
-      int numberOfAcroNodesAfterAdding = objectbox.acroNodeBox.count();
+      PositionAdministrationBloc bloc =
+          PositionAdministrationBloc(dbController);
+      int numberOfNodesBefore = dbController.nodeBox.count();
+      int numberOfAcroNodesBefore = dbController.acroNodeBox.count();
+      Node complexTree = setupComplexTree(dbController);
+      int numberOfNodesAfterAdding = dbController.nodeBox.count();
+      int numberOfAcroNodesAfterAdding = dbController.acroNodeBox.count();
       expect(numberOfNodesBefore, isNot(equals(numberOfNodesAfterAdding)));
       expect(
           numberOfAcroNodesBefore, isNot(equals(numberOfAcroNodesAfterAdding)));
       bloc.onDeleteClick(complexTree);
-      int numberOfNodesAfterDeleting = objectbox.nodeBox.count();
-      int numberOfAcroNodesAfterDeleting = objectbox.acroNodeBox.count();
+      int numberOfNodesAfterDeleting = dbController.nodeBox.count();
+      int numberOfAcroNodesAfterDeleting = dbController.acroNodeBox.count();
       expect(numberOfNodesBefore, numberOfNodesAfterDeleting);
       expect(numberOfAcroNodesBefore, numberOfAcroNodesAfterDeleting);
     });
   });
   test('onSaveClick', () async {
-    PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
-    List<Node> nodesWithoutParent = objectbox.findNodesWithoutParent();
+    PositionAdministrationBloc bloc = PositionAdministrationBloc(dbController);
+    List<Node> nodesWithoutParent = dbController.findNodesWithoutParent();
     int numberOfNodesWithoutParents = nodesWithoutParent.length;
     Node root = nodesWithoutParent[0];
     int length = root.children.length;
     String postureName = 'newPosture';
     expect(
-        objectbox.positionBox
+        dbController.positionBox
             .query(Position_.name.equals(postureName))
             .build()
             .find()
@@ -119,25 +119,25 @@ void main() {
     expect(root.children.containsElementWithLabel(true, postureName), false);
     bloc.onSaveClick(root, true, postureName);
     expect(
-        objectbox.positionBox
+        dbController.positionBox
             .query(Position_.name.equals(postureName))
             .build()
             .find()
             .isEmpty,
         false);
-    root = objectbox.nodeBox.get(root.id)!;
+    root = dbController.nodeBox.get(root.id)!;
     expect(root.children.containsElementWithLabel(true, postureName), true);
     expect(root.children.length, length + 1);
-    expect(
-        numberOfNodesWithoutParents, objectbox.findNodesWithoutParent().length);
+    expect(numberOfNodesWithoutParents,
+        dbController.findNodesWithoutParent().length);
   });
 
   test('onEditClick', () async {
-    PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
-    Node child = objectbox.nodeBox.getAll().last;
+    PositionAdministrationBloc bloc = PositionAdministrationBloc(dbController);
+    Node child = dbController.nodeBox.getAll().last;
     String testLabel = "testPosture";
     expect(
-        objectbox.positionBox
+        dbController.positionBox
             .query(Position_.name.equals(testLabel))
             .build()
             .find()
@@ -146,7 +146,7 @@ void main() {
     expect(child.label, isNot(equals(testLabel)));
     bloc.onEditClick(child, false, testLabel);
     expect(
-        objectbox.positionBox
+        dbController.positionBox
             .query(Position_.name.equals(testLabel))
             .build()
             .find()
@@ -157,10 +157,11 @@ void main() {
 
   group('onSwitchClick', () {
     test('click false', () async {
-      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+      PositionAdministrationBloc bloc =
+          PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
-      int simpleTreeId = objectbox.putNode(simpleTree);
-      Node? loadedTree = objectbox.nodeBox.get(simpleTreeId);
+      int simpleTreeId = dbController.putNode(simpleTree);
+      Node? loadedTree = dbController.nodeBox.get(simpleTreeId);
       expect(loadedTree, isNotNull);
       expect(simpleTree.value.target!.isSwitched,
           loadedTree!.value.target!.isSwitched);
@@ -178,11 +179,12 @@ void main() {
     });
 
     test('click true', () async {
-      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
+      PositionAdministrationBloc bloc =
+          PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
       simpleTree.value.target!.isSwitched = false;
-      int simpleTreeId = objectbox.putNode(simpleTree);
-      Node? loadedTree = objectbox.nodeBox.get(simpleTreeId);
+      int simpleTreeId = dbController.putNode(simpleTree);
+      Node? loadedTree = dbController.nodeBox.get(simpleTreeId);
       expect(loadedTree, isNotNull);
       expect(simpleTree.value.target!.isSwitched,
           loadedTree!.value.target!.isSwitched);
@@ -202,9 +204,10 @@ void main() {
 
   group('validate', () {
     test('validate posture', () async {
-      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
-      Node last = objectbox.nodeBox.getAll().last;
-      Node parent = objectbox.findParent(last)!;
+      PositionAdministrationBloc bloc =
+          PositionAdministrationBloc(dbController);
+      Node last = dbController.nodeBox.getAll().last;
+      Node parent = dbController.findParent(last)!;
       String testLabel = "testPosture";
       expect(bloc.validator(parent, true, ''), enterText);
       expect(bloc.validator(parent, true, last.label),
@@ -213,8 +216,9 @@ void main() {
     });
 
     test('validate category', () async {
-      PositionAdministrationBloc bloc = PositionAdministrationBloc(objectbox);
-      Node complexTree = setupComplexTree(objectbox);
+      PositionAdministrationBloc bloc =
+          PositionAdministrationBloc(dbController);
+      Node complexTree = setupComplexTree(dbController);
       String testLabel = "testCategory";
       expect(bloc.validator(complexTree, false, ''), enterText);
       expect(bloc.validator(complexTree, false, complexTree.label), null);

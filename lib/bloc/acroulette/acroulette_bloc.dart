@@ -8,7 +8,7 @@ import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/bloc/washing_machine/washing_machine_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/models/settings_pair.dart';
-import 'package:acroulette/objectboxstore.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -30,12 +30,13 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   late RegExp rPreviousPosition;
   late RegExp rCurrentPosition;
 
-  AcrouletteBloc(this.ttsBloc, ObjectBox objectbox, this.voiceRecognitionBloc)
+  AcrouletteBloc(
+      this.ttsBloc, DBController dbController, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
     on<AcrouletteStart>((event, emit) {
-      objectbox.putSettingsPairValueByKey(playingKey, "true");
-      voiceRecognitionBloc.add(
-          VoiceRecognitionStart(onData, () => onRecognitionStarted(objectbox)));
+      dbController.putSettingsPairValueByKey(playingKey, "true");
+      voiceRecognitionBloc.add(VoiceRecognitionStart(
+          onData, () => onRecognitionStarted(dbController)));
       emit(AcrouletteInitModel());
     });
     on<AcrouletteInitModelEvent>((event, emit) {
@@ -51,14 +52,15 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           mode: mode));
     });
     on<AcrouletteStop>((event, emit) {
-      objectbox.putSettingsPairValueByKey(playingKey, "false");
+      dbController.putSettingsPairValueByKey(playingKey, "false");
       voiceRecognitionBloc.add(VoiceRecognitionStop());
       emit(AcrouletteModelInitiatedState());
     });
     on<AcrouletteTransition>((event, emit) {
       switch (event.transition) {
         case newPosition:
-          transitionBloc.add(NewTransitionEvent(objectbox.possiblePositions()));
+          transitionBloc
+              .add(NewTransitionEvent(dbController.possiblePositions()));
           break;
         case nextPosition:
           transitionBloc.add(NextTransitionEvent());
@@ -75,14 +77,14 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       if (mode == event.mode) return;
       var positions = <String>[];
       if (event.mode == acroulette) {
-        positions = objectbox.possiblePositions();
+        positions = dbController.possiblePositions();
         modeBloc.add(ModeChange(
             event.mode,
             () => transitionBloc
                 .add(InitAcrouletteTransitionEvent(positions, false))));
       }
       if (event.mode == washingMachine) {
-        positions = objectbox.flowPositions();
+        positions = dbController.flowPositions();
         modeBloc.add(ModeChange(
             event.mode,
             () =>
@@ -95,17 +97,17 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       if (machine == event.machine) return;
       washingMachineBloc.add(WashingMachineChange(
           event.machine,
-          () => transitionBloc
-              .add(InitFlowTransitionEvent(objectbox.flowPositions(), true))));
+          () => transitionBloc.add(
+              InitFlowTransitionEvent(dbController.flowPositions(), true))));
       emit(AcrouletteFlowState(event.machine));
     });
     // initialize blocs
-    modeBloc = ModeBloc(objectbox);
-    washingMachineBloc = WashingMachineBloc(objectbox);
+    modeBloc = ModeBloc(dbController);
+    washingMachineBloc = WashingMachineBloc(dbController);
 
     // initialize transitionBloc
     transitionBloc = TransitionBloc(onTransitionChange, Random());
-    if (objectbox.getSettingsPairValueByKey(playingKey) == "true") {
+    if (dbController.getSettingsPairValueByKey(playingKey) == "true") {
       add(AcrouletteStart());
     }
 
@@ -118,7 +120,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     // get settings
     HashMap<String, String> settingsMap =
-        SettingsPair.toMap(objectbox.settingsBox.getAll());
+        SettingsPair.toMap(dbController.settingsBox.getAll());
 
     // set regex for voice commands
     rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
@@ -159,19 +161,19 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     add(AcrouletteInitModelEvent());
   }
 
-  void setTransitionsDependingOnMode(ObjectBox objectBox) {
+  void setTransitionsDependingOnMode(DBController dbController) {
     if (mode == washingMachine) {
       transitionBloc
-          .add(InitFlowTransitionEvent(objectBox.flowPositions(), true));
+          .add(InitFlowTransitionEvent(dbController.flowPositions(), true));
     }
     if (mode == acroulette) {
-      transitionBloc.add(
-          InitAcrouletteTransitionEvent(objectBox.possiblePositions(), false));
+      transitionBloc.add(InitAcrouletteTransitionEvent(
+          dbController.possiblePositions(), false));
     }
   }
 
-  void onRecognitionStarted(ObjectBox objectBox) {
-    setTransitionsDependingOnMode(objectBox);
+  void onRecognitionStarted(DBController dbController) {
+    setTransitionsDependingOnMode(dbController);
   }
 
   void recognizeCommand(String command) {

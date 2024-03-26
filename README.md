@@ -33,10 +33,6 @@ flutter pub run build_runner build
 flutter build apk
 ```
 
-### objectbox test
-
-You need <https://github.com/objectbox/objectbox-c> installed.
-
 ### Build and deploy
 
 ```bash

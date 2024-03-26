@@ -1,6 +1,5 @@
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
-import 'package:acroulette/database/objectbox.g.dart';
 import 'package:acroulette/exceptions/pair_value_exception.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/models/helper/import_export/import.dart';
@@ -10,7 +9,7 @@ import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/position.dart';
 import 'models/helper/io/assets.dart';
 
-class ObjectBox {
+class DBController {
   /// The Store of this app.
   late final Store store;
 
@@ -20,7 +19,7 @@ class ObjectBox {
   late final Box<AcroNode> acroNodeBox;
   late final Box<FlowNode> flowNodeBox;
 
-  ObjectBox._create(this.store) {
+  DBController._create(this.store) {
     settingsBox = Box<SettingsPair>(store);
     positionBox = Box<Position>(store);
     nodeBox = Box<Node>(store);
@@ -79,11 +78,10 @@ class ObjectBox {
     positionBox.putMany(setOfPositions.map((e) => Position(e)).toList());
   }
 
-  /// Create an instance of ObjectBox to use throughout the app.
-  static Future<ObjectBox> create(Store? store) async {
-    // Future<Store> openStore() {...} is defined in the generated objectbox.g.dart
-    if (store == null) return ObjectBox._create(await openStore());
-    return ObjectBox._create(store);
+  /// Create an instance of DBController to use throughout the app.
+  static Future<DBController> create(Store? store) async {
+    if (store == null) return DBController._create(await openStore());
+    return DBController._create(store);
   }
 
   String getSettingsPairValueByKey(String key) {

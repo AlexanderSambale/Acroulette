@@ -1,4 +1,3 @@
-import 'package:acroulette/main.dart';
 import 'package:acroulette/models/helper/import_export/export.dart';
 import 'package:acroulette/models/helper/import_export/import.dart';
 import 'package:acroulette/widgets/formWidgets/import_export_settings_view.dart';
@@ -10,6 +9,6 @@ class ImportExportSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ImportExportSettingsView(
-        import: () => import(objectbox), export: () => export(objectbox));
+        import: () => import(dbController), export: () => export(dbController));
   }
 }

@@ -1,4 +1,3 @@
-import 'package:acroulette/main.dart';
 import 'package:flutter/material.dart';
 
 List<Widget> textSettingsFormField(String key) {
@@ -14,9 +13,9 @@ List<Widget> textSettingsFormField(String key) {
         }
         return null;
       },
-      initialValue: objectbox.getSettingsPairValueByKey(key),
+      initialValue: dbController.getSettingsPairValueByKey(key),
       onSaved: (newValue) =>
-          objectbox.putSettingsPairValueByKey(key, newValue!),
+          dbController.putSettingsPairValueByKey(key, newValue!),
     ),
   ];
 }
