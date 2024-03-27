@@ -14,7 +14,9 @@ TableRow createLicenseTableRow(Package package, BuildContext context) {
           text: TextSpan(
               text: package.name,
               recognizer: TapGestureRecognizer()
-                ..onTap = () => {launchUrl(Uri.parse(homepage))},
+                ..onTap = () {
+                  launchUrl(Uri.parse(homepage));
+                },
               style: const TextStyle(
                 color: Colors.blue,
               ))),
