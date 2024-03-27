@@ -10,6 +10,7 @@ import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/models/settings_pair.dart';
 import 'package:acroulette/db_controller.dart';
 import 'package:bloc/bloc.dart';
+import 'package:isar/isar.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'dart:convert';
@@ -42,8 +43,9 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     on<AcrouletteInitModelEvent>((event, emit) {
       emit(AcrouletteModelInitiatedState());
     });
-    on<AcrouletteRecognizeCommand>(
-        (event, emit) => {recognizeCommand(event.command)});
+    on<AcrouletteRecognizeCommand>((event, emit) {
+      recognizeCommand(event.command);
+    });
     on<AcrouletteCommandRecognizedEvent>((event, emit) {
       _speak(event.currentFigure);
       emit(AcrouletteCommandRecognizedState(event.currentFigure,
@@ -120,7 +122,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     // get settings
     HashMap<String, String> settingsMap =
-        SettingsPair.toMap(dbController.settingsBox.getAll());
+        SettingsPair.toMap(dbController.settingsBox.where().findAllSync());
 
     // set regex for voice commands
     rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
