@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class TtsSettings extends StatefulWidget {
   final TtsBloc ttsBloc;
 
-  const TtsSettings({Key? key, required this.ttsBloc}) : super(key: key);
+  const TtsSettings({super.key, required this.ttsBloc});
 
   @override
   State<TtsSettings> createState() => _TtsSettings();

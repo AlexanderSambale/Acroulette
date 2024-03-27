@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class CreateCategory extends StatefulWidget {
   const CreateCategory({
-    Key? key,
+    super.key,
     required this.path,
     required this.onSaveClick,
     this.validator,
-  }) : super(key: key);
+  });
 
   final List<String> path;
   final void Function(String? newValue) onSaveClick;

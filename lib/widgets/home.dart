@@ -11,8 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Home extends StatefulWidget {
   const Home(
-      {Key? key, required this.voiceRecognitionBloc, required this.ttsBloc})
-      : super(key: key);
+      {super.key, required this.voiceRecognitionBloc, required this.ttsBloc});
 
   final TtsBloc ttsBloc;
   final VoiceRecognitionBloc voiceRecognitionBloc;

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class DeleteCategory extends StatelessWidget {
   const DeleteCategory({
-    Key? key,
+    super.key,
     required this.onDeleteClick,
     required this.path,
     required this.elementsToRemove,
-  }) : super(key: key);
+  });
 
   final void Function() onDeleteClick;
   final List<String> path;

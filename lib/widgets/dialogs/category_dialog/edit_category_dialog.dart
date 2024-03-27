@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class EditCategory extends StatefulWidget {
   const EditCategory({
-    Key? key,
+    super.key,
     required this.path,
     required this.onEditClick,
     this.validator,
-  }) : super(key: key);
+  });
 
   final List<String> path;
   final void Function(String? newValue) onEditClick;

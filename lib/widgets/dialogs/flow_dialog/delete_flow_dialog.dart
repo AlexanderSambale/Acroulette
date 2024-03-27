@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class DeleteFlow extends StatelessWidget {
   const DeleteFlow({
-    Key? key,
+    super.key,
     required this.onDeleteClick,
     required this.flowLabel,
     required this.elementsToRemove,
-  }) : super(key: key);
+  });
 
   final void Function() onDeleteClick;
   final String flowLabel;

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class CreateFlow extends StatefulWidget {
   const CreateFlow({
-    Key? key,
+    super.key,
     required this.onSaveClick,
     this.validator,
-  }) : super(key: key);
+  });
 
   final void Function(String? newValue) onSaveClick;
   final String? Function(String? newValue)? validator;

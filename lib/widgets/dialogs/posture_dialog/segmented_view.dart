@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class SegmentedView extends StatelessWidget {
   const SegmentedView(
-      {Key? key, required this.selected, required this.onPressed})
-      : super(key: key);
+      {super.key, required this.selected, required this.onPressed});
   final int selected;
   final Function(int) onPressed;
 

@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class VoiceRecognitionSettings extends StatefulWidget {
   final VoiceRecognitionBloc voiceRecognitionBloc;
 
-  const VoiceRecognitionSettings({Key? key, required this.voiceRecognitionBloc})
-      : super(key: key);
+  const VoiceRecognitionSettings(
+      {super.key, required this.voiceRecognitionBloc});
 
   @override
   State<VoiceRecognitionSettings> createState() => _VoiceRecognitionSettings();

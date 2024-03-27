@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Positions extends StatelessWidget {
-  const Positions({Key? key}) : super(key: key);
+  const Positions({super.key});
 
   @override
   Widget build(BuildContext context) {

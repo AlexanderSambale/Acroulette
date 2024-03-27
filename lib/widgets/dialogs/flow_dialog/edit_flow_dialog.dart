@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class EditFlow extends StatefulWidget {
   const EditFlow({
-    Key? key,
+    super.key,
     required this.flowName,
     required this.onEditClick,
     this.validator,
-  }) : super(key: key);
+  });
 
   final String flowName;
   final void Function(String? newValue) onEditClick;

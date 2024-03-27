@@ -25,9 +25,7 @@ abstract class BaseTransitionState extends Equatable {
 /// If index is -1, we have an empty list of figures
 
 class TransitionState extends BaseTransitionState {
-  const TransitionState(
-      List<String> figures, int index, TransitionStatus status)
-      : super(figures, index, status);
+  const TransitionState(super.figures, super.index, super.status);
   const TransitionState.initial()
       : super(const [], -1, TransitionStatus.initial);
 }

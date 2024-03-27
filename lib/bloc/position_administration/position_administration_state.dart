@@ -10,9 +10,9 @@ abstract class BasePositionAdministrationState extends Equatable {
 
 class PositionAdministrationInitialState
     extends BasePositionAdministrationState {
-  const PositionAdministrationInitialState(List<Node> trees) : super(trees);
+  const PositionAdministrationInitialState(super.trees);
 }
 
 class PositionAdministrationState extends BasePositionAdministrationState {
-  const PositionAdministrationState(List<Node> trees) : super(trees);
+  const PositionAdministrationState(super.trees);
 }

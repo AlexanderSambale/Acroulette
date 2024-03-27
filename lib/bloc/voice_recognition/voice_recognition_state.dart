@@ -9,7 +9,7 @@ class VoiceRecognitionBaseState extends Equatable {
 }
 
 class VoiceRecognitionState extends VoiceRecognitionBaseState {
-  const VoiceRecognitionState(final bool isRecognizing) : super(isRecognizing);
+  const VoiceRecognitionState(super.isRecognizing);
   const VoiceRecognitionState.initial() : super(false);
 
   VoiceRecognitionState copyWith({

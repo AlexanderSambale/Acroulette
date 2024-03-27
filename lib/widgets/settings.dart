@@ -10,8 +10,7 @@ class Settings extends StatefulWidget {
   final VoiceRecognitionBloc voiceRecognitionBloc;
 
   const Settings(
-      {Key? key, required this.ttsBloc, required this.voiceRecognitionBloc})
-      : super(key: key);
+      {super.key, required this.ttsBloc, required this.voiceRecognitionBloc});
 
   @override
   State<Settings> createState() => _SettingsState();

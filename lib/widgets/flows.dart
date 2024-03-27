@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Flows extends StatelessWidget {
-  const Flows({Key? key}) : super(key: key);
+  const Flows({super.key});
 
   @override
   Widget build(BuildContext context) {

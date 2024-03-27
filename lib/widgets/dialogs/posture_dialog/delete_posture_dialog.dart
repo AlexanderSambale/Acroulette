@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class DeletePosture extends StatelessWidget {
   const DeletePosture({
-    Key? key,
+    super.key,
     required this.onDeleteClick,
     required this.path,
-  }) : super(key: key);
+  });
 
   final void Function() onDeleteClick;
   final List<String> path;
