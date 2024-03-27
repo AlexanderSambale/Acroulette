@@ -4,17 +4,22 @@ import 'package:acroulette/constants/nodes.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/db_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:isar/isar.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  late Store store;
+  late Isar store;
   late DBController dbController;
   final dir = Directory('testdata');
 
   setUp(() async {
     if (dir.existsSync()) dir.deleteSync(recursive: true);
     await dir.create();
-    store = await openStore(directory: dir.path);
+    await Isar.initializeIsarCore(download: true);
+    store = await Isar.open(
+      [],
+      directory: dir.path,
+    );
     dbController = await DBController.create(store);
   });
 
