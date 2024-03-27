@@ -1,12 +1,14 @@
 import 'package:acroulette/models/acro_node.dart';
+import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:isar/isar.dart';
 
 void main() {
-  late ToMany<Node> children;
+  late IsarLinks<Node> children;
 
   setUp(() async {
-    children = ToMany<Node>();
+    children = IsarLinks<Node>();
   });
 
   test('containsElementWithLabel', () {

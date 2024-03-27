@@ -20,7 +20,7 @@ void main() {
     expect(category.children.isEmpty, equals(false));
     expect(category.children.length, equals(3));
     expect(category.isLeaf, equals(false));
-    expect(category.value.target, equals(rootAcroNode));
+    expect(category.acroNode.value, equals(rootAcroNode));
     expect(category.children.contains(leaf3), equals(true));
   });
 
@@ -37,8 +37,11 @@ void main() {
     expect(category.children.isEmpty, categoryTransformed.children.isEmpty);
     expect(category.children.length, categoryTransformed.children.length);
     expect(category.isLeaf, categoryTransformed.isLeaf);
-    expect(category.value.target, categoryTransformed.value.target);
-    expect(category.children[2], categoryTransformed.children[2]);
+    expect(category.acroNode.value, categoryTransformed.acroNode.value);
+    expect(
+      category.children.elementAt(2),
+      categoryTransformed.children.elementAt(2),
+    );
   });
 
   test('convert Node, which is a leaf, to String and back', () {
@@ -49,7 +52,7 @@ void main() {
     Node leafTransformed = Node.createFromString(leafAsJsonString)[0];
     expect(leafTransformed.children.isEmpty, leaf.children.isEmpty);
     expect(leafTransformed.isLeaf, leaf.isLeaf);
-    expect(leafTransformed.value.target, leaf.value.target);
+    expect(leafTransformed.acroNode.value, leaf.acroNode.value);
     expect(leafTransformed.isExpanded, leaf.isExpanded);
     expect(leafTransformed.label, leaf.label);
   });
