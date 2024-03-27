@@ -29,9 +29,10 @@ void importData(String data, DBController dbController) {
     for (Map flow in decoded[flowsKey]) {
       flows.add(FlowNode.createFromMap(flow));
     }
-    dbController.flowNodeBox.putMany(flows);
+    dbController.flowNodeBox.putAllSync(flows);
   }
   if (decoded[nodesKey] != null) {
-    dbController.nodeBox.putMany(Node.createFromListOfMaps(decoded[nodesKey]));
+    dbController.nodeBox
+        .putAllSync(Node.createFromListOfMaps(decoded[nodesKey]));
   }
 }

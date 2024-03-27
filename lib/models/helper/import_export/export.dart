@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:acroulette/constants/import_export.dart';
 import 'package:acroulette/db_controller.dart';
+import 'package:isar/isar.dart';
 import 'package:pick_or_save/pick_or_save.dart';
 
 void export(DBController dbController) async {
@@ -17,7 +18,7 @@ void export(DBController dbController) async {
 Uint8List getData(DBController dbController) {
   String result = '''{
   "$nodesKey": ${dbController.findNodesWithoutParent().toString()},
-  "$flowsKey": ${dbController.flowNodeBox.getAll().toString()}
+  "$flowsKey": ${dbController.flowNodeBox.where().findAllSync().toString()}
 }''';
   return convertStringToUint8List(result);
 }
