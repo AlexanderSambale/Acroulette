@@ -1,5 +1,6 @@
 import 'package:acroulette/constants/validator.dart';
 import 'package:acroulette/models/acro_node.dart';
+import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
 import 'package:acroulette/db_controller.dart';
@@ -39,7 +40,7 @@ class PositionAdministrationBloc
   void enableOrDisableAndAddAcroNodes(
       List<AcroNode> acroNodes, Node tree, bool isSwitched) {
     for (var node in tree.children) {
-      AcroNode acroNode = node.value.target!;
+      AcroNode acroNode = node.acroNode.value!;
       if (acroNode.isSwitched) {
         enableOrDisableAndAddAcroNodes(acroNodes, node, isSwitched);
       }
@@ -50,7 +51,7 @@ class PositionAdministrationBloc
 
   void onSwitch(bool switched, Node tree) {
     add(PositionsBDStartChangeEvent());
-    AcroNode acroNode = tree.value.target!;
+    AcroNode acroNode = tree.acroNode.value!;
     acroNode.isSwitched = switched;
     List<AcroNode> acroNodes = [];
     enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
@@ -85,7 +86,7 @@ class PositionAdministrationBloc
 
   void editAcroNode(Node child, String label) {
     add(PositionsBDStartChangeEvent());
-    AcroNode acroNode = child.value.target!;
+    AcroNode acroNode = child.acroNode.value!;
     acroNode.label = label;
     dbController.putAcroNode(acroNode);
     regeneratePositionsList();
@@ -95,7 +96,7 @@ class PositionAdministrationBloc
   void deletePosture(Node child) {
     add(PositionsBDStartChangeEvent());
     Node? parent = dbController.findParent(child);
-    AcroNode acroNode = child.value.target!;
+    AcroNode acroNode = child.acroNode.value!;
     if (parent != null) {
       parent.children.remove(child);
       dbController.putNode(parent);
@@ -122,7 +123,7 @@ class PositionAdministrationBloc
     List<Node> toRemove = dbController.getAllChildrenRecursive(category)
       ..add(category);
     List<AcroNode> toRemoveAcro =
-        toRemove.map<AcroNode>((element) => element.value.target!).toList();
+        toRemove.map<AcroNode>((element) => element.acroNode.value!).toList();
     Node? parent = dbController.findParent(category);
     if (parent != null) {
       parent.children.remove(category);
@@ -193,7 +194,7 @@ class PositionAdministrationBloc
     if (label == null || label.isEmpty) return enterText;
     List<Node> rootCategories = dbController.findNodesWithoutParent();
     for (var category in rootCategories) {
-      if (category.value.target!.label == label) {
+      if (category.acroNode.value!.label == label) {
         return existsText('Category', label);
       }
     }
