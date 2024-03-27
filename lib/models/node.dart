@@ -16,29 +16,41 @@ class Node {
 
   bool isLeaf;
 
-  final parent = ToOne<Node>();
-  ToMany<Node> children = ToMany<Node>();
-  ToOne<AcroNode> value = ToOne<AcroNode>();
+  @Index()
+  IsarLink<Node> parent = IsarLink<Node>();
+  IsarLinks<Node> children = IsarLinks<Node>();
+  IsarLink<AcroNode> acroNode = IsarLink<AcroNode>();
   bool isExpanded;
-  String? get label => value.target?.label;
+  String? get label => acroNode.value?.label;
 
-  Node(this.children, this.value,
-      {this.isLeaf = false, this.isExpanded = true});
+  Node({
+    this.isLeaf = false,
+    this.isExpanded = true,
+  });
 
-  Node.createCategory(List<Node> children, AcroNode acroNode,
-      {this.isLeaf = false, this.isExpanded = true, Node? parent}) {
+  Node.createCategory(
+    List<Node> children,
+    AcroNode acroNode, {
+    this.isLeaf = false,
+    this.isExpanded = true,
+    Node? parent,
+  }) {
     for (var child in children) {
-      child.parent.target = this;
+      child.parent.value = this;
     }
     this.children.addAll(children);
-    this.parent.target = parent;
-    value.target = acroNode;
+    this.acroNode.value = acroNode;
+    this.parent.value = parent;
   }
 
-  Node.createLeaf(AcroNode acroNode,
-      {this.isLeaf = true, this.isExpanded = true, Node? parent}) {
-    this.parent.target = parent;
-    value.target = acroNode;
+  Node.createLeaf(
+    AcroNode acroNode, {
+    this.isLeaf = true,
+    this.isExpanded = true,
+    Node? parent,
+  }) {
+    this.acroNode.value = acroNode;
+    this.parent.value = parent;
   }
 
   addNode(Node node) {
@@ -69,7 +81,7 @@ class Node {
     result = '''$result
   "$isLeafKey": $isLeaf,
   "$isExpandedKey": $isExpanded,
-  "$valueKey": ${value.target!}
+  "$valueKey": ${acroNode.value}
 }''';
     return result;
   }
@@ -114,12 +126,12 @@ class Node {
     if (other is! Node) return false;
     if (other.isExpanded != isExpanded) return false;
     if (other.isLeaf != isLeaf) return false;
-    if (other.value.target != value.target) return false;
+    if (other.acroNode.value != acroNode.value) return false;
     if (other.children != other.children) return false;
     return true;
   }
 
   @override
-  int get hashCode => Object.hash(
-      isLeaf.hashCode, isExpanded.hashCode, children.hashCode, value.hashCode);
+  int get hashCode => Object.hash(isLeaf.hashCode, isExpanded.hashCode,
+      children.hashCode, acroNode.hashCode);
 }

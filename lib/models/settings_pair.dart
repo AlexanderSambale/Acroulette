@@ -7,6 +7,7 @@ part 'settings_pair.g.dart';
 class SettingsPair {
   Id id = Isar.autoIncrement; // you can also use id = null to auto increment
 
+  @Index()
   late String key;
   late String value;
 

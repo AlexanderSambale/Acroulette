@@ -10,6 +10,7 @@ const String positionsKey = "positions";
 class FlowNode {
   Id id = Isar.autoIncrement; // you can also use id = null to auto increment
 
+  @Index()
   String name;
   final List<String> positions;
   bool isExpanded;
