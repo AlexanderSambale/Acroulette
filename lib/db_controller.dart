@@ -100,9 +100,9 @@ class DBController {
     return DBController._create(store);
   }
 
-  Future<String> getSettingsPairValueByKey(String key) async {
+  String getSettingsPairValueByKey(String key) {
     SettingsPair? keyQueryFirstValue =
-        await settingsBox.where().keyEqualTo(key).findFirst();
+        settingsBox.where().keyEqualTo(key).findFirstSync();
     if (keyQueryFirstValue == null) {
       throw PairValueException(
           "There is no value for the key $key in settings yet!");
@@ -197,9 +197,9 @@ class DBController {
     return first == null ? false : true;
   }
 
-  Future<List<String>> flowPositions() async {
-    FlowNode? flow = await flowNodeBox
-        .get(int.parse(await getSettingsPairValueByKey(flowIndex)));
+  List<String> flowPositions() {
+    FlowNode? flow =
+        flowNodeBox.getSync(int.parse(getSettingsPairValueByKey(flowIndex)));
     if (flow == null) {
       return [];
     } else {
@@ -207,8 +207,8 @@ class DBController {
     }
   }
 
-  Future<List<String>> possiblePositions() async {
-    List<Position> positions = await positionBox.where().findAll();
+  List<String> possiblePositions() {
+    List<Position> positions = positionBox.where().findAllSync();
     return positions.map<String>((element) => element.name).toList();
   }
 }
