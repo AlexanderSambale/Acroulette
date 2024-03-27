@@ -8,6 +8,7 @@ import 'package:acroulette/db_controller.dart';
 import 'package:acroulette/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
 
 class Home extends StatefulWidget {
   const Home(
@@ -146,7 +147,8 @@ Widget noPosture() {
 List<DropdownMenuItem<String>> getWashingMachineItems(
     DBController dbController) {
   return dbController.flowNodeBox
-      .getAll()
+      .where()
+      .findAllSync()
       .map((flow) => DropdownMenuItem<String>(
           value: flow.id.toString(),
           child: Center(child: Text(flow.name, style: displayTextStyle))))

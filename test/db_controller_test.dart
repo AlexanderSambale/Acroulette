@@ -29,7 +29,8 @@ void main() {
   });
 
   test('findParent', () {
-    Node parent = dbController.findParent(dbController.nodeBox.getAll().last)!;
+    Node parent = dbController
+        .findParent(dbController.nodeBox.where().findAllSync().last)!;
     expect(parent.isExpanded, true);
     expect(parent.label!, basicPostures);
   });
