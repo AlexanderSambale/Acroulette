@@ -1,5 +1,6 @@
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:acroulette/widgets/flows.dart';
 import 'package:acroulette/widgets/home.dart';
 import 'package:acroulette/widgets/positions.dart';
@@ -18,11 +19,11 @@ Future<void> main() async {
 
   dbController = await DBController.create(null);
   Bloc.observer = SimpleBlocObserver();
-  runApp(const MyApp());
+  runApp(const Acroulette());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Acroulette extends StatelessWidget {
+  const Acroulette({super.key});
 
   // This widget is the root of your application.
   @override
@@ -41,13 +42,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Acroulette'),
+      home: const AcrouletteHomePage(title: 'Acroulette'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class AcrouletteHomePage extends StatefulWidget {
+  const AcrouletteHomePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -61,10 +62,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<AcrouletteHomePage> createState() => _AcrouletteHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _AcrouletteHomePageState extends State<AcrouletteHomePage> {
   static late VoiceRecognitionBloc voiceRecognitionBloc;
   static late TtsBloc ttsBloc;
 
