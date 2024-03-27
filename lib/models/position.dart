@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 
 @collection
 class Position {
-  int id = 0;
+  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
 
   final String name;
 

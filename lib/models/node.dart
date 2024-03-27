@@ -10,7 +10,7 @@ const String valueKey = "value";
 
 @collection
 class Node {
-  int id = 0;
+  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
 
   bool isLeaf;
 

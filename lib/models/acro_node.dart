@@ -9,7 +9,7 @@ const String isEnabledKey = "isEnabled";
 class AcroNode {
   AcroNode(this.isSwitched, this.label, {this.isEnabled = true});
 
-  int id = 0;
+  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
   bool isSwitched;
   bool isEnabled;
   String label;

@@ -6,7 +6,7 @@ const String positionsKey = "positions";
 
 @collection
 class FlowNode {
-  int id = 0;
+  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
 
   String name;
   final List<String> positions;
