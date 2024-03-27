@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:isar/isar.dart';
 
+part 'acro_node.g.dart';
+
 const String isSwitchedKey = "isSwitched";
 const String labelKey = "label";
 const String isEnabledKey = "isEnabled";

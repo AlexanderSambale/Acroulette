@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:isar/isar.dart';
 
+part 'flow_node.g.dart';
+
 const String nameKey = "name";
 const String positionsKey = "positions";
 

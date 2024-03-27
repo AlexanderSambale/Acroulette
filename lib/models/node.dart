@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:acroulette/models/acro_node.dart';
 import 'package:isar/isar.dart';
 
+part 'node.g.dart';
+
 const String isLeafKey = "isLeaf";
 const String isExpandedKey = "isExpanded";
 const String childrenKey = "children";
