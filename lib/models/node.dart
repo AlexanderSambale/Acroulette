@@ -41,6 +41,9 @@ class Node {
     this.children.addAll(children);
     this.acroNode.value = acroNode;
     this.parent.value = parent;
+    this.acroNode.saveSync();
+    this.parent.saveSync();
+    this.children.saveSync();
   }
 
   Node.createLeaf(
@@ -51,6 +54,8 @@ class Node {
   }) {
     this.acroNode.value = acroNode;
     this.parent.value = parent;
+    this.acroNode.saveSync();
+    this.parent.saveSync();
   }
 
   addNode(Node node) {
