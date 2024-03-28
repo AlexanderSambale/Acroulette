@@ -12,18 +12,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'simple_bloc_observer.dart';
 import 'widgets/license.dart';
 
-late DBController dbController;
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  dbController = await DBController.create(null);
+  DBController dbController = await DBController.create(null);
   Bloc.observer = SimpleBlocObserver();
-  runApp(const Acroulette());
+  runApp(Acroulette(dbController: dbController));
 }
 
 class Acroulette extends StatelessWidget {
-  const Acroulette({super.key});
+  const Acroulette({super.key, required this.dbController});
+  final DBController dbController;
 
   // This widget is the root of your application.
   @override
@@ -42,7 +41,20 @@ class Acroulette extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const AcrouletteHomePage(title: 'Acroulette'),
+      home: RepositoryProvider(
+        create: (context) => dbController,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (BuildContext context) => VoiceRecognitionBloc(),
+            ),
+            BlocProvider(
+              create: (BuildContext context) => TtsBloc(dbController),
+            ),
+          ],
+          child: const AcrouletteHomePage(title: 'Acroulette'),
+        ),
+      ),
     );
   }
 }
@@ -66,50 +78,23 @@ class AcrouletteHomePage extends StatefulWidget {
 }
 
 class _AcrouletteHomePageState extends State<AcrouletteHomePage> {
-  static late VoiceRecognitionBloc voiceRecognitionBloc;
-  static late TtsBloc ttsBloc;
-
-  @override
-  initState() {
-    super.initState();
-    voiceRecognitionBloc = VoiceRecognitionBloc();
-    ttsBloc = TtsBloc(dbController);
-  }
-
-  @override
-  void dispose() {
-    voiceRecognitionBloc.dispose();
-    ttsBloc.dispose();
-    super.dispose();
-  }
+  _AcrouletteHomePageState();
 
   int _selectedIndex = 0;
   static final List<Widget> _widgetOptions = <Widget>[
-    Home(
-      voiceRecognitionBloc: voiceRecognitionBloc,
-      ttsBloc: ttsBloc,
-    ),
+    Home(),
     const Positions(),
     const Flows(),
-    Settings(
-      voiceRecognitionBloc: voiceRecognitionBloc,
-      ttsBloc: ttsBloc,
-    ),
+    Settings(),
     const PrivacyPolicy(),
     const License()
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      if (_selectedIndex != index) {
-        voiceRecognitionBloc.add(VoiceRecognitionStop());
-        _selectedIndex = index;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    VoiceRecognitionBloc voiceRecognitionBloc =
+        context.read<VoiceRecognitionBloc>();
+
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
@@ -148,7 +133,12 @@ class _AcrouletteHomePageState extends State<AcrouletteHomePage> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.black,
-        onTap: _onItemTapped,
+        onTap: (int index) => setState(() {
+          if (_selectedIndex != index) {
+            voiceRecognitionBloc.add(VoiceRecognitionStop());
+            _selectedIndex = index;
+          }
+        }),
       ),
     );
   }
