@@ -136,8 +136,10 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
 
   Future<dynamic> _getDefaultVoice() async => await flutterTts.getDefaultVoice;
 
-  dispose() {
-    flutterTts.stop();
+  @override
+  Future<void> close() async {
+    await flutterTts.stop();
+    return super.close();
   }
 
   Future<dynamic> isLanguageInstalled(String language) {

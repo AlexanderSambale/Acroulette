@@ -60,8 +60,10 @@ class VoiceRecognitionBloc
     isModelLoaded ? onInitiated() : this.onInitiated = onInitiated;
   }
 
-  void dispose() {
+  @override
+  Future<void> close() async {
     if (isDisabled) return;
-    speechService.stop();
+    await speechService.stop();
+    return super.close();
   }
 }
