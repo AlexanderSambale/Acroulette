@@ -15,24 +15,24 @@ void import(DBController dbController) async {
   String filePath = result![0];
   File file = File(filePath);
   String content = await file.readAsString();
-  importData(content, dbController);
+  await importData(content, dbController);
 }
 
 String convertUint8ListToString(Uint8List uint8list) {
   return String.fromCharCodes(uint8list);
 }
 
-void importData(String data, DBController dbController) {
+Future<void> importData(String data, DBController dbController) async {
   Map decoded = jsonDecode(data);
   if (decoded[flowsKey] != null) {
     List<FlowNode> flows = [];
     for (Map flow in decoded[flowsKey]) {
       flows.add(FlowNode.createFromMap(flow));
     }
-    dbController.flowNodeBox.putAllSync(flows);
+    await dbController.flowNodeBox.putAll(flows);
   }
   if (decoded[nodesKey] != null) {
-    dbController.nodeBox
-        .putAllSync(Node.createFromListOfMaps(decoded[nodesKey]));
+    await dbController.nodeBox
+        .putAll(Node.createFromListOfMaps(decoded[nodesKey]));
   }
 }
