@@ -43,13 +43,14 @@ void showDeletePositionDialog(BuildContext context) {
 }
 
 class HotReload extends StatelessWidget {
-  const HotReload({Key? key}) : super(key: key);
+  const HotReload({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Widgetbook.material(
-      categories: [
-        WidgetbookCategory(name: 'widgets', widgets: [
+      addons: const [],
+      directories: [
+        WidgetbookCategory(name: 'widgets', children: [
           WidgetbookComponent(
             name: 'Texttest',
             useCases: [
@@ -99,12 +100,8 @@ class HotReload extends StatelessWidget {
               WidgetbookUseCase(
                   name: 'Test Dialog',
                   builder: (context) => SegmentedView(
-                        selected: context.knobs
-                            .number(
-                              label: 'selected part',
-                              initialValue: 0,
-                            )
-                            .toInt(),
+                        selected: context.knobs.int
+                            .slider(label: 'Selected part', initialValue: 0),
                         onPressed: (p0) {},
                       )),
             ],
@@ -114,176 +111,162 @@ class HotReload extends StatelessWidget {
                 name: 'Show loader animation',
                 builder: (context) => const Loader()),
           ])
-        ], folders: [
-          WidgetbookFolder(
-            name: 'Posture selection',
-            widgets: [
-              WidgetbookComponent(
-                name: 'PostureListItem',
-                useCases: [
-                  WidgetbookUseCase(
-                      name: 'Default',
-                      builder: (context) => PostureListItem(
-                            isSwitched: context.knobs.boolean(
-                              label: 'isSwitched',
-                              initialValue: false,
-                            ),
-                            postureLabel: context.knobs.text(
-                              label: 'Label',
-                              initialValue: 'Posture1',
-                            ),
-                            onChanged: onSwitch,
-                            showDeletePositionDialog: showDeletePositionDialog,
-                            onEditClick: onEditClick,
-                            path: const [],
-                            enabled: context.knobs
-                                .boolean(label: 'enabled', initialValue: true),
-                          )),
-                ],
-              ),
-              WidgetbookComponent(
-                name: 'PostureCategoryItem',
-                useCases: [
-                  WidgetbookUseCase(
+        ]),
+        WidgetbookFolder(
+          name: 'Posture selection',
+          children: [
+            WidgetbookComponent(
+              name: 'PostureListItem',
+              useCases: [
+                WidgetbookUseCase(
                     name: 'Default',
-                    builder: (context) => PostureCategoryItem(
-                      isSwitched: context.knobs.boolean(
-                        label: 'isSwitched',
-                        initialValue: false,
-                      ),
-                      isExpanded: context.knobs.boolean(
-                        label: 'isExpanded',
-                        initialValue: true,
-                      ),
-                      onChanged: (p0) {},
-                      toggleExpand: () {},
-                      categoryLabel: context.knobs.text(
-                        label: 'Label',
-                        initialValue: 'Category',
-                      ),
-                      enabled: context.knobs
-                          .boolean(label: 'enabled', initialValue: true),
-                      path: const [],
-                      onDeleteClick: onDeleteClick,
-                      onEditClick: onEditClick,
-                      onSaveClick: onSaveClick,
-                      listAllNodesRecursively: listAllNodesRecursively,
+                    builder: (context) => PostureListItem(
+                          isSwitched: context.knobs.boolean(
+                            label: 'isSwitched',
+                            initialValue: false,
+                          ),
+                          postureLabel: context.knobs.string(
+                            label: 'Label',
+                            initialValue: 'Posture1',
+                          ),
+                          onChanged: onSwitch,
+                          showDeletePositionDialog: showDeletePositionDialog,
+                          onEditClick: onEditClick,
+                          path: const [],
+                          enabled: context.knobs
+                              .boolean(label: 'enabled', initialValue: true),
+                        )),
+              ],
+            ),
+            WidgetbookComponent(
+              name: 'PostureCategoryItem',
+              useCases: [
+                WidgetbookUseCase(
+                  name: 'Default',
+                  builder: (context) => PostureCategoryItem(
+                    isSwitched: context.knobs.boolean(
+                      label: 'isSwitched',
+                      initialValue: false,
                     ),
+                    isExpanded: context.knobs.boolean(
+                      label: 'isExpanded',
+                      initialValue: true,
+                    ),
+                    onChanged: (p0) {},
+                    toggleExpand: () {},
+                    categoryLabel: context.knobs.string(
+                      label: 'Label',
+                      initialValue: 'Category',
+                    ),
+                    enabled: context.knobs
+                        .boolean(label: 'enabled', initialValue: true),
+                    path: const [],
+                    onDeleteClick: onDeleteClick,
+                    onEditClick: onEditClick,
+                    onSaveClick: onSaveClick,
+                    listAllNodesRecursively: listAllNodesRecursively,
                   ),
-                ],
-              ),
-              WidgetbookComponent(
-                name: 'PostureList',
-                useCases: [
-                  WidgetbookUseCase(
-                      name: 'SimpleTree',
-                      builder: (context) => PostureTree(
-                            tree: createSimpleTree(),
-                            onSwitched: (b, n) {},
-                            toggleExpand: (n) {},
-                            path: const [],
-                            onDeleteClick: onDeleteClickPostureTree,
-                            onEditClick: onEditClickPostureTree,
-                            onSaveClick: onSaveClickPostureTree,
-                            listAllNodesRecursively:
-                                listAllNodesRecursivelyPostureTree,
-                          )),
-                  WidgetbookUseCase(
-                      name: 'ComplexTree',
-                      builder: (context) => PostureTree(
-                            tree: createComplexTree(),
-                            onSwitched: (b, n) {},
-                            toggleExpand: (n) {},
-                            path: const [],
-                            onDeleteClick: onDeleteClickPostureTree,
-                            onEditClick: onEditClickPostureTree,
-                            onSaveClick: onSaveClickPostureTree,
-                            listAllNodesRecursively:
-                                listAllNodesRecursivelyPostureTree,
-                          ))
-                ],
-              ),
+                ),
+              ],
+            ),
+            WidgetbookComponent(
+              name: 'PostureList',
+              useCases: [
+                WidgetbookUseCase(
+                    name: 'SimpleTree',
+                    builder: (context) => PostureTree(
+                          tree: createSimpleTree(),
+                          onSwitched: (b, n) {},
+                          toggleExpand: (n) {},
+                          path: const [],
+                          onDeleteClick: onDeleteClickPostureTree,
+                          onEditClick: onEditClickPostureTree,
+                          onSaveClick: onSaveClickPostureTree,
+                          listAllNodesRecursively:
+                              listAllNodesRecursivelyPostureTree,
+                        )),
+                WidgetbookUseCase(
+                    name: 'ComplexTree',
+                    builder: (context) => PostureTree(
+                          tree: createComplexTree(),
+                          onSwitched: (b, n) {},
+                          toggleExpand: (n) {},
+                          path: const [],
+                          onDeleteClick: onDeleteClickPostureTree,
+                          onEditClick: onEditClickPostureTree,
+                          onSaveClick: onSaveClickPostureTree,
+                          listAllNodesRecursively:
+                              listAllNodesRecursivelyPostureTree,
+                        ))
+              ],
+            ),
+          ],
+        ),
+        WidgetbookFolder(name: 'Flow', children: [
+          WidgetbookComponent(
+            name: 'FlowView',
+            useCases: [
+              WidgetbookUseCase(
+                  name: 'Show',
+                  builder: (context) => FlowView(
+                        deletePosture: (p0, p1) {},
+                        deleteFlow: (p0) {},
+                        onEditClick: (p0, p1, p2) {},
+                        onEditFlowClick: (p0, p1) {},
+                        flow: FlowNode(
+                            context.knobs.string(
+                                label: 'flow name', initialValue: 'flow1'),
+                            ['position1', 'position2']),
+                        onSavePostureClick: (p0, p1) {},
+                        toggleExpand: (p1) {},
+                      )),
             ],
           ),
-          WidgetbookFolder(name: 'Flow', widgets: [
-            WidgetbookComponent(
-              name: 'FlowView',
-              useCases: [
-                WidgetbookUseCase(
-                    name: 'Show',
-                    builder: (context) => FlowView(
-                          deletePosture: (p0, p1) {},
-                          deleteFlow: (p0) {},
-                          onEditClick: (p0, p1, p2) {},
-                          onEditFlowClick: (p0, p1) {},
-                          flow: FlowNode(
-                              context.knobs.text(
-                                  label: 'flow name', initialValue: 'flow1'),
-                              ['position1', 'position2']),
-                          onSavePostureClick: (p0, p1) {},
-                          toggleExpand: (p1) {},
-                        )),
-              ],
-            ),
-            WidgetbookComponent(
-              name: 'FlowItem',
-              useCases: [
-                WidgetbookUseCase(
-                    name: 'Show',
-                    builder: (context) => FlowItem(
-                          isExpanded: context.knobs
-                              .boolean(label: 'isExpanded', initialValue: true),
-                          flowLabel: context.knobs.text(
-                            label: 'Label',
-                            initialValue: 'Flow1',
-                          ),
-                          onEditClick: onEditClick,
-                          toggleExpand: () {},
-                          onSavePostureClick: (p0) {},
-                          showDeleteFlowDialog: (BuildContext context) {},
-                        )),
-              ],
-            ),
-            WidgetbookComponent(
-              name: 'FlowPositionItem',
-              useCases: [
-                WidgetbookUseCase(
-                    name: 'Show',
-                    builder: (context) => FlowPositionItem(
-                        positionLabel: context.knobs.text(
+          WidgetbookComponent(
+            name: 'FlowItem',
+            useCases: [
+              WidgetbookUseCase(
+                  name: 'Show',
+                  builder: (context) => FlowItem(
+                        isExpanded: context.knobs
+                            .boolean(label: 'isExpanded', initialValue: true),
+                        flowLabel: context.knobs.string(
                           label: 'Label',
-                          initialValue: 'Position1',
+                          initialValue: 'Flow1',
                         ),
-                        showDeletePositionDialog: showDeletePositionDialog,
-                        showEditPositionDialog: showEditPositionDialog)),
-              ],
-            )
-          ]),
-          WidgetbookFolder(name: 'ImportExport', widgets: [
-            WidgetbookComponent(
-              name: 'Export',
-              useCases: [
-                WidgetbookUseCase(
-                    name: 'ShowExport',
-                    builder: (context) => const ImportExportSettingsView(
-                        import: import, export: export))
-              ],
-            ),
-          ])
+                        onEditClick: onEditClick,
+                        toggleExpand: () {},
+                        onSavePostureClick: (p0) {},
+                        showDeleteFlowDialog: (BuildContext context) {},
+                      )),
+            ],
+          ),
+          WidgetbookComponent(
+            name: 'FlowPositionItem',
+            useCases: [
+              WidgetbookUseCase(
+                  name: 'Show',
+                  builder: (context) => FlowPositionItem(
+                      positionLabel: context.knobs.string(
+                        label: 'Label',
+                        initialValue: 'Position1',
+                      ),
+                      showDeletePositionDialog: showDeletePositionDialog,
+                      showEditPositionDialog: showEditPositionDialog)),
+            ],
+          )
         ]),
-      ],
-      appInfo: AppInfo(
-        name: 'Widgetbook Example',
-      ),
-      themes: [
-        WidgetbookTheme(
-          name: 'Light',
-          data: ThemeData.light(),
-        ),
-      ],
-      devices: [
-        Samsung.s10,
-        Apple.iPhone11,
+        WidgetbookFolder(name: 'ImportExport', children: [
+          WidgetbookComponent(
+            name: 'Export',
+            useCases: [
+              WidgetbookUseCase(
+                  name: 'ShowExport',
+                  builder: (context) => const ImportExportSettingsView(
+                      import: import, export: export))
+            ],
+          ),
+        ])
       ],
     );
   }
