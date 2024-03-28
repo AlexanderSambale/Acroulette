@@ -75,7 +75,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           break;
       }
     });
-    on<AcrouletteChangeMode>((event, emit) {
+    on<AcrouletteChangeMode>((event, emit) async {
       if (mode == event.mode) return;
       var positions = <String>[];
       if (event.mode == acroulette) {
@@ -86,7 +86,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
                 .add(InitAcrouletteTransitionEvent(positions, false))));
       }
       if (event.mode == washingMachine) {
-        positions = dbController.flowPositions();
+        positions = await dbController.flowPositions();
         modeBloc.add(ModeChange(
             event.mode,
             () =>
@@ -97,10 +97,14 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     on<AcrouletteChangeMachine>((event, emit) {
       if (machine == event.machine) return;
-      washingMachineBloc.add(WashingMachineChange(
+      washingMachineBloc.add(
+        WashingMachineChange(
           event.machine,
-          () => transitionBloc.add(
-              InitFlowTransitionEvent(dbController.flowPositions(), true))));
+          () async => transitionBloc.add(
+            InitFlowTransitionEvent(await dbController.flowPositions(), true),
+          ),
+        ),
+      );
       emit(AcrouletteFlowState(event.machine));
     });
     // initialize blocs
@@ -109,9 +113,11 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     // initialize transitionBloc
     transitionBloc = TransitionBloc(onTransitionChange, Random());
-    if (dbController.getSettingsPairValueByKey(playingKey) == "true") {
-      add(AcrouletteStart());
-    }
+    dbController.getSettingsPairValueByKey(playingKey).then((value) {
+      if (value == "true") {
+        add(AcrouletteStart());
+      }
+    });
 
     // when Model is loaded call onInitiated
     if (voiceRecognitionBloc.isDisabled) {
@@ -163,10 +169,10 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     add(AcrouletteInitModelEvent());
   }
 
-  void setTransitionsDependingOnMode(DBController dbController) {
+  Future<void> setTransitionsDependingOnMode(DBController dbController) async {
     if (mode == washingMachine) {
-      transitionBloc
-          .add(InitFlowTransitionEvent(dbController.flowPositions(), true));
+      transitionBloc.add(
+          InitFlowTransitionEvent(await dbController.flowPositions(), true));
     }
     if (mode == acroulette) {
       transitionBloc.add(InitAcrouletteTransitionEvent(

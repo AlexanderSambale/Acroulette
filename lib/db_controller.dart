@@ -60,11 +60,11 @@ class DBController {
     setDefaultValue(playingKey, "false");
   }
 
-  void setDefaultValue(String key, String value) {
+  void setDefaultValue(String key, String value) async {
     try {
       getSettingsPairValueByKey(key);
     } on PairValueException {
-      putSettingsPairValueByKey(key, value);
+      await putSettingsPairValueByKey(key, value);
     }
   }
 
@@ -100,9 +100,9 @@ class DBController {
     return DBController._create(store);
   }
 
-  String getSettingsPairValueByKey(String key) {
+  Future<String> getSettingsPairValueByKey(String key) async {
     SettingsPair? keyQueryFirstValue =
-        settingsBox.where().keyEqualTo(key).findFirstSync();
+        await settingsBox.where().keyEqualTo(key).findFirst();
     if (keyQueryFirstValue == null) {
       throw PairValueException(
           "There is no value for the key $key in settings yet!");
@@ -113,13 +113,15 @@ class DBController {
   Future<void> putSettingsPairValueByKey(String key, String value) async {
     SettingsPair? keyQueryFirstValue =
         await settingsBox.where().keyEqualTo(key).findFirst();
-    if (keyQueryFirstValue == null) {
-      await settingsBox.put(SettingsPair(key, value));
-    } else {
-      if (keyQueryFirstValue.value == value) return;
-      keyQueryFirstValue.value = value;
-      settingsBox.put(keyQueryFirstValue);
-    }
+    await store.writeTxn(() async {
+      if (keyQueryFirstValue == null) {
+        await settingsBox.put(SettingsPair(key, value));
+      } else {
+        if (keyQueryFirstValue.value == value) return;
+        keyQueryFirstValue.value = value;
+        settingsBox.put(keyQueryFirstValue);
+      }
+    });
   }
 
   int putAcroNode(AcroNode acroNode) {
@@ -197,9 +199,9 @@ class DBController {
     return first == null ? false : true;
   }
 
-  List<String> flowPositions() {
-    FlowNode? flow =
-        flowNodeBox.getSync(int.parse(getSettingsPairValueByKey(flowIndex)));
+  Future<List<String>> flowPositions() async {
+    FlowNode? flow = await flowNodeBox
+        .get(int.parse(await getSettingsPairValueByKey(flowIndex)));
     if (flow == null) {
       return [];
     } else {

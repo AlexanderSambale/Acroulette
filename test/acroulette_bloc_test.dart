@@ -11,6 +11,7 @@ import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/position.dart';
 import 'package:acroulette/models/settings_pair.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:isar/isar.dart';
@@ -21,9 +22,9 @@ class MockFlutterTts extends Mock implements TtsBloc {}
 
 class MockVoiceRecognitionBloc extends Mock implements VoiceRecognitionBloc {}
 
-void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
+void main() async {
+  await Isar.initializeIsarCore(download: true);
+  WidgetsFlutterBinding.ensureInitialized();
   group('acroulette bloc', () {
     late AcrouletteBloc acrouletteBloc;
     late Isar store;
@@ -31,7 +32,7 @@ void main() {
     late TtsBloc ttsBloc;
     late VoiceRecognitionBloc voiceRecognitionBloc;
 
-    final dir = Directory('acroulette_bloc_testdata_initial');
+    final dir = Directory.systemTemp.createTempSync();
     setUp(() async {
       if (dir.existsSync()) dir.deleteSync(recursive: true);
       await dir.create();
@@ -50,14 +51,17 @@ void main() {
       voiceRecognitionBloc = MockVoiceRecognitionBloc();
       when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
       when(() => ttsBloc.notAvailable).thenReturn(true);
-      acrouletteBloc =
-          AcrouletteBloc(ttsBloc, dbController, voiceRecognitionBloc);
+      acrouletteBloc = AcrouletteBloc(
+        ttsBloc,
+        dbController,
+        voiceRecognitionBloc,
+      );
     });
 
-    tearDown(() {
-      store.close();
-      if (dir.existsSync()) dir.deleteSync(recursive: true);
-      acrouletteBloc.close();
+    tearDown(() async {
+      await store.close();
+      if (dir.existsSync()) await dir.delete(recursive: true);
+      await acrouletteBloc.close();
     });
 
     test('initial state is AcrouletteInitialState()', () {
@@ -114,12 +118,12 @@ void main() {
           build: () => acrouletteBloc,
           seed: () => const AcrouletteCommandRecognizedState('',
               previousFigure: '', nextFigure: '', mode: acroulette),
-          act: (bloc) {
+          act: (bloc) async {
             when(() => bloc.voiceRecognitionBloc.state)
                 .thenReturn(const VoiceRecognitionState(true));
             when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
-            bloc.transitionBloc.add(
-                InitFlowTransitionEvent(dbController.flowPositions(), true));
+            bloc.transitionBloc.add(InitFlowTransitionEvent(
+                await dbController.flowPositions(), true));
             bloc.add(AcrouletteTransition(nextPosition));
             bloc.add(AcrouletteTransition(currentPosition));
             bloc.add(AcrouletteTransition(previousPosition));

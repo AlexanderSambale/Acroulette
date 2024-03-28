@@ -39,10 +39,10 @@ class _VoiceRecognitionSettings extends State<VoiceRecognitionSettings> {
               child: Card(
                 child: ListView(shrinkWrap: true, children: [
                   const Heading(headingLabel: "Voice recognition commands"),
-                  ...textSettingsFormField(newPosition, dbController),
-                  ...textSettingsFormField(nextPosition, dbController),
-                  ...textSettingsFormField(previousPosition, dbController),
-                  ...textSettingsFormField(currentPosition, dbController),
+                  textSettingsFormField(newPosition, dbController),
+                  textSettingsFormField(nextPosition, dbController),
+                  textSettingsFormField(previousPosition, dbController),
+                  textSettingsFormField(currentPosition, dbController),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 16.0, horizontal: 16.0),

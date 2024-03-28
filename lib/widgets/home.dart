@@ -42,42 +42,53 @@ class _HomeState extends State<Home> {
               AcrouletteBloc acrouletteBloc = context.read<AcrouletteBloc>();
               var mode = acrouletteBloc.mode;
               var machine = acrouletteBloc.machine;
-              switch (state.runtimeType) {
-                case AcrouletteModelInitiatedState:
-                case AcrouletteFlowState:
-                  if (dbController.getSettingsPairValueByKey(playingKey) ==
-                      "true") {
-                    return const Loader();
-                  }
-                  text = "Click the play button to start!";
-                  break;
-                case AcrouletteCommandRecognizedState:
-                  AcrouletteCommandRecognizedState currentState =
-                      (state as AcrouletteCommandRecognizedState);
-                  currentFigure = currentState.currentFigure;
-                  previousFigure = currentState.previousFigure;
-                  nextFigure = currentState.nextFigure;
-                  text = "Listening to voice commands!";
-                  break;
-                default:
-                  return const Loader();
-              }
 
-              return Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(children: [
-                    modeSelect(mode, acrouletteBloc),
-                    if (mode == washingMachine)
-                      washingMachineDropdown(machine, acrouletteBloc),
-                    if (currentFigure != "")
-                      showPositions(previousFigure, currentFigure, nextFigure,
-                          MediaQuery.of(context).size.width),
-                    Text(text,
-                        textAlign: TextAlign.center, style: displayTextStyle),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [getControls(state, acrouletteBloc, mode)]),
-                  ]));
+              return FutureBuilder(
+                  future: dbController.getSettingsPairValueByKey(playingKey),
+                  builder: (context, snapshot) {
+                    switch (state.runtimeType) {
+                      case AcrouletteModelInitiatedState:
+                      case AcrouletteFlowState:
+                        if (snapshot.hasData) {
+                          if (snapshot.data == "true") {
+                            return const Loader();
+                          }
+                          text = "Click the play button to start!";
+                        } else {
+                          return const Loader();
+                        }
+                        break;
+                      case AcrouletteCommandRecognizedState:
+                        AcrouletteCommandRecognizedState currentState =
+                            (state as AcrouletteCommandRecognizedState);
+                        currentFigure = currentState.currentFigure;
+                        previousFigure = currentState.previousFigure;
+                        nextFigure = currentState.nextFigure;
+                        text = "Listening to voice commands!";
+                        break;
+                      default:
+                        return const Loader();
+                    }
+
+                    return Container(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(children: [
+                          modeSelect(mode, acrouletteBloc),
+                          if (mode == washingMachine)
+                            washingMachineDropdown(machine, acrouletteBloc),
+                          if (currentFigure != "")
+                            showPositions(previousFigure, currentFigure,
+                                nextFigure, MediaQuery.of(context).size.width),
+                          Text(text,
+                              textAlign: TextAlign.center,
+                              style: displayTextStyle),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                getControls(state, acrouletteBloc, mode)
+                              ]),
+                        ]));
+                  });
             }),
           )
         ]);

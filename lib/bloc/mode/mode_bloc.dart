@@ -17,7 +17,9 @@ class ModeBloc extends Bloc<ModeEvent, ModeState> {
       emit(Mode(event.mode));
     });
 
-    mode = dbController.getSettingsPairValueByKey(appMode);
+    dbController
+        .getSettingsPairValueByKey(appMode)
+        .then((value) => mode = value);
   }
 
   late String mode;

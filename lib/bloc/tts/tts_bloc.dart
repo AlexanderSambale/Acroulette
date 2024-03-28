@@ -53,12 +53,14 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   Future init(DBController dbController) async {
     try {
       await _setAwaitOptions();
-      volume = double.parse(dbController.getSettingsPairValueByKey(volumeKey));
+      volume =
+          double.parse(await dbController.getSettingsPairValueByKey(volumeKey));
       speechRate =
-          double.parse(dbController.getSettingsPairValueByKey(rateKey));
-      pitch = double.parse(dbController.getSettingsPairValueByKey(pitchKey));
-      _language = dbController.getSettingsPairValueByKey(languageKey);
-      engine = dbController.getSettingsPairValueByKey(engineKey);
+          double.parse(await dbController.getSettingsPairValueByKey(rateKey));
+      pitch =
+          double.parse(await dbController.getSettingsPairValueByKey(pitchKey));
+      _language = await dbController.getSettingsPairValueByKey(languageKey);
+      engine = await dbController.getSettingsPairValueByKey(engineKey);
       languages = _getLanguages();
       engines = _getEngines();
       defaultEngine = _getDefaultEngine();
