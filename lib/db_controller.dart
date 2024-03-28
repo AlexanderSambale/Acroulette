@@ -28,15 +28,17 @@ class DBController {
     nodeBox = store.nodes;
     acroNodeBox = store.acroNodes;
     flowNodeBox = store.flowNodes;
+  }
 
-    if (nodeBox.countSync() == 0) {
+  Future<void> loadData() async {
+    if (await nodeBox.count() == 0) {
       loadAsset('models/AcrouletteBasisNodes.json').then((data) {
         importData(data, this);
         regeneratePositionsList();
       });
     }
 
-    if (flowNodeBox.countSync() == 0) {
+    if (await flowNodeBox.count() == 0) {
       loadAsset('models/AcrouletteBasisFlows.json').then((data) {
         importData(data, this);
         putSettingsPairValueByKey(flowIndex, '1');
@@ -62,7 +64,7 @@ class DBController {
 
   void setDefaultValue(String key, String value) async {
     try {
-      getSettingsPairValueByKey(key);
+      await getSettingsPairValueByKey(key);
     } on PairValueException {
       await putSettingsPairValueByKey(key, value);
     }
@@ -77,12 +79,15 @@ class DBController {
             element.acroNode.value!.isEnabled &&
             element.acroNode.value!.isSwitched)
         .map<String>((e) => e.label!));
-    positionBox.clear();
-    positionBox.putAll(setOfPositions.map((e) => Position(e)).toList());
+    await store.writeTxn(() async {
+      await positionBox.clear();
+      await positionBox.putAll(setOfPositions.map((e) => Position(e)).toList());
+    });
   }
 
   /// Create an instance of DBController to use throughout the app.
   static Future<DBController> create(Isar? store) async {
+    DBController dbController;
     if (store == null) {
       Directory dir = await getApplicationDocumentsDirectory();
       Isar newStore = await Isar.open(
@@ -95,9 +100,12 @@ class DBController {
         ],
         directory: dir.path,
       );
-      return DBController._create(newStore);
+      dbController = DBController._create(newStore);
+    } else {
+      dbController = DBController._create(store);
     }
-    return DBController._create(store);
+    await dbController.loadData();
+    return dbController;
   }
 
   Future<String> getSettingsPairValueByKey(String key) async {
@@ -119,51 +127,51 @@ class DBController {
       } else {
         if (keyQueryFirstValue.value == value) return;
         keyQueryFirstValue.value = value;
-        settingsBox.put(keyQueryFirstValue);
+        await settingsBox.put(keyQueryFirstValue);
       }
     });
   }
 
-  int putAcroNode(AcroNode acroNode) {
-    return acroNodeBox.putSync(acroNode);
+  Future<int> putAcroNode(AcroNode acroNode) async {
+    return await acroNodeBox.put(acroNode);
   }
 
-  bool removeAcroNode(AcroNode acroNode) {
-    return acroNodeBox.deleteSync(acroNode.id);
+  Future<bool> removeAcroNode(AcroNode acroNode) async {
+    return await acroNodeBox.delete(acroNode.id);
   }
 
-  int removeManyAcroNodes(List<AcroNode> acroNodes) {
-    return acroNodeBox
-        .deleteAllSync(acroNodes.map<int>((element) => element.id).toList());
+  Future<int> removeManyAcroNodes(List<AcroNode> acroNodes) async {
+    return await acroNodeBox
+        .deleteAll(acroNodes.map<int>((element) => element.id).toList());
   }
 
-  List<int> putManyAcroNodes(List<AcroNode> acroNodes) {
-    return acroNodeBox.putAllSync(acroNodes);
+  Future<List<int>> putManyAcroNodes(List<AcroNode> acroNodes) async {
+    return await acroNodeBox.putAll(acroNodes);
   }
 
-  int putNode(Node node) {
-    return nodeBox.putSync(node);
+  Future<int> putNode(Node node) async {
+    return await nodeBox.put(node);
   }
 
-  List<int> putManyNodes(List<Node> nodes) {
-    return nodeBox.putAllSync(nodes);
+  Future<List<int>> putManyNodes(List<Node> nodes) async {
+    return await nodeBox.putAll(nodes);
   }
 
-  bool removeNode(Node node) {
-    return nodeBox.deleteSync(node.id);
+  Future<bool> removeNode(Node node) async {
+    return await nodeBox.delete(node.id);
   }
 
-  int removeManyNodes(List<Node> nodes) {
-    return nodeBox
-        .deleteAllSync(nodes.map<int>((element) => element.id).toList());
+  Future<int> removeManyNodes(List<Node> nodes) async {
+    return await nodeBox
+        .deleteAll(nodes.map<int>((element) => element.id).toList());
   }
 
-  int putFlowNode(FlowNode flow) {
-    return flowNodeBox.putSync(flow);
+  Future<int> putFlowNode(FlowNode flow) async {
+    return await flowNodeBox.put(flow);
   }
 
-  bool removeFlowNode(FlowNode flow) {
-    return flowNodeBox.deleteSync(flow.id);
+  Future<bool> removeFlowNode(FlowNode flow) async {
+    return await flowNodeBox.delete(flow.id);
   }
 
   Future<String?> getPosition(String positionName) async {
@@ -176,9 +184,9 @@ class DBController {
     }
   }
 
-  List<Node> findNodesWithoutParent() {
+  Future<List<Node>> findNodesWithoutParent() async {
     List<Node> nodesWithoutParent =
-        nodeBox.filter().parentIsNull().findAllSync();
+        await nodeBox.filter().parentIsNull().findAll();
     return nodesWithoutParent;
   }
 
@@ -194,8 +202,8 @@ class DBController {
     return allNodes;
   }
 
-  bool flowExists(String label) {
-    FlowNode? first = flowNodeBox.where().nameEqualTo(label).findFirstSync();
+  Future<bool> flowExists(String label) async {
+    FlowNode? first = await flowNodeBox.where().nameEqualTo(label).findFirst();
     return first == null ? false : true;
   }
 
@@ -209,8 +217,8 @@ class DBController {
     }
   }
 
-  List<String> possiblePositions() {
-    List<Position> positions = positionBox.where().findAllSync();
+  Future<List<String>> possiblePositions() async {
+    List<Position> positions = await positionBox.where().findAll();
     return positions.map<String>((element) => element.name).toList();
   }
 }
