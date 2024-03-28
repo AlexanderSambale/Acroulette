@@ -3,7 +3,6 @@ import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/constants/widgets.dart';
-import 'package:acroulette/main.dart';
 import 'package:acroulette/db_controller.dart';
 import 'package:acroulette/widgets/loader.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
 
 class Home extends StatefulWidget {
-  const Home(
-      {super.key, required this.voiceRecognitionBloc, required this.ttsBloc});
-
-  final TtsBloc ttsBloc;
-  final VoiceRecognitionBloc voiceRecognitionBloc;
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -24,12 +19,17 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    DBController dbController = context.read<DBController>();
+
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           BlocProvider(
             create: (_) => AcrouletteBloc(
-                widget.ttsBloc, dbController, widget.voiceRecognitionBloc),
+              context.read<TtsBloc>(),
+              dbController,
+              context.read<VoiceRecognitionBloc>(),
+            ),
             child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
                 buildWhen: (previous, current) {
               return ![AcrouletteInitModel, AcrouletteInitialState]
@@ -240,7 +240,7 @@ Widget washingMachineDropdown(String machine, AcrouletteBloc acrouletteBloc) {
               const EdgeInsets.symmetric(horizontal: 16.0, vertical: size / 4),
           child: DropdownButton<String>(
             value: machine,
-            items: getWashingMachineItems(dbController),
+            items: getWashingMachineItems(acrouletteBloc.dbController),
             onChanged: (value) {
               if (value == null || machine == value) return;
               acrouletteBloc.add(AcrouletteChangeMachine(value));

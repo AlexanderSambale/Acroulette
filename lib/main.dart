@@ -82,10 +82,10 @@ class _AcrouletteHomePageState extends State<AcrouletteHomePage> {
 
   int _selectedIndex = 0;
   static final List<Widget> _widgetOptions = <Widget>[
-    Home(),
+    const Home(),
     const Positions(),
     const Flows(),
-    Settings(),
+    const Settings(),
     const PrivacyPolicy(),
     const License()
   ];

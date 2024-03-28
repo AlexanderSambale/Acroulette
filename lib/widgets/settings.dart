@@ -4,13 +4,10 @@ import 'package:acroulette/widgets/settings/import_export_settings.dart';
 import 'package:acroulette/widgets/settings/tts_settings.dart';
 import 'package:acroulette/widgets/settings/voice_recognition_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Settings extends StatefulWidget {
-  final TtsBloc ttsBloc;
-  final VoiceRecognitionBloc voiceRecognitionBloc;
-
-  const Settings(
-      {super.key, required this.ttsBloc, required this.voiceRecognitionBloc});
+  const Settings({super.key});
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -32,11 +29,11 @@ class _SettingsState extends State<Settings> {
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
               child: VoiceRecognitionSettings(
-                  voiceRecognitionBloc: widget.voiceRecognitionBloc)),
+                  voiceRecognitionBloc: context.read<VoiceRecognitionBloc>())),
           Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-              child: TtsSettings(ttsBloc: widget.ttsBloc)),
+              child: TtsSettings(ttsBloc: context.read<TtsBloc>())),
         ],
       ),
     );
