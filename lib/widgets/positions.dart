@@ -1,4 +1,5 @@
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:acroulette/widgets/dialogs/category_dialog/create_category_dialog.dart';
 import 'package:acroulette/widgets/posture_tree/posture_tree.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ class Positions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DBController dbController = context.read<DBController>();
+
     return BlocProvider(
         create: (_) => PositionAdministrationBloc(dbController),
         child: BlocBuilder<PositionAdministrationBloc,

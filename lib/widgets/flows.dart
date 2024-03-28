@@ -1,22 +1,27 @@
 import 'package:acroulette/bloc/flow_administration/flow_administration_bloc.dart';
+import 'package:acroulette/db_controller.dart';
 import 'package:acroulette/widgets/dialogs/flow_dialog/create_flow_dialog.dart';
 import 'package:acroulette/widgets/flows/flow_view.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
 
 class Flows extends StatelessWidget {
   const Flows({super.key});
 
   @override
   Widget build(BuildContext context) {
+    DBController dbController = context.read<DBController>();
+
     return BlocProvider(
         create: (_) => FlowAdministrationBloc(dbController),
         child: BlocBuilder<FlowAdministrationBloc, BaseFlowAdministrationState>(
             buildWhen: (previous, current) =>
                 current is FlowAdministrationState,
             builder: (BuildContext context, state) {
-              List<FlowNode> flows = dbController.flowNodeBox.getAll();
+              List<FlowNode> flows =
+                  dbController.flowNodeBox.where().findAllSync();
               FlowAdministrationBloc bloc =
                   context.read<FlowAdministrationBloc>();
               return Stack(children: [

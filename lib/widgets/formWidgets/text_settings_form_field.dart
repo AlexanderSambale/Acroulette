@@ -1,6 +1,7 @@
+import 'package:acroulette/db_controller.dart';
 import 'package:flutter/material.dart';
 
-List<Widget> textSettingsFormField(String key) {
+List<Widget> textSettingsFormField(String key, DBController dbController) {
   return [
     Text(key),
     TextFormField(
