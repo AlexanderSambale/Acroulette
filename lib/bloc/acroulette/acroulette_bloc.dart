@@ -21,6 +21,7 @@ part 'acroulette_state.dart';
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   final VoiceRecognitionBloc voiceRecognitionBloc;
   final TtsBloc ttsBloc;
+  final DBController dbController;
 
   late final TransitionBloc transitionBloc;
   late final ModeBloc modeBloc;
@@ -31,8 +32,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   late RegExp rPreviousPosition;
   late RegExp rCurrentPosition;
 
-  AcrouletteBloc(
-      this.ttsBloc, DBController dbController, this.voiceRecognitionBloc)
+  AcrouletteBloc(this.ttsBloc, this.dbController, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
     on<AcrouletteStart>((event, emit) {
       dbController.putSettingsPairValueByKey(playingKey, "true");
