@@ -127,7 +127,7 @@ class PostureCategoryItem extends StatelessWidget {
                   value: isSwitched,
                   onChanged: enabled ? onChanged : null,
                   activeColor: enabled
-                      ? theme.toggleableActiveColor
+                      ? theme.toggleButtonsTheme.color
                       : theme.toggleButtonsTheme.disabledColor,
                 )),
             IconButton(
