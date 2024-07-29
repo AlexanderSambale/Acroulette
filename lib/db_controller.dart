@@ -184,9 +184,9 @@ class DBController {
     }
   }
 
-  Future<List<Node>> findNodesWithoutParent() async {
+  List<Node> findNodesWithoutParent() {
     List<Node> nodesWithoutParent =
-        await nodeBox.filter().parentIsNull().findAll();
+        nodeBox.filter().parentIsNull().findAllSync();
     return nodesWithoutParent;
   }
 
@@ -202,8 +202,8 @@ class DBController {
     return allNodes;
   }
 
-  Future<bool> flowExists(String label) async {
-    FlowNode? first = await flowNodeBox.where().nameEqualTo(label).findFirst();
+  bool flowExists(String label) {
+    FlowNode? first = flowNodeBox.where().nameEqualTo(label).findFirstSync();
     return first == null ? false : true;
   }
 
@@ -217,8 +217,8 @@ class DBController {
     }
   }
 
-  Future<List<String>> possiblePositions() async {
-    List<Position> positions = await positionBox.where().findAll();
+  List<String> possiblePositions() {
+    List<Position> positions = positionBox.where().findAllSync();
     return positions.map<String>((element) => element.name).toList();
   }
 }

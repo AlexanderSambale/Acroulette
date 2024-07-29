@@ -174,7 +174,7 @@ void main() {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
-      int simpleTreeId = dbController.putNode(simpleTree);
+      int simpleTreeId = await dbController.putNode(simpleTree);
       Node? loadedTree = dbController.nodeBox.getSync(simpleTreeId);
       expect(loadedTree, isNotNull);
       expect(simpleTree.acroNode.value!.isSwitched,
@@ -197,7 +197,7 @@ void main() {
           PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
       simpleTree.acroNode.value!.isSwitched = false;
-      int simpleTreeId = dbController.putNode(simpleTree);
+      int simpleTreeId = await dbController.putNode(simpleTree);
       Node? loadedTree = dbController.nodeBox.getSync(simpleTreeId);
       expect(loadedTree, isNotNull);
       expect(simpleTree.acroNode.value!.isSwitched,
