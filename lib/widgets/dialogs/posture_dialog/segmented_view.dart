@@ -17,10 +17,10 @@ class SegmentedView extends StatelessWidget {
                 child: ElevatedButton(
               style: ButtonStyle(
                   backgroundColor: selected == 1
-                      ? MaterialStateColor.resolveWith(
+                      ? WidgetStateColor.resolveWith(
                           (states) => const Color.fromARGB(192, 255, 255, 255),
                         )
-                      : MaterialStateColor.resolveWith(
+                      : WidgetStateColor.resolveWith(
                           (states) => const Color.fromARGB(192, 63, 78, 165),
                         )),
               onPressed: () => onPressed(0),
@@ -30,10 +30,10 @@ class SegmentedView extends StatelessWidget {
                 child: ElevatedButton(
               style: ButtonStyle(
                   backgroundColor: selected == 0
-                      ? MaterialStateColor.resolveWith(
+                      ? WidgetStateColor.resolveWith(
                           (states) => const Color.fromARGB(192, 255, 255, 255),
                         )
-                      : MaterialStateColor.resolveWith(
+                      : WidgetStateColor.resolveWith(
                           (states) => const Color.fromARGB(192, 63, 78, 165),
                         )),
               onPressed: () => onPressed(1),
