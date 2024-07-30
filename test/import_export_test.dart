@@ -1,16 +1,11 @@
 import 'dart:io';
 
-import 'package:acroulette/models/acro_node.dart';
+import 'package:acroulette/helper/conversion.dart';
 import 'package:acroulette/models/flow_node.dart';
-import 'package:acroulette/models/helper/import_export/export.dart';
-import 'package:acroulette/models/helper/import_export/import.dart';
-import 'package:acroulette/models/helper/io/assets.dart';
+import 'package:acroulette/helper/import_export/import.dart';
+import 'package:acroulette/helper/io/assets.dart';
 import 'package:acroulette/db_controller.dart';
-import 'package:acroulette/models/node.dart';
-import 'package:acroulette/models/position.dart';
-import 'package:acroulette/models/settings_pair.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:isar/isar.dart';
 
 void main() {
   test('convert Uint8List', () {

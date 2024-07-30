@@ -4,14 +4,13 @@ import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/exceptions/pair_value_exception.dart';
 import 'package:acroulette/models/flow_node.dart';
-import 'package:acroulette/models/helper/import_export/import.dart';
-import 'package:acroulette/models/settings_pair.dart';
-import 'package:acroulette/models/acro_node.dart';
+import 'package:acroulette/helper/import_export/import.dart';
+import 'package:acroulette/models/entities/settings_pair.dart';
+import 'package:acroulette/models/entities/acro_node.dart';
 import 'package:acroulette/models/node.dart';
-import 'package:acroulette/models/position.dart';
-import 'package:isar/isar.dart';
+import 'package:acroulette/models/entities/position.dart';
 import 'package:path_provider/path_provider.dart';
-import 'models/helper/io/assets.dart';
+import 'helper/io/assets.dart';
 
 class DBController {
   late final Isar store;
@@ -76,8 +75,8 @@ class DBController {
     setOfPositions.addAll(nodes
         .where((element) =>
             element.isLeaf &&
-            element.acroNode.value!.isEnabled &&
-            element.acroNode.value!.isSwitched)
+            element.acroNode.isEnabled &&
+            element.acroNode.isSwitched)
         .map<String>((e) => e.label!));
     await store.writeTxn(() async {
       await positionBox.clear();

@@ -3,15 +3,11 @@ import 'dart:io';
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/validator.dart';
-import 'package:acroulette/models/acro_node.dart';
-import 'package:acroulette/models/flow_node.dart';
-import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
+import 'package:acroulette/models/entities/acro_node.dart';
+import 'package:acroulette/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/db_controller.dart';
-import 'package:acroulette/models/position.dart';
-import 'package:acroulette/models/settings_pair.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:isar/isar.dart';
 
 Node createSimpleTree(
     {String rootName = 'root',
@@ -177,17 +173,16 @@ void main() {
       int simpleTreeId = await dbController.putNode(simpleTree);
       Node? loadedTree = dbController.nodeBox.getSync(simpleTreeId);
       expect(loadedTree, isNotNull);
-      expect(simpleTree.acroNode.value!.isSwitched,
-          loadedTree!.acroNode.value!.isSwitched);
+      expect(simpleTree.acroNode.isSwitched, loadedTree!.acroNode.isSwitched);
       List<bool> enabledList = [];
       for (Node child in loadedTree.children.toList()) {
-        enabledList.add(child.acroNode.value!.isEnabled);
+        enabledList.add(child.acroNode.isEnabled);
       }
       bloc.onSwitch(false, loadedTree);
-      expect(loadedTree.acroNode.value!.isSwitched, false);
+      expect(loadedTree.acroNode.isSwitched, false);
       List<bool> enabledListAfter = [];
       for (Node child in loadedTree.children.toList()) {
-        enabledListAfter.add(child.acroNode.value!.isEnabled);
+        enabledListAfter.add(child.acroNode.isEnabled);
       }
       expect(enabledListAfter, [false, false, false]);
     });
@@ -196,21 +191,20 @@ void main() {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
-      simpleTree.acroNode.value!.isSwitched = false;
+      simpleTree.acroNode.isSwitched = false;
       int simpleTreeId = await dbController.putNode(simpleTree);
       Node? loadedTree = dbController.nodeBox.getSync(simpleTreeId);
       expect(loadedTree, isNotNull);
-      expect(simpleTree.acroNode.value!.isSwitched,
-          loadedTree!.acroNode.value!.isSwitched);
+      expect(simpleTree.acroNode.isSwitched, loadedTree!.acroNode.isSwitched);
       List<bool> enabledList = [];
       for (Node child in loadedTree.children.toList()) {
-        enabledList.add(child.acroNode.value!.isEnabled);
+        enabledList.add(child.acroNode.isEnabled);
       }
       bloc.onSwitch(true, loadedTree);
-      expect(loadedTree.acroNode.value!.isSwitched, true);
+      expect(loadedTree.acroNode.isSwitched, true);
       List<bool> enabledListAfter = [];
       for (Node child in loadedTree.children.toList()) {
-        enabledListAfter.add(child.acroNode.value!.isEnabled);
+        enabledListAfter.add(child.acroNode.isEnabled);
       }
       expect(enabledListAfter, enabledList);
     });

@@ -1,6 +1,6 @@
 import 'package:acroulette/constants/validator.dart';
-import 'package:acroulette/models/acro_node.dart';
-import 'package:acroulette/models/helper/objectbox/to_many_extension.dart';
+import 'package:acroulette/models/entities/acro_node.dart';
+import 'package:acroulette/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
 import 'package:acroulette/db_controller.dart';

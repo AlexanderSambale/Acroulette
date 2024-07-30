@@ -4,7 +4,6 @@ import 'package:acroulette/constants/nodes.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/db_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:isar/isar.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
