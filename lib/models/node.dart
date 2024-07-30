@@ -1,61 +1,59 @@
 import 'dart:convert';
 
-import 'package:acroulette/models/acro_node.dart';
-import 'package:isar/isar.dart';
-
-part 'node.g.dart';
+import 'package:acroulette/models/entities/acro_node.dart';
 
 const String isLeafKey = "isLeaf";
 const String isExpandedKey = "isExpanded";
 const String childrenKey = "children";
 const String valueKey = "value";
 
-@collection
 class Node {
-  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
-
+  int? id;
   bool isLeaf;
 
-  @Index()
-  IsarLink<Node> parent = IsarLink<Node>();
-  IsarLinks<Node> children = IsarLinks<Node>();
-  IsarLink<AcroNode> acroNode = IsarLink<AcroNode>();
+  final Node? parent;
+  List<Node> children = [];
+  final AcroNode acroNode;
   bool isExpanded;
-  String? get label => acroNode.value?.label;
+  String? get label => acroNode.label;
 
-  Node({
+  Node(
+    this.parent,
+    this.acroNode, {
     this.isLeaf = false,
     this.isExpanded = true,
   });
 
-  Node.createCategory(
+  static Node createCategory(
     List<Node> children,
     AcroNode acroNode, {
-    this.isLeaf = false,
-    this.isExpanded = true,
+    isLeaf = false,
+    isExpanded = true,
     Node? parent,
   }) {
-    for (var child in children) {
-      child.parent.value = this;
-    }
-    this.children.addAll(children);
-    this.acroNode.value = acroNode;
-    this.parent.value = parent;
-    this.acroNode.saveSync();
-    this.parent.saveSync();
-    this.children.saveSync();
+    Node newNode = Node(
+      parent,
+      acroNode,
+      isExpanded: isExpanded,
+      isLeaf: isLeaf,
+    );
+    newNode.children = children; // ToDo check if we need a deepcopy
+    return newNode;
   }
 
-  Node.createLeaf(
+  static Node createLeaf(
     AcroNode acroNode, {
-    this.isLeaf = true,
-    this.isExpanded = true,
+    isLeaf = true,
+    isExpanded = true,
     Node? parent,
   }) {
-    this.acroNode.value = acroNode;
-    this.parent.value = parent;
-    this.acroNode.saveSync();
-    this.parent.saveSync();
+    return createCategory(
+      [],
+      acroNode,
+      isExpanded: isExpanded,
+      isLeaf: isLeaf,
+      parent: parent,
+    );
   }
 
   addNode(Node node) {
@@ -86,7 +84,7 @@ class Node {
     result = '''$result
   "$isLeafKey": $isLeaf,
   "$isExpandedKey": $isExpanded,
-  "$valueKey": ${acroNode.value}
+  "$valueKey": $acroNode
 }''';
     return result;
   }
@@ -131,7 +129,7 @@ class Node {
     if (other is! Node) return false;
     if (other.isExpanded != isExpanded) return false;
     if (other.isLeaf != isLeaf) return false;
-    if (other.acroNode.value != acroNode.value) return false;
+    if (other.acroNode != acroNode) return false;
     if (other.children != other.children) return false;
     return true;
   }

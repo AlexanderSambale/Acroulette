@@ -1,21 +1,20 @@
 import 'dart:convert';
-import 'package:isar/isar.dart';
 
-part 'flow_node.g.dart';
+import 'package:acroulette/models/entities/base_entity.dart';
 
 const String nameKey = "name";
 const String positionsKey = "positions";
 
-@collection
-class FlowNode {
-  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
-
-  @Index()
+class FlowNode extends BaseEntity {
   String name;
   final List<String> positions;
   bool isExpanded;
 
-  FlowNode(this.name, this.positions, {this.isExpanded = true});
+  FlowNode(
+    this.name,
+    this.positions, {
+    this.isExpanded = true,
+  });
 
   @override
   String toString() {

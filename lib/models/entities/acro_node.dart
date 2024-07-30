@@ -1,17 +1,15 @@
 import 'dart:convert';
-import 'package:isar/isar.dart';
 
-part 'acro_node.g.dart';
+import 'package:acroulette/models/entities/base_entity.dart';
+import 'package:floor/floor.dart';
 
 const String isSwitchedKey = "isSwitched";
 const String labelKey = "label";
 const String isEnabledKey = "isEnabled";
 
-@collection
-class AcroNode {
+@entity
+class AcroNode extends BaseEntity {
   AcroNode(this.isSwitched, this.label, {this.isEnabled = true});
-
-  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
   bool isSwitched;
   bool isEnabled;
   String label;

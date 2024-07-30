@@ -1,13 +1,10 @@
 import 'dart:collection';
-import 'package:isar/isar.dart';
 
-part 'settings_pair.g.dart';
+import 'package:acroulette/models/entities/base_entity.dart';
+import 'package:floor/floor.dart';
 
-@collection
-class SettingsPair {
-  Id id = Isar.autoIncrement; // you can also use id = null to auto increment
-
-  @Index()
+@entity
+class SettingsPair extends BaseEntity {
   late String key;
   late String value;
 
