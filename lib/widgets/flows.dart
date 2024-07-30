@@ -5,7 +5,6 @@ import 'package:acroulette/widgets/flows/flow_view.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:isar/isar.dart';
 
 class Flows extends StatelessWidget {
   const Flows({super.key});

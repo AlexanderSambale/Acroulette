@@ -1,4 +1,4 @@
-import 'package:acroulette/models/helper/io/assets.dart';
+import 'package:acroulette/helper/io/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 

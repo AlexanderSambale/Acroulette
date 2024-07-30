@@ -36,7 +36,7 @@ class PostureTree extends StatelessWidget {
       return Container(
           margin: const EdgeInsets.only(left: 16),
           child: PostureListItem(
-              isSwitched: tree.acroNode.value!.isSwitched,
+              isSwitched: tree.acroNode.isSwitched,
               postureLabel: tree.label!,
               onChanged: (isOn) => onSwitched(isOn, tree),
               onEditClick: (String? value) => onEditClick(tree, false, value),
@@ -46,7 +46,7 @@ class PostureTree extends StatelessWidget {
                     () => onDeleteClick(tree),
                   ),
               path: newPath,
-              enabled: tree.acroNode.value!.isEnabled));
+              enabled: tree.acroNode.isEnabled));
     }
     return Card(
         child: ListView.builder(
@@ -56,7 +56,7 @@ class PostureTree extends StatelessWidget {
               if (index == 0) {
                 return PostureCategoryItem(
                   categoryLabel: tree.label!,
-                  isSwitched: tree.acroNode.value!.isSwitched,
+                  isSwitched: tree.acroNode.isSwitched,
                   onChanged: (isOn) => onSwitched(isOn, tree),
                   onEditClick: (String? value) =>
                       onEditClick(tree, false, value),
@@ -65,7 +65,7 @@ class PostureTree extends StatelessWidget {
                       onSaveClick(tree, isPosture, value),
                   toggleExpand: () => toggleExpand(tree),
                   isExpanded: tree.isExpanded,
-                  enabled: tree.acroNode.value!.isEnabled,
+                  enabled: tree.acroNode.isEnabled,
                   path: newPath,
                   listAllNodesRecursively: () => listAllNodesRecursively(tree),
                   validator: (bool isPosture, String? value) {
