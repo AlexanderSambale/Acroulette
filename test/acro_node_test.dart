@@ -1,4 +1,4 @@
-import 'package:acroulette/models/acro_node.dart';
+import 'package:acroulette/models/entities/acro_node.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
