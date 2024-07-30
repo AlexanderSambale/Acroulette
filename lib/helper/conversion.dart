@@ -4,8 +4,12 @@ import 'dart:typed_data';
 String joinString = '\u{1D434}\u{26A1}\u{1D4FD}';
 
 Uint8List stringListToUint8List(List<String> input) {
+  return convertStringToUint8List(input.join(joinString));
+}
+
+Uint8List convertStringToUint8List(String str) {
   List<int> lowIntegerBytes = [];
-  Uint16List uint16List = Uint16List.fromList(input.join(joinString).codeUnits);
+  Uint16List uint16List = Uint16List.fromList(str.codeUnits);
   for (var u16integer in uint16List) {
     lowIntegerBytes.add(getIntHighByte(u16integer));
     lowIntegerBytes.add(getIntLowByte(u16integer));
