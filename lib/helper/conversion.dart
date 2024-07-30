@@ -18,7 +18,7 @@ Uint8List convertStringToUint8List(String str) {
   return result;
 }
 
-List<String> uint8ListToStringList(Uint8List uint8List) {
+String convertUint8ListToString(Uint8List uint8List) {
   List<int> lowIntegerBytes = uint8List.toList();
   List<int> charCodes = [];
   int lowByte = 0;
@@ -36,7 +36,12 @@ List<String> uint8ListToStringList(Uint8List uint8List) {
       odd = true;
     }
   }
-  List<String> resultList = String.fromCharCodes(charCodes).split(joinString);
+  return String.fromCharCodes(charCodes);
+}
+
+List<String> uint8ListToStringList(Uint8List uint8List) {
+  List<String> resultList =
+      convertUint8ListToString(uint8List).split(joinString);
   return resultList;
 }
 
