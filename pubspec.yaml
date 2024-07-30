@@ -34,7 +34,6 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
-isar_version: &isar_version 3.1.0+1 # define the version to be used
 
 dependencies:
   flutter:
@@ -52,9 +51,9 @@ dependencies:
   flutter_markdown: ^0.6.22
   pick_or_save: ^2.2.4
   url_launcher: ^6.2.5
-  isar: *isar_version
-  isar_flutter_libs: *isar_version
   path_provider: ^2.1.0
+  floor: ^1.4.0
+  sqflite: ^2.3.3+1
 
 dev_dependencies:
   flutter_test:
@@ -72,7 +71,7 @@ dev_dependencies:
   widgetbook: ^3.7.1
   flutter_launcher_icons: ^0.13.1
   flutter_oss_licenses: ^2.0.1
-  isar_generator: *isar_version
+  floor_generator: ^1.4.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
