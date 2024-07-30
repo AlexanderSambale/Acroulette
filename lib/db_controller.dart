@@ -1,32 +1,35 @@
-import 'dart:io';
-
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/exceptions/pair_value_exception.dart';
+import 'package:acroulette/models/dao/acro_node_dao.dart';
+import 'package:acroulette/models/dao/flow_node_dao.dart';
+import 'package:acroulette/models/dao/node_dao.dart';
+import 'package:acroulette/models/dao/position_dao.dart';
+import 'package:acroulette/models/dao/settings_pair_dao.dart';
+import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/models/entities/settings_pair.dart';
 import 'package:acroulette/models/entities/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/entities/position.dart';
-import 'package:path_provider/path_provider.dart';
 import 'helper/io/assets.dart';
 
 class DBController {
-  late final Isar store;
+  late final AppDatabase store;
 
-  late final IsarCollection<SettingsPair> settingsBox;
-  late final IsarCollection<Position> positionBox;
-  late final IsarCollection<Node> nodeBox;
-  late final IsarCollection<AcroNode> acroNodeBox;
-  late final IsarCollection<FlowNode> flowNodeBox;
+  late final SettingsPairDao settingsBox;
+  late final PositionDao positionBox;
+  late final NodeDao nodeBox;
+  late final AcroNodeDao acroNodeBox;
+  late final FlowNodeDao flowNodeBox;
 
   DBController._create(this.store) {
-    settingsBox = store.settingsPairs;
-    positionBox = store.positions;
-    nodeBox = store.nodes;
-    acroNodeBox = store.acroNodes;
-    flowNodeBox = store.flowNodes;
+    settingsBox = store.settingsPairDao;
+    positionBox = store.positionDao;
+    nodeBox = store.nodeDao;
+    acroNodeBox = store.acroNodeDao;
+    flowNodeBox = store.flowNodeDao;
   }
 
   Future<void> loadData() async {
@@ -85,20 +88,11 @@ class DBController {
   }
 
   /// Create an instance of DBController to use throughout the app.
-  static Future<DBController> create(Isar? store) async {
+  static Future<DBController> create(AppDatabase? store) async {
     DBController dbController;
     if (store == null) {
-      Directory dir = await getApplicationDocumentsDirectory();
-      Isar newStore = await Isar.open(
-        [
-          SettingsPairSchema,
-          PositionSchema,
-          AcroNodeSchema,
-          FlowNodeSchema,
-          NodeSchema,
-        ],
-        directory: dir.path,
-      );
+      AppDatabase newStore =
+          await $FloorAppDatabase.databaseBuilder('app_database.db').build();
       dbController = DBController._create(newStore);
     } else {
       dbController = DBController._create(store);
