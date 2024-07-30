@@ -11,6 +11,9 @@ abstract class NodeDao {
   @Query('SELECT last_insert_rowid()')
   Future<int?> incrementedId();
 
+  @Query('SELECT COUNT(*) FROM NodeEntity')
+  Future<int?> count();
+
   @insert
   Future<void> insertObject(NodeEntity object);
 

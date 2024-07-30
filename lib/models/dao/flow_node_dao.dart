@@ -10,6 +10,9 @@ abstract class FlowNodeDao {
   @Query('SELECT last_insert_rowid()')
   Future<int?> incrementedId();
 
+  @Query('SELECT COUNT(*) FROM FlowNodeEntity')
+  Future<int?> count();
+
   @insert
   Future<void> insertObject(FlowNodeEntity object);
 
