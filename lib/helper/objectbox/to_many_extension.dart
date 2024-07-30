@@ -1,4 +1,4 @@
-import 'package:acroulette/models/node.dart';
+import 'package:acroulette/models/entities/node_entity.dart';
 import 'package:isar/isar.dart';
 
 extension ToManyExtension on IsarLinks<Node> {
