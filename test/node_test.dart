@@ -1,4 +1,4 @@
-import 'package:acroulette/models/acro_node.dart';
+import 'package:acroulette/models/entities/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -20,7 +20,7 @@ void main() {
     expect(category.children.isEmpty, equals(false));
     expect(category.children.length, equals(3));
     expect(category.isLeaf, equals(false));
-    expect(category.acroNode.value, equals(rootAcroNode));
+    expect(category.acroNode, equals(rootAcroNode));
     expect(category.children.contains(leaf3), equals(true));
   });
 
@@ -37,7 +37,7 @@ void main() {
     expect(category.children.isEmpty, categoryTransformed.children.isEmpty);
     expect(category.children.length, categoryTransformed.children.length);
     expect(category.isLeaf, categoryTransformed.isLeaf);
-    expect(category.acroNode.value, categoryTransformed.acroNode.value);
+    expect(category.acroNode, categoryTransformed.acroNode);
     expect(
       category.children.elementAt(2),
       categoryTransformed.children.elementAt(2),
@@ -52,7 +52,7 @@ void main() {
     Node leafTransformed = Node.createFromString(leafAsJsonString)[0];
     expect(leafTransformed.children.isEmpty, leaf.children.isEmpty);
     expect(leafTransformed.isLeaf, leaf.isLeaf);
-    expect(leafTransformed.acroNode.value, leaf.acroNode.value);
+    expect(leafTransformed.acroNode, leaf.acroNode);
     expect(leafTransformed.isExpanded, leaf.isExpanded);
     expect(leafTransformed.label, leaf.label);
   });
