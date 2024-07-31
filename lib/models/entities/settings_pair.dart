@@ -8,7 +8,14 @@ class SettingsPair extends BaseEntity {
   late String key;
   late String value;
 
-  SettingsPair(this.key, this.value);
+  SettingsPair(super.autoId, this.key, this.value);
+
+  factory SettingsPair.optional({
+    int? autoId,
+    String? key,
+    String? value,
+  }) =>
+      SettingsPair(autoId, key ?? '', value ?? '');
 
   static HashMap<String, String> toMap(List<SettingsPair> pairs) {
     return HashMap.fromIterable(pairs,

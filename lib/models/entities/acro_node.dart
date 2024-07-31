@@ -9,10 +9,23 @@ const String isEnabledKey = "isEnabled";
 
 @entity
 class AcroNode extends BaseEntity {
-  AcroNode(this.isSwitched, this.label, {this.isEnabled = true});
+  AcroNode(super.autoId, this.isSwitched, this.label, {this.isEnabled = true});
   bool isSwitched;
   bool isEnabled;
   String label;
+
+  factory AcroNode.optional({
+    int? autoId,
+    bool? isSwitched,
+    bool? isEnabled,
+    String? label,
+  }) =>
+      AcroNode(
+        autoId,
+        isSwitched ?? false,
+        label ?? '',
+        isEnabled: isEnabled ?? true,
+      );
 
   @override
   String toString() {
@@ -25,7 +38,7 @@ class AcroNode extends BaseEntity {
   }
 
   static AcroNode createFromMap(Map decoded) {
-    return AcroNode(decoded[isSwitchedKey], decoded[labelKey],
+    return AcroNode(null, decoded[isSwitchedKey], decoded[labelKey],
         isEnabled: decoded[isEnabledKey]);
   }
 

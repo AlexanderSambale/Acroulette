@@ -6,4 +6,6 @@ abstract class BaseEntity {
 
   int get id => autoId!;
   set id(int newId) => autoId = newId;
+
+  BaseEntity(this.autoId);
 }

@@ -5,5 +5,11 @@ import 'package:floor/floor.dart';
 class Position extends BaseEntity {
   final String name;
 
-  Position(this.name);
+  Position(super.autoId, this.name);
+
+  factory Position.optional({
+    int? autoId,
+    String? name,
+  }) =>
+      Position(autoId, name ?? '');
 }

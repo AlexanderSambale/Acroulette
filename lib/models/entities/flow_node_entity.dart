@@ -10,8 +10,22 @@ class FlowNodeEntity extends BaseEntity {
   bool isExpanded;
 
   FlowNodeEntity(
+    super.autoId,
     this.name,
     this.positions, {
     this.isExpanded = true,
   });
+
+  factory FlowNodeEntity.optional({
+    int? autoId,
+    String? name,
+    Uint8List? positions,
+    bool? isExpanded,
+  }) =>
+      FlowNodeEntity(
+        autoId,
+        name ?? '',
+        positions ?? Uint8List(0),
+        isExpanded: isExpanded ?? true,
+      );
 }

@@ -2,6 +2,7 @@
 
 // required package imports
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:acroulette/models/dao/acro_node_dao.dart';
 import 'package:acroulette/models/dao/flow_node_dao.dart';
 import 'package:acroulette/models/dao/node_acro_node_dao.dart';

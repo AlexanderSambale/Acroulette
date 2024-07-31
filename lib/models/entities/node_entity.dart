@@ -7,8 +7,20 @@ class NodeEntity extends BaseEntity {
 
   final bool isExpanded;
 
-  NodeEntity({
+  NodeEntity(
+    super.autoId, {
     this.isLeaf = false,
     this.isExpanded = true,
   });
+
+  factory NodeEntity.optional({
+    int? autoId,
+    bool? isLeaf,
+    bool? isExpanded,
+  }) =>
+      NodeEntity(
+        autoId,
+        isLeaf: isLeaf ?? false,
+        isExpanded: isExpanded ?? true,
+      );
 }

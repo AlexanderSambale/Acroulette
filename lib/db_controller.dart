@@ -163,8 +163,11 @@ class DBController {
     return await flowNodeBox.put(flow);
   }
 
-  Future<bool> removeFlowNode(FlowNode flow) async {
-    return await flowNodeBox.delete(flow.id);
+  Future<void> removeFlowNode(FlowNode flow) async {
+    if (flow.id == null) {
+      throw Exception('flow id is null!');
+    }
+    return await flowNodeBox.remove(flow.id!);
   }
 
   Future<String?> getPosition(String positionName) async {
@@ -195,14 +198,14 @@ class DBController {
     return allNodes;
   }
 
-  bool flowExists(String label) {
-    FlowNode? first = flowNodeBox.where().nameEqualTo(label).findFirstSync();
+  Future<bool> flowExists(String label) async {
+    FlowNode? first = await flowNodeBox.findByName(label);
     return first == null ? false : true;
   }
 
   Future<List<String>> flowPositions() async {
     FlowNode? flow = await flowNodeBox
-        .get(int.parse(await getSettingsPairValueByKey(flowIndex)));
+        .findById(int.parse(await getSettingsPairValueByKey(flowIndex)));
     if (flow == null) {
       return [];
     } else {
