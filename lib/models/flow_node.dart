@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:acroulette/models/entities/base_entity.dart';
-
 const String nameKey = "name";
 const String positionsKey = "positions";
 
-class FlowNode extends BaseEntity {
+class FlowNode {
+  int? id;
+
   String name;
   final List<String> positions;
   bool isExpanded;
