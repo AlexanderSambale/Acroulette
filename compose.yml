@@ -1,0 +1,18 @@
+services:
+  flutter-sdk-acroulette:
+    build:
+      context: docker/.
+      dockerfile: Dockerfile
+      network: host # for internet connection and downloading content
+      args:
+        - FLUTTER_VERSION=3.22.2
+        - IMAGE=mcr.microsoft.com/devcontainers/base:bookworm
+    environment:
+      - FLUTTER_VERSION=3.22.2
+    image: flutter-sdk-acroulette
+    container_name: flutter-sdk-acroulette
+    command: tail -F anything # to keep the image running
+    volumes:
+      - .:/home/vscode/app
+    network_mode: host # for adb connecting to android device
+
