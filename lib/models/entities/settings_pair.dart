@@ -5,6 +5,7 @@ import 'package:floor/floor.dart';
 
 @entity
 class SettingsPair extends BaseEntity {
+  @ColumnInfo(name: 'key_text')
   late String key;
   late String value;
 

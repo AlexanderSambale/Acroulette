@@ -102,8 +102,7 @@ class DBController {
   }
 
   Future<String> getSettingsPairValueByKey(String key) async {
-    SettingsPair? keyQueryFirstValue =
-        await settingsBox.where().keyEqualTo(key).findFirst();
+    SettingsPair? keyQueryFirstValue = await settingsBox.findEntityByKey(key);
     if (keyQueryFirstValue == null) {
       throw PairValueException(
           "There is no value for the key $key in settings yet!");
@@ -112,17 +111,14 @@ class DBController {
   }
 
   Future<void> putSettingsPairValueByKey(String key, String value) async {
-    SettingsPair? keyQueryFirstValue =
-        await settingsBox.where().keyEqualTo(key).findFirst();
-    await store.writeTxn(() async {
-      if (keyQueryFirstValue == null) {
-        await settingsBox.put(SettingsPair(key, value));
-      } else {
-        if (keyQueryFirstValue.value == value) return;
-        keyQueryFirstValue.value = value;
-        await settingsBox.put(keyQueryFirstValue);
-      }
-    });
+    SettingsPair? keyQueryFirstValue = await settingsBox.findEntityByKey(key);
+    if (keyQueryFirstValue == null) {
+      await settingsBox.put(SettingsPair(null, key, value));
+    } else {
+      if (keyQueryFirstValue.value == value) return;
+      keyQueryFirstValue.value = value;
+      await settingsBox.updateObject(keyQueryFirstValue);
+    }
   }
 
   Future<int> putAcroNode(AcroNode acroNode) async {
