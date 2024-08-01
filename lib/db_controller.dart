@@ -132,7 +132,7 @@ class DBController {
 
   Future<void> removeManyAcroNodes(List<AcroNode> acroNodes) async {
     return await acroNodeBox
-        .deleteManyById(acroNodes.map<int>((element) => element.id).toList());
+        .deleteByIds(acroNodes.map<int>((element) => element.id).toList());
   }
 
   Future<List<int>> putManyAcroNodes(List<AcroNode> acroNodes) async {
