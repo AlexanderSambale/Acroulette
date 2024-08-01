@@ -3,7 +3,7 @@ import 'package:acroulette/models/entities/settings_pair.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('settings_pair_node_dao', () {
+  group('settings_pair_dao', () {
     late AppDatabase database;
 
     setUp(() async {
