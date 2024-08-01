@@ -83,7 +83,8 @@ class DBController {
         .map<String>((e) => e.label!));
     await store.writeTxn(() async {
       await positionBox.clear();
-      await positionBox.putAll(setOfPositions.map((e) => Position(e)).toList());
+      await positionBox
+          .putAll(setOfPositions.map((e) => Position(null, e)).toList());
     });
   }
 
@@ -168,7 +169,7 @@ class DBController {
 
   Future<String?> getPosition(String positionName) async {
     Position? positionQueryFirstValue =
-        await positionBox.where().nameEqualTo(positionName).findFirst();
+        await positionBox.findByName(positionName);
     if (positionQueryFirstValue == null) {
       return null;
     } else {
@@ -209,8 +210,8 @@ class DBController {
     }
   }
 
-  List<String> possiblePositions() {
-    List<Position> positions = positionBox.where().findAllSync();
-    return positions.map<String>((element) => element.name).toList();
+  Future<List<String>> possiblePositions() async {
+    List<Position?> positions = await positionBox.findAll();
+    return positions.map<String>((element) => element?.name ?? '').toList();
   }
 }

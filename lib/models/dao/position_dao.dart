@@ -6,6 +6,9 @@ abstract class PositionDao {
   @Query('SELECT last_insert_rowid()')
   Future<int?> incrementedId();
 
+  @Query('SELECT COUNT(*) FROM Position')
+  Future<int?> count();
+
   @insert
   Future<void> insertObject(Position object);
 
@@ -33,4 +36,21 @@ abstract class PositionDao {
     }
     return ids;
   }
+
+  @Query('VACUUM Position')
+  Future<void> vacuum();
+
+  @Query('DELETE FROM Position')
+  Future<void> deleteAll();
+
+  Future<void> clear() async {
+    await deleteAll();
+    await vacuum();
+  }
+
+  @Query('SELECT * FROM Position WHERE name = :name')
+  Future<Position?> findByName(String name);
+
+  @Query('SELECT * FROM Position')
+  Future<List<Position?>> findAll();
 }
