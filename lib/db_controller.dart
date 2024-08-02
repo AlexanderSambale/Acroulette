@@ -188,4 +188,56 @@ class DBController {
     List<Position?> positions = await positionBox.findAll();
     return positions.map<String>((element) => element?.name ?? '').toList();
   }
+
+  void createPosture(Node parent, String posture) {
+    AcroNode acroNode = AcroNode(true, posture);
+    Node newPosture = Node.createLeaf(parent: parent, acroNode);
+    parent.addNode(newPosture);
+    dbController.putNode(parent);
+    regeneratePositionsList();
+  }
+
+  void updateNodeLabel(Node node, String label) {
+    dbController.putNode(parent);
+    regeneratePositionsList();
+  }
+
+  void deletePosture(Node child) {
+    Node? parent = dbController.findParent(child);
+    AcroNode acroNode = child.acroNode.value!;
+    if (parent != null) {
+      parent.children.remove(child);
+      dbController.putNode(parent);
+    }
+    dbController.removeNode(child);
+    dbController.removeAcroNode(acroNode);
+    regeneratePositionsList();
+  }
+
+  void deleteCategory(Node category) {
+    List<Node> toRemove = dbController.getAllChildrenRecursive(category)
+      ..add(category);
+    List<AcroNode> toRemoveAcro =
+        toRemove.map<AcroNode>((element) => element.acroNode.value!).toList();
+    Node? parent = dbController.findParent(category);
+    if (parent != null) {
+      parent.children.remove(category);
+      dbController.putNode(parent);
+    }
+    dbController.removeManyAcroNodes(toRemoveAcro);
+    dbController.removeManyNodes(toRemove);
+    regeneratePositionsList();
+  }
+
+  void createCategory(Node? parent, String category) {
+    AcroNode acroNode = AcroNode(true, category);
+    Node newPosture = Node.optional(parent: parent, [], acroNode);
+    if (parent != null) {
+      parent.addNode(newPosture);
+      dbController.putNode(parent);
+    } else {
+      dbController.putNode(newPosture);
+    }
+    regeneratePositionsList();
+  }
 }

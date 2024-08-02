@@ -1,5 +1,4 @@
 import 'package:acroulette/constants/validator.dart';
-import 'package:acroulette/models/entities/acro_node.dart';
 import 'package:acroulette/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
@@ -76,34 +75,19 @@ class PositionAdministrationBloc
 
   void createPosture(Node parent, String posture) {
     add(PositionsBDStartChangeEvent());
-    AcroNode acroNode = AcroNode(true, posture);
-    Node newPosture = Node.createLeaf(parent: parent, acroNode);
-    parent.addNode(newPosture);
-    dbController.putNode(parent);
-    regeneratePositionsList();
+    dbController.createPosture(parent, posture);
     add(PositionsDBIsIdleEvent());
   }
 
-  void editAcroNode(Node child, String label) {
+  void updateNodeLabel(Node child, String label) {
     add(PositionsBDStartChangeEvent());
-    AcroNode acroNode = child.acroNode.value!;
-    acroNode.label = label;
-    dbController.putAcroNode(acroNode);
-    regeneratePositionsList();
+    dbController.updateNodeLabel(child, label);
     add(PositionsDBIsIdleEvent());
   }
 
   void deletePosture(Node child) {
     add(PositionsBDStartChangeEvent());
-    Node? parent = dbController.findParent(child);
-    AcroNode acroNode = child.acroNode.value!;
-    if (parent != null) {
-      parent.children.remove(child);
-      dbController.putNode(parent);
-    }
-    dbController.removeNode(child);
-    dbController.removeAcroNode(acroNode);
-    regeneratePositionsList();
+    dbController.deletePosture(child);
     add(PositionsDBIsIdleEvent());
   }
 
@@ -120,32 +104,13 @@ class PositionAdministrationBloc
 
   void deleteCategory(Node category) {
     add(PositionsBDStartChangeEvent());
-    List<Node> toRemove = dbController.getAllChildrenRecursive(category)
-      ..add(category);
-    List<AcroNode> toRemoveAcro =
-        toRemove.map<AcroNode>((element) => element.acroNode.value!).toList();
-    Node? parent = dbController.findParent(category);
-    if (parent != null) {
-      parent.children.remove(category);
-      dbController.putNode(parent);
-    }
-    dbController.removeManyAcroNodes(toRemoveAcro);
-    dbController.removeManyNodes(toRemove);
-    regeneratePositionsList();
+    dbController.deleteCategory(category);
     add(PositionsDBIsIdleEvent());
   }
 
   void createCategory(Node? parent, String category) {
     add(PositionsBDStartChangeEvent());
-    AcroNode acroNode = AcroNode(true, category);
-    Node newPosture = Node.createCategory(parent: parent, [], acroNode);
-    if (parent != null) {
-      parent.addNode(newPosture);
-      dbController.putNode(parent);
-    } else {
-      dbController.putNode(newPosture);
-    }
-    regeneratePositionsList();
+    dbController.createCategory(parent, category);
     add(PositionsDBIsIdleEvent());
   }
 
@@ -171,7 +136,7 @@ class PositionAdministrationBloc
 
   void onEditClick(Node child, bool isPosture, String? label) {
     if (label == null || label.isEmpty) return;
-    editAcroNode(child, label);
+    updateNodeLabel(child, label);
   }
 
   String? validatorPosture(Node parent, String label) {
@@ -190,11 +155,11 @@ class PositionAdministrationBloc
     return null;
   }
 
-  String? validatorRootCategory(String? label) {
+  Future<String?> validatorRootCategory(String? label) async {
     if (label == null || label.isEmpty) return enterText;
-    List<Node> rootCategories = dbController.findNodesWithoutParent();
+    List<Node> rootCategories = await dbController.findNodesWithoutParent();
     for (var category in rootCategories) {
-      if (category.acroNode.value!.label == label) {
+      if (category.label == label) {
         return existsText('Category', label);
       }
     }
