@@ -31,13 +31,13 @@ class PostureTree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var newPath = path.toList();
-    newPath.add(tree.label!);
+    newPath.add(tree.label);
     if (tree.isLeaf) {
       return Container(
           margin: const EdgeInsets.only(left: 16),
           child: PostureListItem(
-              isSwitched: tree.acroNode.isSwitched,
-              postureLabel: tree.label!,
+              isSwitched: tree.isSwitched,
+              postureLabel: tree.label,
               onChanged: (isOn) => onSwitched(isOn, tree),
               onEditClick: (String? value) => onEditClick(tree, false, value),
               showDeletePositionDialog: (context) => showDeletePositionDialog(
@@ -46,7 +46,7 @@ class PostureTree extends StatelessWidget {
                     () => onDeleteClick(tree),
                   ),
               path: newPath,
-              enabled: tree.acroNode.isEnabled));
+              enabled: tree.isEnabled));
     }
     return Card(
         child: ListView.builder(
@@ -55,8 +55,8 @@ class PostureTree extends StatelessWidget {
             itemBuilder: (context, index) {
               if (index == 0) {
                 return PostureCategoryItem(
-                  categoryLabel: tree.label!,
-                  isSwitched: tree.acroNode.isSwitched,
+                  categoryLabel: tree.label,
+                  isSwitched: tree.isSwitched,
                   onChanged: (isOn) => onSwitched(isOn, tree),
                   onEditClick: (String? value) =>
                       onEditClick(tree, false, value),
@@ -65,7 +65,7 @@ class PostureTree extends StatelessWidget {
                       onSaveClick(tree, isPosture, value),
                   toggleExpand: () => toggleExpand(tree),
                   isExpanded: tree.isExpanded,
-                  enabled: tree.acroNode.isEnabled,
+                  enabled: tree.isEnabled,
                   path: newPath,
                   listAllNodesRecursively: () => listAllNodesRecursively(tree),
                   validator: (bool isPosture, String? value) {
