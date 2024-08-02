@@ -29,13 +29,22 @@ abstract class NodeDao {
   }
 
   @Query('DELETE FROM NodeEntity WHERE autoId = :id')
-  Future<NodeEntity?> deleteById(int id);
+  Future<void> deleteById(int id);
+
+  Future<void> deleteByIds(List<int> ids) async {
+    for (var id in ids) {
+      await deleteById(id);
+    }
+  }
 
   @insert
   Future<void> insertObject(NodeEntity object);
 
   @delete
   Future<void> removeObject(NodeEntity object);
+
+  @update
+  Future<void> updateObject(NodeEntity object);
 
   Future<int> put(NodeEntity object) async {
     await insertObject(object);

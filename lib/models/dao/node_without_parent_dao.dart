@@ -11,4 +11,7 @@ abstract class NodeWithoutParentDao {
 
   @Query('SELECT * FROM NodeWithoutParent')
   Future<List<NodeWithoutParent>> findAll();
+
+  @Query('DELETE * FROM NodeWithoutParent WHERE nodeId = :id')
+  Future<void> deleteById(int id);
 }

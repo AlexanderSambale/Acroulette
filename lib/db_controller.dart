@@ -48,7 +48,7 @@ class DBController {
       });
     }
 
-    positions = await regeneratePositionsList();
+    await regeneratePositionsList();
     flows = await flowNodeBox.findAllFlowNodes();
     settings = await settingsBox.findAll();
 
@@ -77,14 +77,14 @@ class DBController {
     }
   }
 
-  Future<List<String>> regeneratePositionsList() async {
+  Future<void> regeneratePositionsList() async {
     List<Node> nodes = await nodeBox.findAll();
     Set<String> setOfPositions = {};
     setOfPositions.addAll(nodes
         .where((element) =>
             element.isLeaf && element.isEnabled && element.isSwitched)
         .map<String>((e) => e.label));
-    return setOfPositions.map((e) => e).toList();
+    positions = setOfPositions.map((e) => e).toList();
   }
 
   /// Create an instance of DBController to use throughout the app.
@@ -162,14 +162,6 @@ class DBController {
     return child.parent;
   }
 
-  List<Node> getAllChildrenRecursive(Node child) {
-    List<Node> allNodes = child.children.toList();
-    for (var childOfChild in child.children) {
-      allNodes.addAll(getAllChildrenRecursive(childOfChild));
-    }
-    return allNodes;
-  }
-
   bool flowExists(String label) {
     bool contains = false;
     for (var flow in flows) {
@@ -191,39 +183,27 @@ class DBController {
   }
 
   Future<void> createPosture(Node parent, String posture) async {
-    Node newPosture = Node.createLeaf(
-      parent: parent,
-      label: posture,
-    );
-    parent.addNode(newPosture);
-    putNode(parent);
-    regeneratePositionsList();
+    // insert the posture into the db
+    int id = await nodeBox.createPosture(posture);
+    // create the parent child relationship
+    await nodeBox.insertNodeNode(parent.id, id);
+    await regeneratePositionsList();
   }
 
   Future<void> updateNodeLabel(Node node, String label) async {
-    putNode(node);
-    regeneratePositionsList();
+    node.label = label;
+    nodeBox.updateObject(node);
+    await regeneratePositionsList();
   }
 
   Future<void> deletePosture(Node child) async {
-    Node? parent = findParent(child);
-    if (parent != null) {
-      parent.children.remove(child);
-      putNode(parent);
-    }
-    removeNode(child);
-    regeneratePositionsList();
+    await nodeBox.deletePosture(child);
+    await regeneratePositionsList();
   }
 
   Future<void> deleteCategory(Node category) async {
-    List<Node> toRemove = getAllChildrenRecursive(category)..add(category);
-    Node? parent = findParent(category);
-    if (parent != null) {
-      parent.children.remove(category);
-      putNode(parent);
-    }
-    removeManyNodes(toRemove);
-    regeneratePositionsList();
+    await nodeBox.deleteCategory(category);
+    await regeneratePositionsList();
   }
 
   Future<void> createCategory(Node? parent, String category) async {
@@ -234,7 +214,7 @@ class DBController {
     } else {
       putNode(newPosture);
     }
-    regeneratePositionsList();
+    await regeneratePositionsList();
   }
 
   /// Depending on [isSwitched] we enable or disable recursive [acroNodes] from
@@ -265,6 +245,6 @@ class DBController {
     tree.isSwitched = switched;
     enableOrDisable(tree, switched);
     putNode(tree);
-    regeneratePositionsList();
+    await regeneratePositionsList();
   }
 }

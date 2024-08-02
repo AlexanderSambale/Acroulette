@@ -26,13 +26,32 @@ class NodeHelper {
     return nodes;
   }
 
+  // update or insert into database
   Future<int> put(Node node) async {
-    int id = await nodeDao.put(toNodeEntity(node));
-    await nodeNodeDao.insertObject(nodeNode);
-    for (var child in node.children) {
-      await nodeNodeDao.insertObject(child);
+    if (node.id == null) {
+      // insert node into database
+      int id = await nodeDao.put(toNodeEntity(node)!);
+      if (node.parent != null && node.parent!.id != null) {
+        // parent is in database
+        // create relationship
+        insertNodeNode(node.parent!.id!, id);
+      } else {
+        // has no parent in database
+        // create relationship no parent
+        NodeWithoutParent nodeWithoutParent = NodeWithoutParent(id);
+        await nodeWithoutParentDao.insertObject(nodeWithoutParent);
+      }
+      for (var child in node.children) {
+        if (child.id == null) {
+          throw Exception("Child is not in database");
+        }
+        // child is already in database
+        // create relationship
+        insertNodeNode(id, child.id!);
+      }
+      return id;
     }
-    return id;
+    // update node in database
   }
 
   Future<List<int>> putAll(List<Node> nodes) async {
@@ -113,7 +132,6 @@ class NodeHelper {
     return node;
   }
 
-//  String? get label => acroNode.value?.label;
   Future<NodeEntity> createCategory(
     List<NodeEntity> children, {
     isLeaf = false,
@@ -165,5 +183,49 @@ class NodeHelper {
   removeNode(NodeEntity node, NodeEntity child) {
     if (node.isLeaf) Exception('This is a leaf! Nodes cannot be removed.');
     nodeNodeDao.removeObject(NodeNode(node.id, child.id));
+  }
+
+  Future<void> insertNodeNode(parentId, childId) async {
+    NodeNode nodeNode = NodeNode(parentId, childId);
+    await nodeNodeDao.insertObject(nodeNode);
+  }
+
+  Future<int> createPosture(String posture) async {
+    NodeEntity newPosture = NodeEntity.optional(label: posture);
+    return await nodeDao.put(newPosture);
+  }
+
+  Future<void> updateObject(Node node) async {
+    await nodeDao.updateObject(toNodeEntity(node)!);
+  }
+
+  Future<List<int>> getChildrenIdsRecursively(int id) async {
+    List<NodeNode> nodeNodes = await nodeNodeDao.getAllNodeNodesRecursively(id);
+    Set<int> ids = {};
+    for (var nodeNode in nodeNodes) {
+      ids.add(nodeNode.childId);
+      ids.add(nodeNode.parentId);
+    }
+    return ids.toList();
+  }
+
+  Future<void> deletePosture(Node node) async {
+    if (node.id == null) {
+      throw Exception("node is not in database and cannot be deleted");
+    }
+    await nodeNodeDao.deleteByChildId(node.id!);
+    await nodeDao.deleteById(node.id!);
+  }
+
+  Future<void> deleteCategory(Node node) async {
+    if (node.id == null) {
+      throw Exception("node is not in database and cannot be deleted");
+    }
+    List<int> ids = await getChildrenIdsRecursively(node.id!);
+    // Delete relationships
+    await nodeNodeDao.deleteByParentIds(ids);
+    await nodeWithoutParentDao.deleteById(node.id!);
+    // Delete nodes
+    await nodeDao.deleteByIds(ids);
   }
 }
