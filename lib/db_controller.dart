@@ -189,47 +189,42 @@ class DBController {
     return positions.map<String>((element) => element?.name ?? '').toList();
   }
 
-  void createPosture(Node parent, String posture) {
+  Future<void> createPosture(Node parent, String posture) async {
     AcroNode acroNode = AcroNode(true, posture);
     Node newPosture = Node.createLeaf(parent: parent, acroNode);
     parent.addNode(newPosture);
+    putNode(parent);
+    regeneratePositionsList();
+  }
+
+  Future<void> updateNodeLabel(Node node, String label) async {
     dbController.putNode(parent);
     regeneratePositionsList();
   }
 
-  void updateNodeLabel(Node node, String label) {
-    dbController.putNode(parent);
-    regeneratePositionsList();
-  }
-
-  void deletePosture(Node child) {
+  Future<void> deletePosture(Node child) async {
     Node? parent = dbController.findParent(child);
-    AcroNode acroNode = child.acroNode.value!;
     if (parent != null) {
       parent.children.remove(child);
       dbController.putNode(parent);
     }
     dbController.removeNode(child);
-    dbController.removeAcroNode(acroNode);
     regeneratePositionsList();
   }
 
-  void deleteCategory(Node category) {
+  Future<void> deleteCategory(Node category) async {
     List<Node> toRemove = dbController.getAllChildrenRecursive(category)
       ..add(category);
-    List<AcroNode> toRemoveAcro =
-        toRemove.map<AcroNode>((element) => element.acroNode.value!).toList();
     Node? parent = dbController.findParent(category);
     if (parent != null) {
       parent.children.remove(category);
       dbController.putNode(parent);
     }
-    dbController.removeManyAcroNodes(toRemoveAcro);
     dbController.removeManyNodes(toRemove);
     regeneratePositionsList();
   }
 
-  void createCategory(Node? parent, String category) {
+  Future<void> createCategory(Node? parent, String category) async {
     AcroNode acroNode = AcroNode(true, category);
     Node newPosture = Node.optional(parent: parent, [], acroNode);
     if (parent != null) {
@@ -252,26 +247,22 @@ class DBController {
   /// disable switch on| enable on, enable others| /
   /// enabled switch off| /| disable off, nothing else
   /// disable switch off| enable off, nothing else|/
-  void enableOrDisableAndAddAcroNodes(
-      List<AcroNode> acroNodes, Node tree, bool isSwitched) {
+  Future<void> enableOrDisable(
+    Node tree,
+    bool isSwitched,
+  ) async {
     for (var node in tree.children) {
-      AcroNode acroNode = node.acroNode.value!;
-      if (acroNode.isSwitched) {
-        enableOrDisableAndAddAcroNodes(acroNodes, node, isSwitched);
+      if (node.isSwitched) {
+        enableOrDisable(node, isSwitched);
       }
-      acroNode.isEnabled = isSwitched;
-      acroNodes.add(acroNode);
+      node.isEnabled = isSwitched;
+      // update node
     }
   }
 
-  onSwitch(bool switched, Node tree) {
-    AcroNode acroNode = tree.acroNode.value!;
+  Future<void> onSwitch(bool switched, Node tree) async {
     acroNode.isSwitched = switched;
-    List<AcroNode> acroNodes = [];
-    enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
-    acroNodes.add(acroNode);
-
-    dbController.putManyAcroNodes(acroNodes);
+    enableOrDisable(tree, switched);
     dbController.putNode(tree);
     regeneratePositionsList();
   }

@@ -25,32 +25,32 @@ class PositionAdministrationBloc
 
   Future<void> onSwitch(bool switched, Node tree) async {
     add(PositionsBDStartChangeEvent());
-    dbController.onSwitch(switched, tree);
+    await dbController.onSwitch(switched, tree);
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
   void toggleExpand(Node tree) async {
     add(PositionsBDStartChangeEvent());
     tree.isExpanded = !tree.isExpanded;
-    dbController.putNode(tree);
+    await dbController.putNode(tree);
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
   Future<void> createPosture(Node parent, String posture) async {
     add(PositionsBDStartChangeEvent());
-    dbController.createPosture(parent, posture);
+    await dbController.createPosture(parent, posture);
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
   Future<void> updateNodeLabel(Node child, String label) async {
     add(PositionsBDStartChangeEvent());
-    dbController.updateNodeLabel(child, label);
+    await dbController.updateNodeLabel(child, label);
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
   Future<void> deletePosture(Node child) async {
     add(PositionsBDStartChangeEvent());
-    dbController.deletePosture(child);
+    await dbController.deletePosture(child);
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
@@ -67,39 +67,39 @@ class PositionAdministrationBloc
 
   Future<void> deleteCategory(Node category) async {
     add(PositionsBDStartChangeEvent());
-    dbController.deleteCategory(category);
+    await dbController.deleteCategory(category);
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
   Future<void> createCategory(Node? parent, String category) async {
     add(PositionsBDStartChangeEvent());
-    dbController.createCategory(parent, category);
+    await dbController.createCategory(parent, category);
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
-  void onDeleteClick(Node child) {
+  void onDeleteClick(Node child) async {
     if (child.isLeaf) {
-      deletePosture(child);
+      await deletePosture(child);
       return;
     }
-    deleteCategory(child);
+    await deleteCategory(child);
   }
 
-  void onSaveClick(Node? parent, bool isPosture, String? label) {
+  void onSaveClick(Node? parent, bool isPosture, String? label) async {
     if (label == null || label.isEmpty) return;
     if (isPosture) {
       if (parent == null) {
         throw Exception("Creating a posture without parent is not allowed!");
       }
-      createPosture(parent, label);
+      await createPosture(parent, label);
       return;
     }
-    createCategory(parent, label);
+    await createCategory(parent, label);
   }
 
-  void onEditClick(Node child, bool isPosture, String? label) {
+  void onEditClick(Node child, bool isPosture, String? label) async {
     if (label == null || label.isEmpty) return;
-    updateNodeLabel(child, label);
+    await updateNodeLabel(child, label);
   }
 
   String? validatorPosture(Node parent, String label) {
@@ -109,8 +109,8 @@ class PositionAdministrationBloc
     return null;
   }
 
-  String? validatorCategory(Node category, String label) {
-    Node? parent = dbController.findParent(category);
+  Future<String?> validatorCategory(Node category, String label) async {
+    Node? parent = await dbController.findParent(category);
     if (parent == null) return null;
     if (parent.children.containsElementWithLabel(false, label)) {
       return existsText('Category', label);
@@ -129,12 +129,13 @@ class PositionAdministrationBloc
     return null;
   }
 
-  String? validator(Node category, bool isPosture, String? label) {
+  Future<String?> validator(
+      Node category, bool isPosture, String? label) async {
     if (label == null || label.isEmpty) {
       return enterText;
     }
     return isPosture
         ? validatorPosture(category, label)
-        : validatorCategory(category, label);
+        : await validatorCategory(category, label);
   }
 }
