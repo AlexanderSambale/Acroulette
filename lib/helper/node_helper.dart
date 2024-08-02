@@ -1,14 +1,17 @@
 import 'package:acroulette/models/dao/node_node_dao.dart';
+import 'package:acroulette/models/dao/node_without_parent_dao.dart';
 import 'package:acroulette/models/entities/node_entity.dart';
 import 'package:acroulette/models/dao/node_dao.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/relations/node_node.dart';
+import 'package:acroulette/models/relations/node_without_parent.dart';
 
 class NodeHelper {
   final NodeDao nodeDao;
   final NodeNodeDao nodeNodeDao;
+  final NodeWithoutParentDao nodeWithoutParentDao;
 
-  NodeHelper(this.nodeDao, this.nodeNodeDao);
+  NodeHelper(this.nodeDao, this.nodeNodeDao, this.nodeWithoutParentDao);
 
   Future<int?> count() {
     return nodeDao.count();
@@ -71,8 +74,18 @@ class NodeHelper {
     return nodes;
   }
 
-  Future<Node?> toNodeEntity(NodeEntity? nodeEntity) async {
-    return NodeEntity(autoId, isSwitched, label);
+  NodeEntity? toNodeEntity(Node? node) {
+    if (node == null) {
+      return null;
+    }
+    return NodeEntity.optional(
+      autoId: node.id,
+      isSwitched: node.isSwitched,
+      label: node.label,
+      isEnabled: node.isEnabled,
+      isExpanded: node.isExpanded,
+      isLeaf: node.isLeaf,
+    );
   }
 
   Future<Node?> toNode(NodeEntity? nodeEntity) async {

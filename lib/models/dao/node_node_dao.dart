@@ -14,7 +14,4 @@ abstract class NodeNodeDao {
 
   @Query('SELECT * FROM NodeNode WHERE parentId = :id')
   Future<List<NodeNode?>> findChildrenByParentId(int id);
-
-  @Query('SELECT * FROM Node WHERE parentId IS NULL')
-  Future<List<NodeNode>> findNodesWithoutParent();
 }

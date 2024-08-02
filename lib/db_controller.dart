@@ -24,7 +24,11 @@ class DBController {
   DBController._create(this.store) {
     settingsBox = store.settingsPairDao;
     flowNodeBox = store.flowNodeDao;
-    nodeBox = NodeHelper(store.nodeDao, store.nodeNodeDao);
+    nodeBox = NodeHelper(
+      store.nodeDao,
+      store.nodeNodeDao,
+      store.nodeWithoutParentDao,
+    );
     positions = [];
     flows = [];
     settings = [];
