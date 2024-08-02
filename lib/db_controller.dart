@@ -240,4 +240,39 @@ class DBController {
     }
     regeneratePositionsList();
   }
+
+  /// Depending on [isSwitched] we enable or disable recursive [acroNodes] from
+  /// this [tree].
+  ///
+  /// Here is a table, what to do in which case.
+  ///
+  /// state | toEnable | toDisable
+  /// ----|----|----
+  /// enabled switch on| /| disabled on, disable others
+  /// disable switch on| enable on, enable others| /
+  /// enabled switch off| /| disable off, nothing else
+  /// disable switch off| enable off, nothing else|/
+  void enableOrDisableAndAddAcroNodes(
+      List<AcroNode> acroNodes, Node tree, bool isSwitched) {
+    for (var node in tree.children) {
+      AcroNode acroNode = node.acroNode.value!;
+      if (acroNode.isSwitched) {
+        enableOrDisableAndAddAcroNodes(acroNodes, node, isSwitched);
+      }
+      acroNode.isEnabled = isSwitched;
+      acroNodes.add(acroNode);
+    }
+  }
+
+  onSwitch(bool switched, Node tree) {
+    AcroNode acroNode = tree.acroNode.value!;
+    acroNode.isSwitched = switched;
+    List<AcroNode> acroNodes = [];
+    enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
+    acroNodes.add(acroNode);
+
+    dbController.putManyAcroNodes(acroNodes);
+    dbController.putNode(tree);
+    regeneratePositionsList();
+  }
 }

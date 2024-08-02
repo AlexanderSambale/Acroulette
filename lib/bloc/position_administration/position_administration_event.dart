@@ -8,4 +8,7 @@ abstract class PositionAdministrationEvent {
 class PositionsBDStartChangeEvent extends PositionAdministrationEvent {}
 
 // no sync with db is pending
-class PositionsDBIsIdleEvent extends PositionAdministrationEvent {}
+class PositionsDBIsIdleEvent extends PositionAdministrationEvent {
+  final List<Node> trees;
+  PositionsDBIsIdleEvent(this.trees);
+}

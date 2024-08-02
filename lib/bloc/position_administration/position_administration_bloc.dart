@@ -12,83 +12,46 @@ part 'position_administration_state.dart';
 class PositionAdministrationBloc
     extends Bloc<PositionAdministrationEvent, BasePositionAdministrationState> {
   PositionAdministrationBloc(this.dbController)
-      : super(PositionAdministrationInitialState(
-            dbController.findNodesWithoutParent())) {
+      : super(const PositionAdministrationInitialState([])) {
     on<PositionsBDStartChangeEvent>((event, emit) {
       emit(PositionAdministrationState(state.trees));
     });
     on<PositionsDBIsIdleEvent>((event, emit) {
-      emit(PositionAdministrationInitialState(
-          dbController.findNodesWithoutParent()));
+      emit(PositionAdministrationInitialState(event.trees));
     });
   }
 
   late DBController dbController;
 
-  /// Depending on [isSwitched] we enable or disable recursive [acroNodes] from
-  /// this [tree].
-  ///
-  /// Here is a table, what to do in which case.
-  ///
-  /// state | toEnable | toDisable
-  /// ----|----|----
-  /// enabled switch on| /| disabled on, disable others
-  /// disable switch on| enable on, enable others| /
-  /// enabled switch off| /| disable off, nothing else
-  /// disable switch off| enable off, nothing else|/
-  void enableOrDisableAndAddAcroNodes(
-      List<AcroNode> acroNodes, Node tree, bool isSwitched) {
-    for (var node in tree.children) {
-      AcroNode acroNode = node.acroNode.value!;
-      if (acroNode.isSwitched) {
-        enableOrDisableAndAddAcroNodes(acroNodes, node, isSwitched);
-      }
-      acroNode.isEnabled = isSwitched;
-      acroNodes.add(acroNode);
-    }
-  }
-
-  void onSwitch(bool switched, Node tree) {
+  Future<void> onSwitch(bool switched, Node tree) async {
     add(PositionsBDStartChangeEvent());
-    AcroNode acroNode = tree.acroNode.value!;
-    acroNode.isSwitched = switched;
-    List<AcroNode> acroNodes = [];
-    enableOrDisableAndAddAcroNodes(acroNodes, tree, switched);
-    acroNodes.add(acroNode);
-
-    dbController.putManyAcroNodes(acroNodes);
-    dbController.putNode(tree);
-    regeneratePositionsList();
-    add(PositionsDBIsIdleEvent());
+    dbController.onSwitch(switched, tree);
+    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
-  void toggleExpand(Node tree) {
+  void toggleExpand(Node tree) async {
     add(PositionsBDStartChangeEvent());
     tree.isExpanded = !tree.isExpanded;
     dbController.putNode(tree);
-    add(PositionsDBIsIdleEvent());
+    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
-  void regeneratePositionsList() {
-    dbController.regeneratePositionsList();
-  }
-
-  void createPosture(Node parent, String posture) {
+  Future<void> createPosture(Node parent, String posture) async {
     add(PositionsBDStartChangeEvent());
     dbController.createPosture(parent, posture);
-    add(PositionsDBIsIdleEvent());
+    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
-  void updateNodeLabel(Node child, String label) {
+  Future<void> updateNodeLabel(Node child, String label) async {
     add(PositionsBDStartChangeEvent());
     dbController.updateNodeLabel(child, label);
-    add(PositionsDBIsIdleEvent());
+    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
-  void deletePosture(Node child) {
+  Future<void> deletePosture(Node child) async {
     add(PositionsBDStartChangeEvent());
     dbController.deletePosture(child);
-    add(PositionsDBIsIdleEvent());
+    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
   /// Returns a list of Pairs
@@ -102,16 +65,16 @@ class PositionAdministrationBloc
     return pairs;
   }
 
-  void deleteCategory(Node category) {
+  Future<void> deleteCategory(Node category) async {
     add(PositionsBDStartChangeEvent());
     dbController.deleteCategory(category);
-    add(PositionsDBIsIdleEvent());
+    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
-  void createCategory(Node? parent, String category) {
+  Future<void> createCategory(Node? parent, String category) async {
     add(PositionsBDStartChangeEvent());
     dbController.createCategory(parent, category);
-    add(PositionsDBIsIdleEvent());
+    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
   void onDeleteClick(Node child) {
