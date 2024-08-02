@@ -14,17 +14,65 @@ class NodeHelper {
     return nodeDao.count();
   }
 
-  Future<List<Node?>> findAll() async {
-    List<NodeEntity?> nodeEntities = await nodeDao.findAll();
-    List<Node?> nodes = [];
+  Future<List<Node>> findAll() async {
+    List<NodeEntity> nodeEntities = await nodeDao.findAll();
+    List<Node> nodes = [];
     for (var nodeEntity in nodeEntities) {
-      if (nodeEntity == null) {
-        nodes.add(null);
-        break;
-      }
-      nodes.add(await toNode(nodeEntity));
+      nodes.add((await toNode(nodeEntity))!);
     }
     return nodes;
+  }
+
+  Future<int> put(Node node) async {
+    int id = await nodeDao.put(toNodeEntity(node));
+    await nodeNodeDao.insertObject(nodeNode);
+    for (var child in node.children) {
+      await nodeNodeDao.insertObject(child);
+    }
+    return id;
+  }
+
+  Future<List<int>> putAll(List<Node> nodes) async {
+    List<int> ids = [];
+    for (var node in nodes) {
+      ids.add(await put(node));
+    }
+    return ids;
+  }
+
+  Future<void> delete(int? id) async {
+    if (id == null) {
+      throw Exception("Id is null, cannot delete Node!");
+    }
+    // delete relationships
+    // parent
+    // children
+    await nodeDao.deleteById(id);
+  }
+
+  Future<void> deleteAll(List<int?> ids) async {
+    for (var id in ids) {
+      await delete(id);
+    }
+  }
+
+  Future<List<Node>> findNodesWithoutParent() async {
+    List<NodeNode> nodeNodes = await nodeNodeDao.findNodesWithoutParent();
+    List<int> nodeNodesIds =
+        nodeNodes.map((nodeNode) => nodeNode.childId).toList();
+    List<NodeEntity?> nodeEntities = await nodeDao.findAllById(nodeNodesIds);
+    List<Node> nodes = [];
+    for (var nodeEntity in nodeEntities) {
+      if (nodeEntity == null) {
+        throw Exception("Node not found, but relation exists!");
+      }
+      nodes.add((await toNode(nodeEntity))!);
+    }
+    return nodes;
+  }
+
+  Future<Node?> toNodeEntity(NodeEntity? nodeEntity) async {
+    return NodeEntity(autoId, isSwitched, label);
   }
 
   Future<Node?> toNode(NodeEntity? nodeEntity) async {

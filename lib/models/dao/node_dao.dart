@@ -1,4 +1,5 @@
 import 'package:acroulette/models/entities/node_entity.dart';
+import 'package:acroulette/models/node.dart';
 import 'package:floor/floor.dart';
 
 const String isLeafKey = "isLeaf";
@@ -14,16 +15,28 @@ abstract class NodeDao {
   @Query('SELECT COUNT(*) FROM NodeEntity')
   Future<int?> count();
 
+  @Query('SELECT * FROM NodeEntity')
+  Future<List<NodeEntity>> findAll();
+
+  @Query('SELECT * FROM NodeEntity WHERE autoId = :id')
+  Future<NodeEntity?> findEntityById(int id);
+
+  Future<List<NodeEntity?>> findAllById(List<int> ids) async {
+    List<NodeEntity?> entities = [];
+    for (var id in ids) {
+      entities.add(await findEntityById(id));
+    }
+    return entities;
+  }
+
+  @Query('DELETE FROM NodeEntity WHERE autoId = :id')
+  Future<NodeEntity?> deleteById(int id);
+
   @insert
   Future<void> insertObject(NodeEntity object);
 
   @delete
   Future<void> removeObject(NodeEntity object);
-
-  Future<int> remove(NodeEntity object) async {
-    await removeObject(object);
-    return object.id;
-  }
 
   Future<int> put(NodeEntity object) async {
     await insertObject(object);

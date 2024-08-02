@@ -74,12 +74,10 @@ class DBController {
     setOfPositions.addAll(nodes
         .where((element) =>
             element.isLeaf && element.isEnabled && element.isSwitched)
-        .map<String>((e) => e.label!));
-    await store.writeTxn(() async {
-      await positionBox.clear();
-      await positionBox
-          .putAll(setOfPositions.map((e) => Position(null, e)).toList());
-    });
+        .map<String>((e) => e.label));
+    await positionBox.clear();
+    await positionBox
+        .putAll(setOfPositions.map((e) => Position(null, e)).toList());
   }
 
   /// Create an instance of DBController to use throughout the app.
@@ -124,13 +122,13 @@ class DBController {
     return await nodeBox.putAll(nodes);
   }
 
-  Future<bool> removeNode(Node node) async {
+  Future<void> removeNode(Node node) async {
     return await nodeBox.delete(node.id);
   }
 
-  Future<int> removeManyNodes(List<Node> nodes) async {
+  Future<void> removeManyNodes(List<Node> nodes) async {
     return await nodeBox
-        .deleteAll(nodes.map<int>((element) => element.id).toList());
+        .deleteAll(nodes.map<int?>((element) => element.id).toList());
   }
 
   Future<int> putFlowNode(FlowNode flow) async {
@@ -154,9 +152,8 @@ class DBController {
     }
   }
 
-  List<Node> findNodesWithoutParent() {
-    List<Node> nodesWithoutParent =
-        nodeBox.filter().parentIsNull().findAllSync();
+  Future<List<Node>> findNodesWithoutParent() async {
+    List<Node> nodesWithoutParent = await nodeBox.findNodesWithoutParent();
     return nodesWithoutParent;
   }
 

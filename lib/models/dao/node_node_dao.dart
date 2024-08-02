@@ -8,4 +8,13 @@ abstract class NodeNodeDao {
 
   @delete
   Future<void> removeObject(NodeNode nodeNode);
+
+  @Query('SELECT * FROM NodeNode WHERE childId = :id')
+  Future<List<NodeNode?>> findParentByChildId(int id);
+
+  @Query('SELECT * FROM NodeNode WHERE parentId = :id')
+  Future<List<NodeNode?>> findChildrenByParentId(int id);
+
+  @Query('SELECT * FROM Node WHERE parentId IS NULL')
+  Future<List<NodeNode>> findNodesWithoutParent();
 }
