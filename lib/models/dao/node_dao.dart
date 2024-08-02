@@ -1,5 +1,4 @@
 import 'package:acroulette/models/entities/node_entity.dart';
-import 'package:acroulette/models/node.dart';
 import 'package:floor/floor.dart';
 
 const String isLeafKey = "isLeaf";
