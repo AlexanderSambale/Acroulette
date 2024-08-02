@@ -81,10 +81,15 @@ class NodeHelper {
     }
     NodeNode? parentNodeNode =
         await nodeNodeDao.findParentByChildId(nodeEntity.id);
+    Node? parent = null;
+    if (parentNodeNode != null) {
+      NodeEntity? parentEntity =
+          await nodeDao.findEntityById(parentNodeNode.parentId!);
+      parent = toNode(parentEntity);
+    }
+
     List<NodeNode?> childNodeNodes =
-        await nodeNodeDao.findByChildrenByParentId(nodeEntity.id);
-    NodeEntity? parentEntity =
-        await nodeDao.findEntityById(parentNodeNode.parentId);
+        await nodeNodeDao.findChildrenByParentId(nodeEntity.id);
 
     Node node = Node(
       null,
@@ -129,6 +134,8 @@ class NodeHelper {
       parent: parent,
     );
   }
+
+  List<Node> nodes = [];
 
   addNode(NodeEntity node, NodeEntity child) {
     if (node.isLeaf) Exception('This is a leaf! Nodes cannot be added.');

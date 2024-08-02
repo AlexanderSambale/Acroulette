@@ -15,8 +15,8 @@ class Node {
   bool isEnabled;
   String label;
 
-  final Node? parent;
-  List<Node> children;
+  final int? parent;
+  List<int> children;
 
   Node({
     this.id,
@@ -32,8 +32,8 @@ class Node {
   // ToDo check if we need a deepcopy for children
   factory Node.optional({
     int? id,
-    Node? parent,
-    List<Node>? children,
+    int? parent,
+    List<int>? children,
     bool? isLeaf,
     bool? isExpanded,
     bool? isSwitched,
@@ -53,7 +53,7 @@ class Node {
 
   static Node createLeaf({
     int? id,
-    Node? parent,
+    int? parent,
     bool? isExpanded,
     bool? isSwitched,
     bool? isEnabled,
@@ -75,17 +75,22 @@ class Node {
 
   addNode(Node node) {
     if (isLeaf) Exception('This is a leaf! Nodes cannot be added.');
-    children.add(node);
+    if (node.id == null) {
+      throw Exception(
+          'This node does not have an id yet. Insert it into the database!');
+    }
+    children.add(node.id!);
   }
 
   addAll(List<Node> nodes) {
-    if (isLeaf) Exception('This is a leaf! Nodes cannot be added.');
-    children.addAll(nodes);
+    for (var node in nodes) {
+      addNode(node);
+    }
   }
 
   removeNode(Node node) {
     if (isLeaf) Exception('This is a leaf! Nodes cannot be removed.');
-    children.remove(node);
+    children.remove(node.id);
   }
 
   @override
@@ -132,7 +137,7 @@ class Node {
   }
 
   static Node createFromMap(Map decoded) {
-    List<Node> children = [];
+    List<int> children = [];
     if (decoded[childrenKey] != null) {
       for (var child in decoded[childrenKey]) {
         children.add(Node.createFromMap(child));
