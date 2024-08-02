@@ -60,8 +60,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     on<AcrouletteTransition>((event, emit) {
       switch (event.transition) {
         case newPosition:
-          transitionBloc
-              .add(NewTransitionEvent(dbController.possiblePositions()));
+          transitionBloc.add(NewTransitionEvent(dbController.positions));
           break;
         case nextPosition:
           transitionBloc.add(NextTransitionEvent());
@@ -78,7 +77,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       if (mode == event.mode) return;
       var positions = <String>[];
       if (event.mode == acroulette) {
-        positions = dbController.possiblePositions();
+        positions = dbController.positions;
         modeBloc.add(ModeChange(
             event.mode,
             () => transitionBloc
@@ -174,8 +173,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           InitFlowTransitionEvent(await dbController.flowPositions(), true));
     }
     if (mode == acroulette) {
-      transitionBloc.add(InitAcrouletteTransitionEvent(
-          dbController.possiblePositions(), false));
+      transitionBloc
+          .add(InitAcrouletteTransitionEvent(dbController.positions, false));
     }
   }
 

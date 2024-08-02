@@ -3,36 +3,34 @@ import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/exceptions/pair_value_exception.dart';
 import 'package:acroulette/helper/node_helper.dart';
 import 'package:acroulette/models/dao/flow_node_dao.dart';
-import 'package:acroulette/models/dao/position_dao.dart';
 import 'package:acroulette/models/dao/settings_pair_dao.dart';
 import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/models/entities/settings_pair.dart';
 import 'package:acroulette/models/node.dart';
-import 'package:acroulette/models/entities/position.dart';
 import 'helper/io/assets.dart';
 
 class DBController {
   late final AppDatabase store;
 
   late final SettingsPairDao settingsBox;
-  late final PositionDao positionBox;
+  late List<String> positions;
   late final NodeHelper nodeBox;
   late final FlowNodeDao flowNodeBox;
 
   DBController._create(this.store) {
     settingsBox = store.settingsPairDao;
-    positionBox = store.positionDao;
     flowNodeBox = store.flowNodeDao;
     nodeBox = NodeHelper(store.nodeDao, store.nodeNodeDao);
+    positions = [];
   }
 
   Future<void> loadData() async {
     if (await nodeBox.count() == 0) {
-      loadAsset('models/AcrouletteBasisNodes.json').then((data) {
+      loadAsset('models/AcrouletteBasisNodes.json').then((data) async {
         importData(data, this);
-        regeneratePositionsList();
+        positions = await regeneratePositionsList();
       });
     }
 
@@ -68,16 +66,14 @@ class DBController {
     }
   }
 
-  Future<void> regeneratePositionsList() async {
+  Future<List<String>> regeneratePositionsList() async {
     List<Node> nodes = await nodeBox.findAll();
     Set<String> setOfPositions = {};
     setOfPositions.addAll(nodes
         .where((element) =>
             element.isLeaf && element.isEnabled && element.isSwitched)
         .map<String>((e) => e.label));
-    await positionBox.clear();
-    await positionBox
-        .putAll(setOfPositions.map((e) => Position(null, e)).toList());
+    return setOfPositions.map((e) => e).toList();
   }
 
   /// Create an instance of DBController to use throughout the app.
@@ -142,16 +138,6 @@ class DBController {
     return await flowNodeBox.remove(flow.id!);
   }
 
-  Future<String?> getPosition(String positionName) async {
-    Position? positionQueryFirstValue =
-        await positionBox.findByName(positionName);
-    if (positionQueryFirstValue == null) {
-      return null;
-    } else {
-      return positionQueryFirstValue.name;
-    }
-  }
-
   Future<List<Node>> findNodesWithoutParent() async {
     List<Node> nodesWithoutParent = await nodeBox.findNodesWithoutParent();
     return nodesWithoutParent;
@@ -182,11 +168,6 @@ class DBController {
     } else {
       return flow.positions;
     }
-  }
-
-  Future<List<String>> possiblePositions() async {
-    List<Position?> positions = await positionBox.findAll();
-    return positions.map<String>((element) => element?.name ?? '').toList();
   }
 
   Future<void> createPosture(Node parent, String posture) async {
@@ -261,7 +242,7 @@ class DBController {
   }
 
   Future<void> onSwitch(bool switched, Node tree) async {
-    acroNode.isSwitched = switched;
+    tree.isSwitched = switched;
     enableOrDisable(tree, switched);
     dbController.putNode(tree);
     regeneratePositionsList();

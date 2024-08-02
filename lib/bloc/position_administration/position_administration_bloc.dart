@@ -109,8 +109,8 @@ class PositionAdministrationBloc
     return null;
   }
 
-  Future<String?> validatorCategory(Node category, String label) async {
-    Node? parent = await dbController.findParent(category);
+  String? validatorCategory(Node category, String label) {
+    Node? parent = dbController.findParent(category);
     if (parent == null) return null;
     if (parent.children.containsElementWithLabel(false, label)) {
       return existsText('Category', label);
@@ -129,13 +129,12 @@ class PositionAdministrationBloc
     return null;
   }
 
-  Future<String?> validator(
-      Node category, bool isPosture, String? label) async {
+  String? validator(Node category, bool isPosture, String? label) {
     if (label == null || label.isEmpty) {
       return enterText;
     }
     return isPosture
         ? validatorPosture(category, label)
-        : await validatorCategory(category, label);
+        : validatorCategory(category, label);
   }
 }
