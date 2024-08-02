@@ -1,59 +1,76 @@
 import 'dart:convert';
 
-import 'package:acroulette/models/entities/acro_node.dart';
-
 const String isLeafKey = "isLeaf";
 const String isExpandedKey = "isExpanded";
 const String childrenKey = "children";
-const String valueKey = "value";
+const String isSwitchedKey = "isSwitched";
+const String labelKey = "label";
+const String isEnabledKey = "isEnabled";
 
 class Node {
   int? id;
   bool isLeaf;
+  bool isExpanded;
+  bool isSwitched;
+  bool isEnabled;
+  String label;
 
   final Node? parent;
-  List<Node> children = [];
-  final AcroNode acroNode;
-  bool isExpanded;
-  String? get label => acroNode.label;
+  List<Node> children;
 
-  Node(
+  Node({
+    this.id,
     this.parent,
-    this.acroNode, {
-    this.isLeaf = false,
-    this.isExpanded = true,
+    required this.children,
+    required this.isSwitched,
+    required this.label,
+    required this.isEnabled,
+    required this.isLeaf,
+    required this.isExpanded,
   });
 
-  static Node createCategory(
-    List<Node> children,
-    AcroNode acroNode, {
-    isLeaf = false,
-    isExpanded = true,
+  // ToDo check if we need a deepcopy for children
+  factory Node.optional({
+    int? id,
     Node? parent,
-  }) {
-    Node newNode = Node(
-      parent,
-      acroNode,
-      isExpanded: isExpanded,
-      isLeaf: isLeaf,
-    );
-    newNode.children = children; // ToDo check if we need a deepcopy
-    return newNode;
-  }
+    List<Node>? children,
+    bool? isLeaf,
+    bool? isExpanded,
+    bool? isSwitched,
+    bool? isEnabled,
+    String? label,
+  }) =>
+      Node(
+        id: id,
+        label: label ?? '',
+        isSwitched: isSwitched ?? true,
+        isEnabled: isEnabled ?? true,
+        isExpanded: isExpanded ?? true,
+        isLeaf: isLeaf ?? false,
+        children: children ?? [],
+        parent: parent,
+      );
 
-  static Node createLeaf(
-    AcroNode acroNode, {
-    isLeaf = true,
-    isExpanded = true,
+  static Node createLeaf({
+    int? id,
     Node? parent,
+    bool? isExpanded,
+    bool? isSwitched,
+    bool? isEnabled,
+    String? label,
   }) {
-    return createCategory(
-      [],
-      acroNode,
-      isExpanded: isExpanded,
-      isLeaf: isLeaf,
+    Node newNode = Node.optional(
+      id: id,
+      label: label ?? '',
+      isSwitched: isSwitched ?? true,
+      isEnabled: isEnabled ?? true,
+      isExpanded: isExpanded ?? true,
+      isLeaf: true,
       parent: parent,
+      children: [],
     );
+    // ToDo check if we need a deepcopy for children
+    return newNode;
   }
 
   addNode(Node node) {
@@ -84,7 +101,9 @@ class Node {
     result = '''$result
   "$isLeafKey": $isLeaf,
   "$isExpandedKey": $isExpanded,
-  "$valueKey": $acroNode
+  "$isSwitchedKey": $isSwitched,
+  "$labelKey": "$label",
+  "$isEnabledKey": $isEnabled
 }''';
     return result;
   }
@@ -119,9 +138,14 @@ class Node {
         children.add(Node.createFromMap(child));
       }
     }
-    AcroNode value = AcroNode.createFromMap(decoded[valueKey]);
-    return Node.createCategory(children, value,
-        isLeaf: decoded[isLeafKey], isExpanded: decoded[isExpandedKey]);
+    return Node(
+      isEnabled: decoded[isEnabledKey],
+      isLeaf: decoded[isLeafKey],
+      isExpanded: decoded[isExpandedKey],
+      children: children,
+      isSwitched: decoded[isSwitchedKey],
+      label: decoded[labelKey],
+    );
   }
 
   @override
@@ -129,12 +153,20 @@ class Node {
     if (other is! Node) return false;
     if (other.isExpanded != isExpanded) return false;
     if (other.isLeaf != isLeaf) return false;
-    if (other.acroNode != acroNode) return false;
+    if (other.isEnabled != isEnabled) return false;
+    if (other.isSwitched != isSwitched) return false;
+    if (other.label != label) return false;
     if (other.children != other.children) return false;
     return true;
   }
 
   @override
-  int get hashCode => Object.hash(isLeaf.hashCode, isExpanded.hashCode,
-      children.hashCode, acroNode.hashCode);
+  int get hashCode => Object.hash(
+        isLeaf.hashCode,
+        isExpanded.hashCode,
+        children.hashCode,
+        isSwitched.hashCode,
+        isEnabled.hashCode,
+        label.hashCode,
+      );
 }

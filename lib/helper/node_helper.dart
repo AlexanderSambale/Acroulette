@@ -1,31 +1,61 @@
-import 'package:acroulette/models/entities/acro_node.dart';
-import 'package:acroulette/models/dao/acro_node_dao.dart';
 import 'package:acroulette/models/dao/node_node_dao.dart';
 import 'package:acroulette/models/entities/node_entity.dart';
-import 'package:acroulette/models/dao/node_acro_node_dao.dart';
 import 'package:acroulette/models/dao/node_dao.dart';
-import 'package:acroulette/models/relations/node_acro_node.dart';
+import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/relations/node_node.dart';
 
 class NodeHelper {
   final NodeDao nodeDao;
-  final AcroNodeDao acroNodeDao;
-  final NodeAcroNodeDao nodeAcroNodeDao;
   final NodeNodeDao nodeNodeDao;
 
-  NodeHelper(
-      this.nodeDao, this.acroNodeDao, this.nodeAcroNodeDao, this.nodeNodeDao);
+  NodeHelper(this.nodeDao, this.nodeNodeDao);
+
+  Future<int?> count() {
+    return nodeDao.count();
+  }
+
+  Future<List<Node?>> findAll() async {
+    List<NodeEntity?> nodeEntities = await nodeDao.findAll();
+    List<Node?> nodes = [];
+    for (var nodeEntity in nodeEntities) {
+      if (nodeEntity == null) {
+        nodes.add(null);
+        break;
+      }
+      nodes.add(await toNode(nodeEntity));
+    }
+    return nodes;
+  }
+
+  Future<Node?> toNode(NodeEntity? nodeEntity) async {
+    if (nodeEntity == null) {
+      return null;
+    }
+    NodeNode? parentNodeNode =
+        await nodeNodeDao.findParentByChildId(nodeEntity.id);
+    List<NodeNode?> childNodeNodes =
+        await nodeNodeDao.findByChildrenByParentId(nodeEntity.id);
+    NodeEntity? parentEntity =
+        await nodeDao.findEntityById(parentNodeNode.parentId);
+
+    Node node = Node(
+      null,
+      isLeaf: nodeEntity.isLeaf,
+      isExpanded: nodeEntity.isExpanded,
+    );
+    node.id = nodeEntity.id;
+    return node;
+  }
 
 //  String? get label => acroNode.value?.label;
   Future<NodeEntity> createCategory(
-    List<NodeEntity> children,
-    AcroNode acroNode, {
+    List<NodeEntity> children, {
     isLeaf = false,
     isExpanded = true,
     NodeEntity? parent,
   }) async {
     // create basic Node
-    NodeEntity node = NodeEntity(isExpanded: isExpanded, isLeaf: isLeaf);
+    NodeEntity node = NodeEntity(null, isExpanded: isExpanded, isLeaf: isLeaf);
     // insert into DataBase and update id to node
     node.id = await nodeDao.put(node);
 
@@ -33,23 +63,19 @@ class NodeHelper {
     for (var child in children) {
       nodeNodeDao.insertObject(NodeNode(node.id, child.id));
     }
-    // add acroNode relationship
-    await nodeAcroNodeDao.insertObject(NodeAcroNode(node.id, acroNode.id));
     if (parent != null) {
       nodeNodeDao.insertObject(NodeNode(parent.id, node.id));
     }
     return node;
   }
 
-  Future<NodeEntity> createLeaf(
-    AcroNode acroNode, {
+  Future<NodeEntity> createLeaf({
     isLeaf = true,
     isExpanded = true,
     NodeEntity? parent,
   }) async {
     return createCategory(
       [],
-      acroNode,
       isExpanded: isExpanded,
       isLeaf: isLeaf,
       parent: parent,

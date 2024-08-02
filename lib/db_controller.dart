@@ -1,16 +1,14 @@
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/exceptions/pair_value_exception.dart';
-import 'package:acroulette/models/dao/acro_node_dao.dart';
+import 'package:acroulette/helper/node_helper.dart';
 import 'package:acroulette/models/dao/flow_node_dao.dart';
-import 'package:acroulette/models/dao/node_dao.dart';
 import 'package:acroulette/models/dao/position_dao.dart';
 import 'package:acroulette/models/dao/settings_pair_dao.dart';
 import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/models/entities/settings_pair.dart';
-import 'package:acroulette/models/entities/acro_node.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/entities/position.dart';
 import 'helper/io/assets.dart';
@@ -20,16 +18,14 @@ class DBController {
 
   late final SettingsPairDao settingsBox;
   late final PositionDao positionBox;
-  late final NodeDao nodeBox;
-  late final AcroNodeDao acroNodeBox;
+  late final NodeHelper nodeBox;
   late final FlowNodeDao flowNodeBox;
 
   DBController._create(this.store) {
     settingsBox = store.settingsPairDao;
     positionBox = store.positionDao;
-    nodeBox = store.nodeDao;
-    acroNodeBox = store.acroNodeDao;
     flowNodeBox = store.flowNodeDao;
+    nodeBox = NodeHelper(store.nodeDao, store.nodeNodeDao);
   }
 
   Future<void> loadData() async {
@@ -73,13 +69,11 @@ class DBController {
   }
 
   Future<void> regeneratePositionsList() async {
-    List<Node> nodes = await nodeBox.where().findAll();
+    List<Node> nodes = await nodeBox.findAll();
     Set<String> setOfPositions = {};
     setOfPositions.addAll(nodes
         .where((element) =>
-            element.isLeaf &&
-            element.acroNode.isEnabled &&
-            element.acroNode.isSwitched)
+            element.isLeaf && element.isEnabled && element.isSwitched)
         .map<String>((e) => e.label!));
     await store.writeTxn(() async {
       await positionBox.clear();
@@ -120,23 +114,6 @@ class DBController {
       keyQueryFirstValue.value = value;
       await settingsBox.updateObject(keyQueryFirstValue);
     }
-  }
-
-  Future<int> putAcroNode(AcroNode acroNode) async {
-    return await acroNodeBox.put(acroNode);
-  }
-
-  Future<void> removeAcroNode(AcroNode acroNode) async {
-    return await acroNodeBox.removeById(acroNode.id);
-  }
-
-  Future<void> removeManyAcroNodes(List<AcroNode> acroNodes) async {
-    return await acroNodeBox
-        .deleteByIds(acroNodes.map<int>((element) => element.id).toList());
-  }
-
-  Future<List<int>> putManyAcroNodes(List<AcroNode> acroNodes) async {
-    return await acroNodeBox.putAll(acroNodes);
   }
 
   Future<int> putNode(Node node) async {
@@ -184,7 +161,7 @@ class DBController {
   }
 
   Node? findParent(Node child) {
-    return child.parent.value;
+    return child.parent;
   }
 
   List<Node> getAllChildrenRecursive(Node child) {
