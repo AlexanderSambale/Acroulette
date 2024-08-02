@@ -88,9 +88,9 @@ class FlowAdministrationBloc
     editFlow(flowNode, label);
   }
 
-  Future<String?> validatorFlow(String? label) async {
+  String? validatorFlow(String? label) {
     if (label == null || label.isEmpty) return enterText;
-    if (await dbController.flowExists(label)) {
+    if (dbController.flowExists(label)) {
       return existsText('Flow', label);
     }
     return null;

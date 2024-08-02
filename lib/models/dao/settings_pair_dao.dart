@@ -18,6 +18,9 @@ abstract class SettingsPairDao {
   @Query('SELECT * FROM SettingsPair WHERE autoId = :id')
   Future<SettingsPair?> findEntityById(int id);
 
+  @Query('SELECT * FROM SettingsPair')
+  Future<List<SettingsPair>> findAll();
+
   @update
   Future<void> updateObject(SettingsPair settingsPair);
 

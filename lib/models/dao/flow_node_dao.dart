@@ -19,6 +19,9 @@ abstract class FlowNodeDao {
   @Query('SELECT * FROM FlowNodeEntity WHERE name = :name')
   Future<FlowNodeEntity?> findEntityByName(String name);
 
+  @Query('SELECT * FROM FlowNodeEntity')
+  Future<List<FlowNodeEntity>> findAll();
+
   Future<FlowNode?> findByName(String name) async {
     return toFlowNode(await findEntityByName(name));
   }
@@ -95,5 +98,14 @@ abstract class FlowNodeDao {
       isExpanded: flowNode.isExpanded,
     );
     return flowNodeEntity;
+  }
+
+  Future<List<FlowNode>> findAllFlowNodes() async {
+    List<FlowNodeEntity> flowNodeEntities = await findAll();
+    List<FlowNode> flowNodes = [];
+    for (var flowNodeEntity in flowNodeEntities) {
+      flowNodes.add(toFlowNode(flowNodeEntity)!);
+    }
+    return flowNodes;
   }
 }

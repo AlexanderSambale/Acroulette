@@ -15,22 +15,25 @@ class DBController {
   late final AppDatabase store;
 
   late final SettingsPairDao settingsBox;
-  late List<String> positions;
   late final NodeHelper nodeBox;
   late final FlowNodeDao flowNodeBox;
+  late List<String> positions;
+  late List<FlowNode> flows;
+  late List<SettingsPair> settings;
 
   DBController._create(this.store) {
     settingsBox = store.settingsPairDao;
     flowNodeBox = store.flowNodeDao;
     nodeBox = NodeHelper(store.nodeDao, store.nodeNodeDao);
     positions = [];
+    flows = [];
+    settings = [];
   }
 
   Future<void> loadData() async {
     if (await nodeBox.count() == 0) {
       loadAsset('models/AcrouletteBasisNodes.json').then((data) async {
         importData(data, this);
-        positions = await regeneratePositionsList();
       });
     }
 
@@ -40,6 +43,10 @@ class DBController {
         putSettingsPairValueByKey(flowIndex, '1');
       });
     }
+
+    positions = await regeneratePositionsList();
+    flows = await flowNodeBox.findAllFlowNodes();
+    settings = await settingsBox.findAll();
 
     setDefaultValue(appMode, acroulette);
 
@@ -108,6 +115,7 @@ class DBController {
       keyQueryFirstValue.value = value;
       await settingsBox.updateObject(keyQueryFirstValue);
     }
+    settings = await settingsBox.findAll();
   }
 
   Future<int> putNode(Node node) async {
@@ -128,14 +136,17 @@ class DBController {
   }
 
   Future<int> putFlowNode(FlowNode flow) async {
-    return await flowNodeBox.put(flow);
+    int id = await flowNodeBox.put(flow);
+    flows.add(flow);
+    return id;
   }
 
   Future<void> removeFlowNode(FlowNode flow) async {
     if (flow.id == null) {
       throw Exception('flow id is null!');
     }
-    return await flowNodeBox.remove(flow.id!);
+    await flowNodeBox.remove(flow.id!);
+    flows.remove(flow);
   }
 
   Future<List<Node>> findNodesWithoutParent() async {
@@ -155,9 +166,14 @@ class DBController {
     return allNodes;
   }
 
-  Future<bool> flowExists(String label) async {
-    FlowNode? first = await flowNodeBox.findByName(label);
-    return first == null ? false : true;
+  bool flowExists(String label) {
+    bool contains = false;
+    for (var flow in flows) {
+      if (flow.name == label) {
+        return true;
+      }
+    }
+    return contains;
   }
 
   Future<List<String>> flowPositions() async {
@@ -171,48 +187,48 @@ class DBController {
   }
 
   Future<void> createPosture(Node parent, String posture) async {
-    AcroNode acroNode = AcroNode(true, posture);
-    Node newPosture = Node.createLeaf(parent: parent, acroNode);
+    Node newPosture = Node.createLeaf(
+      parent: parent,
+      label: posture,
+    );
     parent.addNode(newPosture);
     putNode(parent);
     regeneratePositionsList();
   }
 
   Future<void> updateNodeLabel(Node node, String label) async {
-    dbController.putNode(parent);
+    putNode(node);
     regeneratePositionsList();
   }
 
   Future<void> deletePosture(Node child) async {
-    Node? parent = dbController.findParent(child);
+    Node? parent = findParent(child);
     if (parent != null) {
       parent.children.remove(child);
-      dbController.putNode(parent);
+      putNode(parent);
     }
-    dbController.removeNode(child);
+    removeNode(child);
     regeneratePositionsList();
   }
 
   Future<void> deleteCategory(Node category) async {
-    List<Node> toRemove = dbController.getAllChildrenRecursive(category)
-      ..add(category);
-    Node? parent = dbController.findParent(category);
+    List<Node> toRemove = getAllChildrenRecursive(category)..add(category);
+    Node? parent = findParent(category);
     if (parent != null) {
       parent.children.remove(category);
-      dbController.putNode(parent);
+      putNode(parent);
     }
-    dbController.removeManyNodes(toRemove);
+    removeManyNodes(toRemove);
     regeneratePositionsList();
   }
 
   Future<void> createCategory(Node? parent, String category) async {
-    AcroNode acroNode = AcroNode(true, category);
-    Node newPosture = Node.optional(parent: parent, [], acroNode);
+    Node newPosture = Node.optional(parent: parent, label: category);
     if (parent != null) {
       parent.addNode(newPosture);
-      dbController.putNode(parent);
+      putNode(parent);
     } else {
-      dbController.putNode(newPosture);
+      putNode(newPosture);
     }
     regeneratePositionsList();
   }
@@ -244,7 +260,7 @@ class DBController {
   Future<void> onSwitch(bool switched, Node tree) async {
     tree.isSwitched = switched;
     enableOrDisable(tree, switched);
-    dbController.putNode(tree);
+    putNode(tree);
     regeneratePositionsList();
   }
 }

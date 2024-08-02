@@ -2,7 +2,6 @@ import 'package:acroulette/bloc/flow_administration/flow_administration_bloc.dar
 import 'package:acroulette/db_controller.dart';
 import 'package:acroulette/widgets/dialogs/flow_dialog/create_flow_dialog.dart';
 import 'package:acroulette/widgets/flows/flow_view.dart';
-import 'package:acroulette/models/flow_node.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,17 +18,15 @@ class Flows extends StatelessWidget {
             buildWhen: (previous, current) =>
                 current is FlowAdministrationState,
             builder: (BuildContext context, state) {
-              List<FlowNode> flows =
-                  dbController.flowNodeBox.where().findAllSync();
               FlowAdministrationBloc bloc =
                   context.read<FlowAdministrationBloc>();
               return Stack(children: [
                 ListView.builder(
                     shrinkWrap: true,
-                    itemCount: flows.length,
+                    itemCount: dbController.flows.length,
                     itemBuilder: (context, index) {
                       return FlowView(
-                        flow: flows[index],
+                        flow: dbController.flows[index],
                         toggleExpand: bloc.toggleExpand,
                         deletePosture: bloc.deletePosture,
                         deleteFlow: bloc.deleteFlow,

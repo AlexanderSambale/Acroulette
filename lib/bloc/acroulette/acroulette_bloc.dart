@@ -126,7 +126,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     // get settings
     HashMap<String, String> settingsMap =
-        SettingsPair.toMap(dbController.settingsBox.where().findAllSync());
+        SettingsPair.toMap(dbController.settings);
 
     // set regex for voice commands
     rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
