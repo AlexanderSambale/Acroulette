@@ -207,7 +207,7 @@ class NodeHelper {
     return id;
   }
 
-  Future<void> updateObject(Node node) async {
+  Future<void> updateNode(Node node) async {
     await nodeDao.updateObject(toNodeEntity(node)!);
   }
 
@@ -251,27 +251,37 @@ class NodeHelper {
     return id;
   }
 
-  /// Depending on [isSwitched] we enable or disable recursive [acroNodes] from
+  /// Depending on [isSwitched] we enable or disable recursive [Nodes] from
   /// this [tree].
   ///
   /// Here is a table, what to do in which case.
   ///
   /// state | toEnable | toDisable
   /// ----|----|----
-  /// enabled switch on| /| disabled on, disable others
-  /// disable switch on| enable on, enable others| /
-  /// enabled switch off| /| disable off, nothing else
-  /// disable switch off| enable off, nothing else|/
+  /// enabled, switch on| /| disabled on, disable others
+  /// disabled, switch on| enable on, enable others| /
+  /// enabled, switch off| /| disable off, nothing else
+  /// disabled, switch off| enable off, nothing else|/
   Future<void> enableOrDisable(
-    Node tree,
+    NodeEntity tree,
     bool isSwitched,
   ) async {
-    for (var node in tree.children) {
-      if (node.isSwitched) {
-        enableOrDisable(node, isSwitched);
+    // update tree node
+    NodeEntity newTree = tree.copyWith(isSwitched: isSwitched);
+    await nodeDao.updateObject(newTree);
+    // get children through parent child relationship
+    List<NodeNode> nodeNodes =
+        await nodeNodeDao.findChildrenByParentId(newTree.id);
+    List<NodeEntity?> children = await nodeDao
+        .findAllById(nodeNodes.map((nodeNode) => nodeNode.childId).toList());
+    for (var node in children) {
+      assert(node != null); // nodes to childIds should be available
+      if (node!.isSwitched) {
+        // if child switch is on, change [isEnabled] to [isSwitched]
+        // recursive for all childs of the child
+        NodeEntity newNode = node.copyWith(isEnabled: isSwitched);
+        enableOrDisable(newNode, isSwitched);
       }
-      node.isEnabled = isSwitched;
-      // update node
     }
   }
 }

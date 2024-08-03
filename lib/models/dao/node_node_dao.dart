@@ -13,13 +13,13 @@ abstract class NodeNodeDao {
   Future<NodeNode?> findParentByChildId(int id);
 
   @Query('DELETE * FROM NodeNode WHERE childId = :id')
-  Future<NodeNode?> deleteByChildId(int id);
+  Future<void> deleteByChildId(int id);
 
   @Query('DELETE * FROM NodeNode WHERE parentId = :id')
-  Future<NodeNode?> deleteByParentId(int id);
+  Future<void> deleteByParentId(int id);
 
   @Query('SELECT * FROM NodeNode WHERE parentId = :id')
-  Future<List<NodeNode?>> findChildrenByParentId(int id);
+  Future<List<NodeNode>> findChildrenByParentId(int id);
 
   @Query('''WITH RECURSIVE cte AS (
     -- Base case: select rows where first column equals the initial value

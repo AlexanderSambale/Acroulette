@@ -190,7 +190,7 @@ class DBController {
 
   Future<void> updateNodeLabel(Node node, String label) async {
     node.label = label;
-    await nodeBox.updateObject(node);
+    await nodeBox.updateNode(node);
     await regeneratePositionsList();
   }
 
@@ -210,8 +210,7 @@ class DBController {
   }
 
   Future<void> onSwitch(bool switched, Node tree) async {
-    tree.isSwitched = switched;
-    nodeBox.enableOrDisable(tree, switched);
+    await nodeBox.enableOrDisable(nodeBox.toNodeEntity(tree)!, switched);
     await regeneratePositionsList();
   }
 }

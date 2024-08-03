@@ -34,4 +34,21 @@ class NodeEntity extends BaseEntity {
         isEnabled: isEnabled ?? true,
         isExpanded: isExpanded ?? true,
       );
+
+  NodeEntity copyWith({
+    int? autoId,
+    bool? isLeaf,
+    bool? isExpanded,
+    bool? isSwitched,
+    bool? isEnabled,
+    String? label,
+  }) =>
+      NodeEntity(
+        autoId ?? this.autoId,
+        isSwitched ?? this.isSwitched,
+        label ?? this.label,
+        isLeaf: isLeaf ?? this.isLeaf,
+        isEnabled: isEnabled ?? this.isEnabled,
+        isExpanded: isExpanded ?? this.isExpanded,
+      );
 }
