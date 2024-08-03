@@ -79,9 +79,10 @@ class NodeHelper {
   }
 
   Future<List<Node>> findNodesWithoutParent() async {
-    List<NodeNode> nodeNodes = await nodeNodeDao.findNodesWithoutParent();
+    List<NodeWithoutParent> nodesWithoutParent =
+        await nodeWithoutParentDao.findAll();
     List<int> nodeNodesIds =
-        nodeNodes.map((nodeNode) => nodeNode.childId).toList();
+        nodesWithoutParent.map((node) => node.nodeId).toList();
     List<NodeEntity?> nodeEntities = await nodeDao.findAllById(nodeNodesIds);
     List<Node> nodes = [];
     for (var nodeEntity in nodeEntities) {
