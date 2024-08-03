@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/validator.dart';
-import 'package:acroulette/models/entities/acro_node.dart';
 import 'package:acroulette/helper/objectbox/to_many_extension.dart';
+import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/db_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,12 +16,12 @@ Node createSimpleTree(
   Node leaf2 = Node.createLeaf(AcroNode(false, leaf2Name));
   Node leaf3 = Node.createLeaf(AcroNode(true, leaf3Name));
   Node category =
-      Node.createCategory([leaf1, leaf2, leaf3], AcroNode(true, rootName));
+      Node.optional(children: [leaf1, leaf2, leaf3], AcroNode(true, rootName));
   return category;
 }
 
 Node createComplexTree() {
-  Node root = Node.createCategory([
+  Node root = Node.optional(children: [
     createSimpleTree(rootName: 'root1'),
     createSimpleTree(rootName: 'root2'),
     createSimpleTree(rootName: 'root3')
@@ -31,8 +29,8 @@ Node createComplexTree() {
   return root;
 }
 
-Node setupComplexTree(DBController dbController) {
-  Node root = dbController.findNodesWithoutParent()[0];
+Future<Node> setupComplexTree(DBController dbController) async {
+  Node root = (await dbController.findNodesWithoutParent())[0];
   Node complexTree = createComplexTree();
   root.children.add(complexTree);
   dbController.putNode(root);
@@ -41,29 +39,16 @@ Node setupComplexTree(DBController dbController) {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  late Isar store;
+  late AppDatabase database;
   late DBController dbController;
-  final dir = Directory('position_administration_bloc_testdata');
 
   setUp(() async {
-    if (dir.existsSync()) dir.deleteSync(recursive: true);
-    await dir.create();
-    store = await Isar.open(
-      [
-        SettingsPairSchema,
-        PositionSchema,
-        AcroNodeSchema,
-        FlowNodeSchema,
-        NodeSchema,
-      ],
-      directory: dir.path,
-    );
-    dbController = await DBController.create(store);
+    database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
+    dbController = await DBController.create(database);
   });
 
-  tearDown(() {
-    store.close();
-    if (dir.existsSync()) dir.deleteSync(recursive: true);
+  tearDown(() async {
+    await database.close();
   });
 
   group('onDeleteClick', () {
