@@ -192,7 +192,7 @@ class DBController {
 
   Future<void> updateNodeLabel(Node node, String label) async {
     node.label = label;
-    nodeBox.updateObject(node);
+    await nodeBox.updateObject(node);
     await regeneratePositionsList();
   }
 
