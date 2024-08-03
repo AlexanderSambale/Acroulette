@@ -199,9 +199,12 @@ class NodeHelper {
     await nodeNodeDao.insertObject(nodeNode);
   }
 
-  Future<int> createPosture(String posture) async {
+  Future<int> createPosture(Node parent, String posture) async {
     NodeEntity newPosture = NodeEntity.optional(label: posture);
-    return await nodeDao.put(newPosture);
+    int id = await nodeDao.put(newPosture);
+    // create the parent child relationship
+    await insertNodeNode(parent.id, id);
+    return id;
   }
 
   Future<void> updateObject(Node node) async {
@@ -246,5 +249,29 @@ class NodeHelper {
       await insertNodeNode(parent.id, id);
     }
     return id;
+  }
+
+  /// Depending on [isSwitched] we enable or disable recursive [acroNodes] from
+  /// this [tree].
+  ///
+  /// Here is a table, what to do in which case.
+  ///
+  /// state | toEnable | toDisable
+  /// ----|----|----
+  /// enabled switch on| /| disabled on, disable others
+  /// disable switch on| enable on, enable others| /
+  /// enabled switch off| /| disable off, nothing else
+  /// disable switch off| enable off, nothing else|/
+  Future<void> enableOrDisable(
+    Node tree,
+    bool isSwitched,
+  ) async {
+    for (var node in tree.children) {
+      if (node.isSwitched) {
+        enableOrDisable(node, isSwitched);
+      }
+      node.isEnabled = isSwitched;
+      // update node
+    }
   }
 }

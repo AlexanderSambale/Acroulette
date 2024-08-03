@@ -184,9 +184,7 @@ class DBController {
 
   Future<void> createPosture(Node parent, String posture) async {
     // insert the posture into the db
-    int id = await nodeBox.createPosture(posture);
-    // create the parent child relationship
-    await nodeBox.insertNodeNode(parent.id, id);
+    await nodeBox.createPosture(parent, posture);
     await regeneratePositionsList();
   }
 
@@ -211,34 +209,9 @@ class DBController {
     await regeneratePositionsList();
   }
 
-  /// Depending on [isSwitched] we enable or disable recursive [acroNodes] from
-  /// this [tree].
-  ///
-  /// Here is a table, what to do in which case.
-  ///
-  /// state | toEnable | toDisable
-  /// ----|----|----
-  /// enabled switch on| /| disabled on, disable others
-  /// disable switch on| enable on, enable others| /
-  /// enabled switch off| /| disable off, nothing else
-  /// disable switch off| enable off, nothing else|/
-  Future<void> enableOrDisable(
-    Node tree,
-    bool isSwitched,
-  ) async {
-    for (var node in tree.children) {
-      if (node.isSwitched) {
-        enableOrDisable(node, isSwitched);
-      }
-      node.isEnabled = isSwitched;
-      // update node
-    }
-  }
-
   Future<void> onSwitch(bool switched, Node tree) async {
     tree.isSwitched = switched;
-    enableOrDisable(tree, switched);
-    putNode(tree);
+    nodeBox.enableOrDisable(tree, switched);
     await regeneratePositionsList();
   }
 }
