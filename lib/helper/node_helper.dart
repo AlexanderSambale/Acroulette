@@ -133,7 +133,7 @@ class NodeHelper {
     return node;
   }
 
-  Future<NodeEntity> createCategory(
+  Future<NodeEntity> createCategoryNodeEntity(
     List<NodeEntity> children, {
     isLeaf = false,
     isExpanded = true,
@@ -159,7 +159,7 @@ class NodeHelper {
     isExpanded = true,
     NodeEntity? parent,
   }) async {
-    return createCategory(
+    return createCategoryNodeEntity(
       [],
       isExpanded: isExpanded,
       isLeaf: isLeaf,
@@ -186,7 +186,15 @@ class NodeHelper {
     nodeNodeDao.removeObject(NodeNode(node.id, child.id));
   }
 
-  Future<void> insertNodeNode(parentId, childId) async {
+  Future<void> insertNodeNode(int? parentId, int? childId) async {
+    if (parentId == null) {
+      throw Exception(
+          "Parent child relationship with parentId null cannot be inserted!");
+    }
+    if (childId == null) {
+      throw Exception(
+          "Parent child relationship with childId null cannot be inserted!");
+    }
     NodeNode nodeNode = NodeNode(parentId, childId);
     await nodeNodeDao.insertObject(nodeNode);
   }
@@ -228,5 +236,15 @@ class NodeHelper {
     await nodeWithoutParentDao.deleteById(node.id!);
     // Delete nodes
     await nodeDao.deleteByIds(ids);
+  }
+
+  Future<int> createCategory(Node? parent, String category) async {
+    NodeEntity newCategory = NodeEntity.optional(label: category);
+    int id = await nodeDao.put(newCategory);
+    if (parent != null) {
+      // create the parent child relationship
+      await insertNodeNode(parent.id, id);
+    }
+    return id;
   }
 }

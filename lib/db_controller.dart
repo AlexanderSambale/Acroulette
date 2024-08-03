@@ -207,13 +207,7 @@ class DBController {
   }
 
   Future<void> createCategory(Node? parent, String category) async {
-    Node newPosture = Node.optional(parent: parent, label: category);
-    if (parent != null) {
-      parent.addNode(newPosture);
-      putNode(parent);
-    } else {
-      putNode(newPosture);
-    }
+    await nodeBox.createCategory(parent, category);
     await regeneratePositionsList();
   }
 
