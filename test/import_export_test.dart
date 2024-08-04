@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:acroulette/helper/conversion.dart';
+import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/helper/io/assets.dart';
@@ -22,43 +21,29 @@ void main() {
   group('import', () {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    late Isar store;
+    late AppDatabase database;
     late DBController dbController;
 
-    final dir = Directory('import_test');
     setUp(() async {
-      if (dir.existsSync()) dir.deleteSync(recursive: true);
-      await dir.create();
-      store = await Isar.open(
-        [
-          SettingsPairSchema,
-          PositionSchema,
-          AcroNodeSchema,
-          FlowNodeSchema,
-          NodeSchema,
-        ],
-        directory: dir.path,
-      );
-      dbController = await DBController.create(store);
+      database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
+      dbController = await DBController.create(database);
     });
 
-    tearDown(() {
-      store.close();
-      if (dir.existsSync()) dir.deleteSync(recursive: true);
+    tearDown(() async {
+      await database.close();
+    });
+    test('import basic nodes', () async {
+      String data = await loadAsset('models/AcrouletteBasisNodes.json');
+      await importData(data, dbController);
+      int? actual = await dbController.nodeBox.count();
+      expect(actual, isNot(0));
     });
 
-    test('import basic nodes', () {
-      loadAsset('models/AcrouletteBasisNodes.json').then((data) {
-        importData(data, dbController);
-        expect(dbController.nodeBox.countSync() == 0, false);
-      });
-    });
-
-    test('import basic flows', () {
-      loadAsset('models/AcrouletteBasisFlows.json').then((data) {
-        importData(data, dbController);
-        expect(dbController.flowNodeBox.countSync() == 0, false);
-      });
+    test('import basic flows', () async {
+      String data = await loadAsset('models/AcrouletteBasisFlows.json');
+      importData(data, dbController);
+      int? actual = await dbController.flowNodeBox.count();
+      expect(actual, isNot(0));
     });
   });
 }

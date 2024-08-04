@@ -36,16 +36,14 @@ class DBController {
 
   Future<void> loadData() async {
     if (await nodeBox.count() == 0) {
-      loadAsset('models/AcrouletteBasisNodes.json').then((data) async {
-        importData(data, this);
-      });
+      String data = await loadAsset('models/AcrouletteBasisNodes.json');
+      await importData(data, this);
     }
 
     if (await flowNodeBox.count() == 0) {
-      loadAsset('models/AcrouletteBasisFlows.json').then((data) {
-        importData(data, this);
-        putSettingsPairValueByKey(flowIndex, '1');
-      });
+      String data = await loadAsset('models/AcrouletteBasisFlows.json');
+      await importData(data, this);
+      await putSettingsPairValueByKey(flowIndex, '1');
     }
 
     await regeneratePositionsList();
