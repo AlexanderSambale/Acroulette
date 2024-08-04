@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/models/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -17,30 +16,17 @@ class MockFlutterTts extends Mock implements TtsBloc {}
 class MockVoiceRecognitionBloc extends Mock implements VoiceRecognitionBloc {}
 
 void main() async {
-  await Isar.initializeIsarCore(download: true);
   WidgetsFlutterBinding.ensureInitialized();
   group('acroulette bloc', () {
     late AcrouletteBloc acrouletteBloc;
-    late Isar store;
+    late AppDatabase database;
     late DBController dbController;
     late TtsBloc ttsBloc;
     late VoiceRecognitionBloc voiceRecognitionBloc;
 
-    final dir = Directory.systemTemp.createTempSync();
     setUp(() async {
-      if (dir.existsSync()) dir.deleteSync(recursive: true);
-      await dir.create();
-      store = await Isar.open(
-        [
-          SettingsPairSchema,
-          PositionSchema,
-          AcroNodeSchema,
-          FlowNodeSchema,
-          NodeSchema,
-        ],
-        directory: dir.path,
-      );
-      dbController = await DBController.create(store);
+      database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
+      dbController = await DBController.create(database);
       ttsBloc = MockFlutterTts();
       voiceRecognitionBloc = MockVoiceRecognitionBloc();
       when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
@@ -53,8 +39,7 @@ void main() async {
     });
 
     tearDown(() async {
-      await store.close();
-      if (dir.existsSync()) await dir.delete(recursive: true);
+      await database.close();
       await acrouletteBloc.close();
     });
 
