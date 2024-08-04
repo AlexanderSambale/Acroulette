@@ -32,6 +32,7 @@ void main() {
     tearDown(() async {
       await database.close();
     });
+
     test('import basic nodes', () async {
       String data = await loadAsset('models/AcrouletteBasisNodes.json');
       await importData(data, dbController);
@@ -41,7 +42,7 @@ void main() {
 
     test('import basic flows', () async {
       String data = await loadAsset('models/AcrouletteBasisFlows.json');
-      importData(data, dbController);
+      await importData(data, dbController);
       int? actual = await dbController.flowNodeBox.count();
       expect(actual, isNot(0));
     });
