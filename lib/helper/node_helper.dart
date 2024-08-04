@@ -21,14 +21,16 @@ class NodeHelper {
     return await nodeDao.findAll();
   }
 
-  Future<int> insertTree(Node node) async {
+  Future<int> insertTree(Node node, int? parentIdGiven) async {
     if (node.id == null) {
       // insert node into database
       int id = await nodeDao.put(toNodeEntity(node)!);
-      if (node.parent != null && node.parent!.id != null) {
+      node.id = id;
+      int? parentId = node.parent?.id ?? parentIdGiven;
+      if (parentId != null) {
         // parent is in database
         // create relationship
-        insertNodeNode(node.parent!.id!, id);
+        await insertNodeNode(parentId, id);
       } else {
         // has no parent in database
         // create relationship no parent
@@ -36,9 +38,7 @@ class NodeHelper {
         await nodeWithoutParentDao.insertObject(nodeWithoutParent);
       }
       for (var child in node.children) {
-        int childId = await insertTree(child);
-        // create relationship
-        insertNodeNode(id, childId);
+        await insertTree(child, id);
       }
       return id;
     }
@@ -48,7 +48,7 @@ class NodeHelper {
   Future<List<int>> insertTrees(List<Node> nodes) async {
     List<int> ids = [];
     for (var node in nodes) {
-      ids.add(await insertTree(node));
+      ids.add(await insertTree(node, null));
     }
     return ids;
   }

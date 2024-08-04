@@ -41,7 +41,7 @@ Node createComplexTree() {
 
 Future<Node> setupComplexTree(DBController dbController) async {
   Node complexTree = createComplexTree();
-  await dbController.nodeBox.insertTree(complexTree);
+  complexTree.id = await dbController.nodeBox.insertTree(complexTree, null);
   return complexTree;
 }
 
@@ -132,7 +132,8 @@ void main() {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
-      int simpleTreeId = await dbController.nodeBox.insertTree(simpleTree);
+      int simpleTreeId =
+          await dbController.nodeBox.insertTree(simpleTree, null);
       NodeEntity? loadedTreeEntity =
           await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
       Node? loadedTree =
@@ -162,7 +163,8 @@ void main() {
           PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
       simpleTree.isSwitched = false;
-      int simpleTreeId = await dbController.nodeBox.insertTree(simpleTree);
+      int simpleTreeId =
+          await dbController.nodeBox.insertTree(simpleTree, null);
       NodeEntity? loadedTreeEntity =
           await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
       Node? loadedTree =
