@@ -197,14 +197,15 @@ void main() {
       NodeEntity? category =
           await dbController.nodeBox.nodeDao.findEntityById(categoryId);
       int leafId = await dbController.nodeBox
-          .createPosture(dbController.nodeBox.toNode(category!)!, 'leaf');
+          .createPosture(dbController.nodeBox.toNode(category!)!, 'test leaf');
       NodeEntity? leafEntity =
           await dbController.nodeBox.nodeDao.findEntityById(leafId);
       String testLabel = "testPosture";
       Node? parent = dbController.nodeBox.toNode(category);
       Node? leaf = dbController.nodeBox.toNode(leafEntity);
-      expect(bloc.validator(parent!, true, ''), enterText);
-      expect(bloc.validator(parent, true, leaf!.label),
+      parent!.addNode(leaf!);
+      expect(bloc.validator(parent, true, ''), enterText);
+      expect(bloc.validator(parent, true, leaf.label),
           existsText(postureLabel, leaf.label));
       expect(bloc.validator(parent, true, testLabel), null);
     });

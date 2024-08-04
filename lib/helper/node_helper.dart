@@ -171,7 +171,7 @@ class NodeHelper {
   }
 
   Future<int> createPosture(Node parent, String posture) async {
-    NodeEntity newPosture = NodeEntity.optional(label: posture);
+    NodeEntity newPosture = NodeEntity.optional(label: posture, isLeaf: true);
     int id = await nodeDao.put(newPosture);
     // create the parent child relationship
     await insertNodeNode(parent.id, id);
