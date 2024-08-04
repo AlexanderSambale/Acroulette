@@ -173,10 +173,11 @@ class DBController {
     }
   }
 
-  Future<void> createPosture(Node parent, String posture) async {
+  Future<int> createPosture(Node parent, String posture) async {
     // insert the posture into the db
-    await nodeBox.createPosture(parent, posture);
+    int id = await nodeBox.createPosture(parent, posture);
     await regeneratePositionsList();
+    return id;
   }
 
   Future<void> updateNodeLabel(Node node, String label) async {

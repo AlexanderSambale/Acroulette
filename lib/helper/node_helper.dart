@@ -105,6 +105,7 @@ class NodeHelper {
       return null;
     }
     return Node(
+      id: nodeEntity.autoId,
       isEnabled: nodeEntity.isEnabled,
       isExpanded: nodeEntity.isExpanded,
       children: [],

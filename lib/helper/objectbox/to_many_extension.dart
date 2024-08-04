@@ -1,7 +1,6 @@
-import 'package:acroulette/models/entities/node_entity.dart';
-import 'package:isar/isar.dart';
+import 'package:acroulette/models/node.dart';
 
-extension ToManyExtension on IsarLinks<Node> {
+extension Children on List<Node> {
   bool containsElementWithId(int id) {
     var links = where((element) => element.id == id);
     return links.isNotEmpty;

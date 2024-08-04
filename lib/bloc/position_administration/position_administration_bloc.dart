@@ -76,7 +76,7 @@ class PositionAdministrationBloc
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
-  void onDeleteClick(Node child) async {
+  Future<void> onDeleteClick(Node child) async {
     if (child.isLeaf) {
       await deletePosture(child);
       return;
@@ -84,7 +84,7 @@ class PositionAdministrationBloc
     await deleteCategory(child);
   }
 
-  void onSaveClick(Node? parent, bool isPosture, String? label) async {
+  Future<void> onSaveClick(Node? parent, bool isPosture, String? label) async {
     if (label == null || label.isEmpty) return;
     if (isPosture) {
       if (parent == null) {
@@ -96,7 +96,7 @@ class PositionAdministrationBloc
     await createCategory(parent, label);
   }
 
-  void onEditClick(Node child, bool isPosture, String? label) async {
+  Future<void> onEditClick(Node child, bool isPosture, String? label) async {
     if (label == null || label.isEmpty) return;
     await updateNodeLabel(child, label);
   }
