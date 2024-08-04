@@ -1,8 +1,8 @@
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/validator.dart';
-import 'package:acroulette/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/database.dart';
+import 'package:acroulette/models/entities/node_entity.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/db_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,16 +34,14 @@ Node createComplexTree() {
       createSimpleTree(rootName: 'root2'),
       createSimpleTree(rootName: 'root3'),
     ],
-    label: 'root',
+    label: 'newRoot',
   );
   return root;
 }
 
 Future<Node> setupComplexTree(DBController dbController) async {
-  Node root = (await dbController.findNodesWithoutParent())[0];
   Node complexTree = createComplexTree();
-  root.children.add(complexTree);
-  dbController.putNode(root);
+  await dbController.nodeBox.insertTree(complexTree);
   return complexTree;
 }
 
@@ -65,99 +63,68 @@ void main() {
     test('delete leaf', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
-      Node child = dbController.nodeBox.where().findAllSync().last;
-      Node parent = dbController.findParent(child)!;
-      expect(parent.children.containsElementWithId(child.id), true);
-      int length = parent.children.length;
-      expect(
-          dbController.positionBox
-              .where()
-              .nameEqualTo(child.label!)
-              .findAllSync()
-              .isEmpty,
-          false);
-      bloc.onDeleteClick(child);
-      expect(
-          dbController.positionBox
-              .where()
-              .nameEqualTo(child.label!)
-              .findAllSync()
-              .isEmpty,
-          true);
-      parent = dbController.nodeBox.getSync(parent.id)!;
-      expect(parent.children.containsElementWithId(child.id), false);
-      expect(parent.children.length + 1, length);
+      // create category, create leaf
+      int categoryId =
+          await dbController.nodeBox.createCategory(null, 'category');
+      NodeEntity? category =
+          await dbController.nodeBox.nodeDao.findEntityById(categoryId);
+      int leafId = await dbController.nodeBox
+          .createPosture(dbController.nodeBox.toNode(category!)!, 'leaf');
+      NodeEntity? leaf =
+          await dbController.nodeBox.nodeDao.findEntityById(leafId);
+      // leaf exists
+      expect(leaf, isNot(null));
+      // delete leaf
+      await bloc.onDeleteClick(dbController.nodeBox.toNode(leaf)!);
+      leaf = await dbController.nodeBox.nodeDao.findEntityById(leafId);
+      expect(leaf, equals(null));
     });
 
     test('delete node with children', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
-      int numberOfNodesBefore = dbController.nodeBox.countSync();
-      int numberOfAcroNodesBefore = dbController.acroNodeBox.countSync();
-      Node complexTree = setupComplexTree(dbController);
-      int numberOfNodesAfterAdding = dbController.nodeBox.countSync();
-      int numberOfAcroNodesAfterAdding = dbController.acroNodeBox.countSync();
+      int numberOfNodesBefore = (await dbController.nodeBox.count())!;
+      Node complexTree = await setupComplexTree(dbController);
+      int numberOfNodesAfterAdding = (await dbController.nodeBox.count())!;
       expect(numberOfNodesBefore, isNot(equals(numberOfNodesAfterAdding)));
-      expect(
-          numberOfAcroNodesBefore, isNot(equals(numberOfAcroNodesAfterAdding)));
-      bloc.onDeleteClick(complexTree);
-      int numberOfNodesAfterDeleting = dbController.nodeBox.countSync();
-      int numberOfAcroNodesAfterDeleting = dbController.acroNodeBox.countSync();
+      await bloc.onDeleteClick(complexTree);
+      int numberOfNodesAfterDeleting = (await dbController.nodeBox.count())!;
       expect(numberOfNodesBefore, numberOfNodesAfterDeleting);
-      expect(numberOfAcroNodesBefore, numberOfAcroNodesAfterDeleting);
     });
   });
+
   test('onSaveClick', () async {
     PositionAdministrationBloc bloc = PositionAdministrationBloc(dbController);
-    List<Node> nodesWithoutParent = dbController.findNodesWithoutParent();
-    int numberOfNodesWithoutParents = nodesWithoutParent.length;
-    Node root = nodesWithoutParent[0];
-    int length = root.children.length;
+    // create category
+    int categoryId =
+        await dbController.nodeBox.createCategory(null, 'category');
+    NodeEntity? category =
+        await dbController.nodeBox.nodeDao.findEntityById(categoryId);
+    Node? parent = dbController.nodeBox.toNode(category);
     String postureName = 'newPosture';
-    expect(
-        dbController.positionBox
-            .where()
-            .nameEqualTo(postureName)
-            .findAllSync()
-            .isEmpty,
-        true);
-    expect(root.children.containsElementWithLabel(true, postureName), false);
-    bloc.onSaveClick(root, true, postureName);
-    expect(
-        dbController.positionBox
-            .where()
-            .nameEqualTo(postureName)
-            .findAllSync()
-            .isEmpty,
-        false);
-    root = dbController.nodeBox.getSync(root.id)!;
-    expect(root.children.containsElementWithLabel(true, postureName), true);
-    expect(root.children.length, length + 1);
-    expect(numberOfNodesWithoutParents,
-        dbController.findNodesWithoutParent().length);
+    int numberOfNodesBeforeSaving = (await dbController.nodeBox.count())!;
+    await bloc.onSaveClick(parent, true, postureName);
+    int numberOfNodesAfterSaving = (await dbController.nodeBox.count())!;
+    expect(numberOfNodesAfterSaving, numberOfNodesBeforeSaving + 1);
   });
 
   test('onEditClick', () async {
     PositionAdministrationBloc bloc = PositionAdministrationBloc(dbController);
-    Node child = dbController.nodeBox.where().findAllSync().last;
+    // create category, create leaf
+    int categoryId =
+        await dbController.nodeBox.createCategory(null, 'category');
+    NodeEntity? category =
+        await dbController.nodeBox.nodeDao.findEntityById(categoryId);
+    int leafId = await dbController.nodeBox
+        .createPosture(dbController.nodeBox.toNode(category!)!, 'leaf');
+    NodeEntity? leaf =
+        await dbController.nodeBox.nodeDao.findEntityById(leafId);
     String testLabel = "testPosture";
-    expect(
-        dbController.positionBox
-            .where()
-            .nameEqualTo(testLabel)
-            .findAllSync()
-            .isEmpty,
-        true);
-    expect(child.label, isNot(equals(testLabel)));
-    bloc.onEditClick(child, false, testLabel);
-    expect(
-        dbController.positionBox
-            .where()
-            .nameEqualTo(testLabel)
-            .findAllSync()
-            .isEmpty,
-        false);
-    expect(child.label, testLabel);
+    expect(leaf!.label, isNot(equals(testLabel)));
+    await bloc.onEditClick(
+        dbController.nodeBox.toNode(leaf)!, false, testLabel);
+    leaf = await dbController.nodeBox.nodeDao.findEntityById(leafId);
+    expect(leaf!.label, testLabel);
   });
 
   group('onSwitchClick', () {
@@ -165,43 +132,58 @@ void main() {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
-      int simpleTreeId = await dbController.putNode(simpleTree);
-      Node? loadedTree = dbController.nodeBox.getSync(simpleTreeId);
+      int simpleTreeId = await dbController.nodeBox.insertTree(simpleTree);
+      NodeEntity? loadedTreeEntity =
+          await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
+      Node? loadedTree =
+          await dbController.nodeBox.toNodeWithChildren(loadedTreeEntity);
       expect(loadedTree, isNotNull);
-      expect(simpleTree.acroNode.isSwitched, loadedTree!.acroNode.isSwitched);
-      List<bool> enabledList = [];
-      for (Node child in loadedTree.children.toList()) {
-        enabledList.add(child.acroNode.isEnabled);
+      expect(simpleTree.isSwitched, loadedTree!.isSwitched);
+      List<bool> isEnabledList = [];
+      for (Node child in loadedTree.children) {
+        isEnabledList.add(child.isEnabled);
       }
-      bloc.onSwitch(false, loadedTree);
-      expect(loadedTree.acroNode.isSwitched, false);
-      List<bool> enabledListAfter = [];
-      for (Node child in loadedTree.children.toList()) {
-        enabledListAfter.add(child.acroNode.isEnabled);
+      expect(isEnabledList, [true, false, true]);
+      await bloc.onSwitch(false, loadedTree);
+      loadedTreeEntity =
+          await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
+      loadedTree =
+          await dbController.nodeBox.toNodeWithChildren(loadedTreeEntity);
+      expect(loadedTree!.isSwitched, false);
+      List<bool> isEnabledListAfter = [];
+      for (Node child in loadedTree.children) {
+        isEnabledListAfter.add(child.isEnabled);
       }
-      expect(enabledListAfter, [false, false, false]);
+      expect(isEnabledListAfter, [false, false, false]);
     });
 
     test('click true', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
       Node simpleTree = createSimpleTree();
-      simpleTree.acroNode.isSwitched = false;
-      int simpleTreeId = await dbController.putNode(simpleTree);
-      Node? loadedTree = dbController.nodeBox.getSync(simpleTreeId);
+      simpleTree.isSwitched = false;
+      int simpleTreeId = await dbController.nodeBox.insertTree(simpleTree);
+      NodeEntity? loadedTreeEntity =
+          await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
+      Node? loadedTree =
+          await dbController.nodeBox.toNodeWithChildren(loadedTreeEntity);
       expect(loadedTree, isNotNull);
-      expect(simpleTree.acroNode.isSwitched, loadedTree!.acroNode.isSwitched);
-      List<bool> enabledList = [];
-      for (Node child in loadedTree.children.toList()) {
-        enabledList.add(child.acroNode.isEnabled);
+      expect(simpleTree.isSwitched, loadedTree!.isSwitched);
+      List<bool> isEnabledList = [];
+      for (Node child in loadedTree.children) {
+        isEnabledList.add(child.isEnabled);
       }
-      bloc.onSwitch(true, loadedTree);
-      expect(loadedTree.acroNode.isSwitched, true);
-      List<bool> enabledListAfter = [];
-      for (Node child in loadedTree.children.toList()) {
-        enabledListAfter.add(child.acroNode.isEnabled);
+      await bloc.onSwitch(true, loadedTree);
+      loadedTreeEntity =
+          await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
+      loadedTree =
+          await dbController.nodeBox.toNodeWithChildren(loadedTreeEntity);
+      expect(loadedTree!.isSwitched, true);
+      List<bool> isEnabledListAfter = [];
+      for (Node child in loadedTree.children) {
+        isEnabledListAfter.add(child.isEnabled);
       }
-      expect(enabledListAfter, enabledList);
+      expect(isEnabledListAfter, isEnabledList);
     });
   });
 
@@ -209,19 +191,28 @@ void main() {
     test('validate posture', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
-      Node last = dbController.nodeBox.where().findAllSync().last;
-      Node parent = dbController.findParent(last)!;
+      // create category, create leaf
+      int categoryId =
+          await dbController.nodeBox.createCategory(null, 'category');
+      NodeEntity? category =
+          await dbController.nodeBox.nodeDao.findEntityById(categoryId);
+      int leafId = await dbController.nodeBox
+          .createPosture(dbController.nodeBox.toNode(category!)!, 'leaf');
+      NodeEntity? leafEntity =
+          await dbController.nodeBox.nodeDao.findEntityById(leafId);
       String testLabel = "testPosture";
-      expect(bloc.validator(parent, true, ''), enterText);
-      expect(bloc.validator(parent, true, last.label),
-          existsText(postureLabel, last.label!));
+      Node? parent = dbController.nodeBox.toNode(category);
+      Node? leaf = dbController.nodeBox.toNode(leafEntity);
+      expect(bloc.validator(parent!, true, ''), enterText);
+      expect(bloc.validator(parent, true, leaf!.label),
+          existsText(postureLabel, leaf.label));
       expect(bloc.validator(parent, true, testLabel), null);
     });
 
     test('validate category', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(dbController);
-      Node complexTree = setupComplexTree(dbController);
+      Node complexTree = await setupComplexTree(dbController);
       String testLabel = "testCategory";
       expect(bloc.validator(complexTree, false, ''), enterText);
       expect(bloc.validator(complexTree, false, complexTree.label), null);
