@@ -122,14 +122,6 @@ class DBController {
     settings = await settingsBox.findAll();
   }
 
-  Future<int> putNode(Node node) async {
-    return await nodeBox.put(node);
-  }
-
-  Future<List<int>> putManyNodes(List<Node> nodes) async {
-    return await nodeBox.putAll(nodes);
-  }
-
   Future<void> removeNode(Node node) async {
     return await nodeBox.delete(node.id);
   }
@@ -191,6 +183,12 @@ class DBController {
   Future<void> updateNodeLabel(Node node, String label) async {
     node.label = label;
     await nodeBox.updateNode(node);
+    await regeneratePositionsList();
+  }
+
+  Future<void> updateNodeIsExpanded(Node tree, bool isExpanded) async {
+    tree.isExpanded = isExpanded;
+    await nodeBox.updateNode(tree);
     await regeneratePositionsList();
   }
 

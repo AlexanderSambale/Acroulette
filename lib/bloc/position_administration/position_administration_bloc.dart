@@ -31,8 +31,7 @@ class PositionAdministrationBloc
 
   void toggleExpand(Node tree) async {
     add(PositionsBDStartChangeEvent());
-    tree.isExpanded = !tree.isExpanded;
-    await dbController.putNode(tree);
+    await dbController.updateNodeIsExpanded(tree, !tree.isExpanded);
     add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
   }
 
