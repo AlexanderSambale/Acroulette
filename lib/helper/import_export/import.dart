@@ -27,7 +27,7 @@ Future<void> importData(String data, DBController dbController) async {
     await dbController.flowNodeBox.putAll(flows);
   }
   if (decoded[nodesKey] != null) {
-    await dbController.nodeBox
-        .putAll(Node.createFromListOfMaps(decoded[nodesKey]));
+    List<Node> nodes = Node.createFromListOfMaps(decoded[nodesKey]);
+    await dbController.nodeBox.insertTrees(nodes);
   }
 }

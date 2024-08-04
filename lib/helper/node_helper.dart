@@ -26,8 +26,7 @@ class NodeHelper {
     return nodes;
   }
 
-  // update or insert into database
-  Future<int> put(Node node) async {
+  Future<int> insertTree(Node node) async {
     if (node.id == null) {
       // insert node into database
       int id = await nodeDao.put(toNodeEntity(node)!);
@@ -42,22 +41,19 @@ class NodeHelper {
         await nodeWithoutParentDao.insertObject(nodeWithoutParent);
       }
       for (var child in node.children) {
-        if (child.id == null) {
-          throw Exception("Child is not in database");
-        }
-        // child is already in database
+        int childId = await insertTree(child);
         // create relationship
-        insertNodeNode(id, child.id!);
+        insertNodeNode(id, childId);
       }
       return id;
     }
-    // update node in database
+    throw Exception('Tree is already in database');
   }
 
-  Future<List<int>> putAll(List<Node> nodes) async {
+  Future<List<int>> insertTrees(List<Node> nodes) async {
     List<int> ids = [];
     for (var node in nodes) {
-      ids.add(await put(node));
+      ids.add(await insertTree(node));
     }
     return ids;
   }
