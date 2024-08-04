@@ -17,13 +17,8 @@ class NodeHelper {
     return nodeDao.count();
   }
 
-  Future<List<Node>> findAll() async {
-    List<NodeEntity> nodeEntities = await nodeDao.findAll();
-    List<Node> nodes = [];
-    for (var nodeEntity in nodeEntities) {
-      nodes.add((await toNode(nodeEntity))!);
-    }
-    return nodes;
+  Future<List<NodeEntity>> findAll() async {
+    return await nodeDao.findAll();
   }
 
   Future<int> insertTree(Node node) async {
@@ -74,6 +69,7 @@ class NodeHelper {
     }
   }
 
+  // return a list of nodes with children inserted recursively
   Future<List<Node>> findNodesWithoutParent() async {
     List<NodeWithoutParent> nodesWithoutParent =
         await nodeWithoutParentDao.findAll();
@@ -85,7 +81,7 @@ class NodeHelper {
       if (nodeEntity == null) {
         throw Exception("Node not found, but relation exists!");
       }
-      nodes.add((await toNode(nodeEntity))!);
+      nodes.add((await toNodeWithChildren(nodeEntity))!);
     }
     return nodes;
   }
@@ -104,66 +100,44 @@ class NodeHelper {
     );
   }
 
-  Future<Node?> toNode(NodeEntity? nodeEntity) async {
+  Node? toNode(NodeEntity? nodeEntity) {
     if (nodeEntity == null) {
       return null;
     }
-    NodeNode? parentNodeNode =
-        await nodeNodeDao.findParentByChildId(nodeEntity.id);
-    Node? parent = null;
-    if (parentNodeNode != null) {
-      NodeEntity? parentEntity =
-          await nodeDao.findEntityById(parentNodeNode.parentId!);
-      parent = toNode(parentEntity);
-    }
-
-    List<NodeNode?> childNodeNodes =
-        await nodeNodeDao.findChildrenByParentId(nodeEntity.id);
-
-    Node node = Node(
-      null,
-      isLeaf: nodeEntity.isLeaf,
+    return Node(
+      isEnabled: nodeEntity.isEnabled,
       isExpanded: nodeEntity.isExpanded,
-    );
-    node.id = nodeEntity.id;
-    return node;
-  }
-
-  Future<NodeEntity> createCategoryNodeEntity(
-    List<NodeEntity> children, {
-    isLeaf = false,
-    isExpanded = true,
-    NodeEntity? parent,
-  }) async {
-    // create basic Node
-    NodeEntity node = NodeEntity(null, isExpanded: isExpanded, isLeaf: isLeaf);
-    // insert into DataBase and update id to node
-    node.id = await nodeDao.put(node);
-
-    // add children relationships
-    for (var child in children) {
-      nodeNodeDao.insertObject(NodeNode(node.id, child.id));
-    }
-    if (parent != null) {
-      nodeNodeDao.insertObject(NodeNode(parent.id, node.id));
-    }
-    return node;
-  }
-
-  Future<NodeEntity> createLeaf({
-    isLeaf = true,
-    isExpanded = true,
-    NodeEntity? parent,
-  }) async {
-    return createCategoryNodeEntity(
-      [],
-      isExpanded: isExpanded,
-      isLeaf: isLeaf,
-      parent: parent,
+      children: [],
+      isSwitched: nodeEntity.isSwitched,
+      label: nodeEntity.label,
+      isLeaf: nodeEntity.isLeaf,
     );
   }
 
-  List<Node> nodes = [];
+  // return a node with children inserted recursively
+  // without parent
+  Future<Node?> toNodeWithChildren(NodeEntity? nodeEntity) async {
+    if (nodeEntity == null) {
+      return null;
+    }
+    List<Node> children = [];
+    try {
+      List<NodeNode?> childNodeNodes =
+          await nodeNodeDao.findChildrenByParentId(nodeEntity.id);
+      List<int> childIds = childNodeNodes
+          .map((childNodeNode) => childNodeNode!.childId)
+          .toList();
+      List<NodeEntity?> childNodeEntites = await nodeDao.findAllById(childIds);
+      for (var childNodeEntity in childNodeEntites) {
+        children.add((await toNodeWithChildren(childNodeEntity))!);
+      }
+      Node node = toNode(nodeEntity)!;
+      node.children = children;
+      return node;
+    } catch (e) {
+      throw (Exception('toNode conversion failed, null value'));
+    }
+  }
 
   addNode(NodeEntity node, NodeEntity child) {
     if (node.isLeaf) Exception('This is a leaf! Nodes cannot be added.');

@@ -5,6 +5,7 @@ import 'package:acroulette/helper/node_helper.dart';
 import 'package:acroulette/models/dao/flow_node_dao.dart';
 import 'package:acroulette/models/dao/settings_pair_dao.dart';
 import 'package:acroulette/models/database.dart';
+import 'package:acroulette/models/entities/node_entity.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/models/entities/settings_pair.dart';
@@ -76,7 +77,7 @@ class DBController {
   }
 
   Future<void> regeneratePositionsList() async {
-    List<Node> nodes = await nodeBox.findAll();
+    List<NodeEntity> nodes = await nodeBox.findAll();
     Set<String> setOfPositions = {};
     setOfPositions.addAll(nodes
         .where((element) =>
