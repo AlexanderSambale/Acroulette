@@ -29,6 +29,7 @@ class DBController {
       store.nodeDao,
       store.nodeNodeDao,
       store.nodeWithoutParentDao,
+      store,
     );
     positions = [];
     flows = [];
@@ -123,11 +124,6 @@ class DBController {
 
   Future<void> removeNode(Node node) async {
     return await nodeBox.delete(node.id);
-  }
-
-  Future<void> removeManyNodes(List<Node> nodes) async {
-    return await nodeBox
-        .deleteAll(nodes.map<int?>((element) => element.id).toList());
   }
 
   Future<int> putFlowNode(FlowNode flow) async {

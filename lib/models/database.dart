@@ -31,4 +31,27 @@ abstract class AppDatabase extends FloorDatabase {
   NodeDao get nodeDao;
   FlowNodeDao get flowNodeDao;
   NodeWithoutParentDao get nodeWithoutParentDao;
+
+  Future<List<NodeNode>> getAllNodeNodesRecursively(int id) async {
+    String queryString = '''WITH RECURSIVE cte AS (
+    -- Base case: select rows where first column equals the initial value
+    SELECT parentId, childId 
+    FROM NodeNode nn1
+    WHERE nn1.parentId = ?
+    
+    UNION ALL
+    
+    -- Recursive case: select rows where first column matches previous iteration's second column
+    SELECT nn2.parentId, nn2.childId 
+    FROM NodeNode nn2
+    INNER JOIN cte ON cte.childId = nn2.parentId
+)
+SELECT * FROM cte
+''';
+    final result = await database.rawQuery(queryString, [id]);
+    return result
+        .map((element) =>
+            NodeNode(element["parentId"] as int, element["childId"] as int))
+        .toList(growable: false);
+  }
 }

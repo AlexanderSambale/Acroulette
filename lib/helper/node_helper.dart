@@ -1,5 +1,6 @@
 import 'package:acroulette/models/dao/node_node_dao.dart';
 import 'package:acroulette/models/dao/node_without_parent_dao.dart';
+import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/entities/node_entity.dart';
 import 'package:acroulette/models/dao/node_dao.dart';
 import 'package:acroulette/models/node.dart';
@@ -10,8 +11,14 @@ class NodeHelper {
   final NodeDao nodeDao;
   final NodeNodeDao nodeNodeDao;
   final NodeWithoutParentDao nodeWithoutParentDao;
+  final AppDatabase store;
 
-  NodeHelper(this.nodeDao, this.nodeNodeDao, this.nodeWithoutParentDao);
+  NodeHelper(
+    this.nodeDao,
+    this.nodeNodeDao,
+    this.nodeWithoutParentDao,
+    this.store,
+  );
 
   Future<int?> count() {
     return nodeDao.count();
@@ -183,7 +190,7 @@ class NodeHelper {
   }
 
   Future<List<int>> getChildrenIdsRecursively(int id) async {
-    List<NodeNode> nodeNodes = await nodeNodeDao.getAllNodeNodesRecursively(id);
+    List<NodeNode> nodeNodes = await store.getAllNodeNodesRecursively(id);
     Set<int> ids = {};
     for (var nodeNode in nodeNodes) {
       ids.add(nodeNode.childId);
