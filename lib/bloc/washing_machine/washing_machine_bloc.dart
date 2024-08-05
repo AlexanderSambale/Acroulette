@@ -18,7 +18,7 @@ class WashingMachineBloc
       }
       emit(WashingMachine(event.machine));
     });
-
+    machine = '';
     dbController
         .getSettingsPairValueByKey(flowIndex)
         .then((value) => machine = value);

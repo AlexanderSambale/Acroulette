@@ -16,7 +16,7 @@ class ModeBloc extends Bloc<ModeEvent, ModeState> {
       }
       emit(Mode(event.mode));
     });
-
+    mode = acroulette;
     dbController
         .getSettingsPairValueByKey(appMode)
         .then((value) => mode = value);
