@@ -27,9 +27,9 @@ class VoiceRecognitionBloc
       speechService.onResult().listen(event.onData);
       emit(state.copyWith(isRecognizing: true));
     });
-    on<VoiceRecognitionStop>((event, emit) {
+    on<VoiceRecognitionStop>((event, emit) async {
       if (isDisabled) return;
-      speechService.stop();
+      await speechService.stop();
       emit(state.copyWith(isRecognizing: false));
     });
 
