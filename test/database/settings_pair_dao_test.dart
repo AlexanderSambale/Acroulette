@@ -16,7 +16,7 @@ void main() {
 
     test('create SettingsPair', () async {
       SettingsPair settingsPair = SettingsPair(null, 'key', 'value');
-      await database.settingsPairDao.put(settingsPair);
+      await database.settingsPairDao.insertObject(settingsPair);
       SettingsPair? output = await database.settingsPairDao.findEntityById(1);
       expect(output, isNot(null));
     });
@@ -25,7 +25,7 @@ void main() {
       String key = 'key';
       String value = 'value';
       SettingsPair settingsPair = SettingsPair(null, key, value);
-      await database.settingsPairDao.put(settingsPair);
+      await database.settingsPairDao.insertObject(settingsPair);
       SettingsPair? output =
           await database.settingsPairDao.findEntityByKey(key);
       expect(output!.value, value);
@@ -36,7 +36,7 @@ void main() {
       String value = 'value';
       String expected = 'expected';
       SettingsPair? settingsPair = SettingsPair(null, key, value);
-      await database.settingsPairDao.put(settingsPair);
+      await database.settingsPairDao.insertObject(settingsPair);
       settingsPair = await database.settingsPairDao.findEntityByKey(key);
       settingsPair?.value = expected;
       await database.settingsPairDao.updateObject(settingsPair!);

@@ -8,9 +8,6 @@ const String valueKey = "value";
 
 @dao
 abstract class NodeDao {
-  @Query('SELECT last_insert_rowid()')
-  Future<int?> incrementedId();
-
   @Query('SELECT COUNT(*) FROM NodeEntity')
   Future<int?> count();
 
@@ -38,28 +35,14 @@ abstract class NodeDao {
   }
 
   @insert
-  Future<void> insertObject(NodeEntity object);
+  Future<int> insertObject(NodeEntity object);
+
+  @insert
+  Future<List<int>> insertObjects(List<NodeEntity> objects);
 
   @delete
   Future<void> removeObject(NodeEntity object);
 
   @update
   Future<void> updateObject(NodeEntity object);
-
-  Future<int> put(NodeEntity object) async {
-    await insertObject(object);
-    int? id = await incrementedId();
-    if (id == null) {
-      throw Exception('Id is null after put');
-    }
-    return id;
-  }
-
-  Future<List<int>> putAll(List<NodeEntity> objects) async {
-    List<int> ids = [];
-    for (var object in objects) {
-      ids.add(await put(object));
-    }
-    return ids;
-  }
 }

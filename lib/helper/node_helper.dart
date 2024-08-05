@@ -31,7 +31,7 @@ class NodeHelper {
   Future<int> insertTree(Node node, int? parentIdGiven) async {
     if (node.id == null) {
       // insert node into database
-      int id = await nodeDao.put(toNodeEntity(node)!);
+      int id = await nodeDao.insertObject(toNodeEntity(node)!);
       node.id = id;
       int? parentId = node.parent?.id ?? parentIdGiven;
       if (parentId != null) {
@@ -179,7 +179,7 @@ class NodeHelper {
 
   Future<int> createPosture(Node parent, String posture) async {
     NodeEntity newPosture = NodeEntity.optional(label: posture, isLeaf: true);
-    int id = await nodeDao.put(newPosture);
+    int id = await nodeDao.insertObject(newPosture);
     // create the parent child relationship
     await insertNodeNode(parent.id, id);
     return id;
@@ -221,7 +221,7 @@ class NodeHelper {
 
   Future<int> createCategory(Node? parent, String category) async {
     NodeEntity newCategory = NodeEntity.optional(label: category);
-    int id = await nodeDao.put(newCategory);
+    int id = await nodeDao.insertObject(newCategory);
     if (parent != null) {
       // create the parent child relationship
       await insertNodeNode(parent.id, id);

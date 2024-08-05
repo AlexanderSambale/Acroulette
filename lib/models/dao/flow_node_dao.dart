@@ -7,9 +7,6 @@ import 'package:floor/floor.dart';
 
 @dao
 abstract class FlowNodeDao {
-  @Query('SELECT last_insert_rowid()')
-  Future<int?> incrementedId();
-
   @Query('SELECT COUNT(*) FROM FlowNodeEntity')
   Future<int?> count();
 
@@ -34,7 +31,10 @@ abstract class FlowNodeDao {
   }
 
   @insert
-  Future<void> insertObject(FlowNodeEntity object);
+  Future<int> insertObject(FlowNodeEntity object);
+
+  @insert
+  Future<List<int>> insertObjects(List<FlowNodeEntity> objects);
 
   @delete
   Future<void> removeObject(FlowNodeEntity object);
@@ -44,24 +44,7 @@ abstract class FlowNodeDao {
   }
 
   Future<int> put(FlowNode flow) async {
-    return await insertFlowNode(toFlowNodeEntity(flow)!);
-  }
-
-  Future<int> insertFlowNode(FlowNodeEntity object) async {
-    await insertObject(object);
-    int? id = await incrementedId();
-    if (id == null) {
-      throw Exception('Id is null after put');
-    }
-    return id;
-  }
-
-  Future<List<int>> insertFlowNodes(List<FlowNodeEntity> objects) async {
-    List<int> ids = [];
-    for (var object in objects) {
-      ids.add(await insertFlowNode(object));
-    }
-    return ids;
+    return await insertObject(toFlowNodeEntity(flow)!);
   }
 
   Future<List<int>> putAll(List<FlowNode> objects) async {

@@ -4,7 +4,10 @@ import 'package:floor/floor.dart';
 @dao
 abstract class NodeNodeDao {
   @insert
-  Future<void> insertObject(NodeNode nodeNode);
+  Future<void> insertObject(NodeNode object);
+
+  @insert
+  Future<void> insertObjects(List<NodeNode> objects);
 
   @delete
   Future<void> removeObject(NodeNode nodeNode);
