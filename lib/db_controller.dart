@@ -21,6 +21,7 @@ class DBController {
   late List<String> positions;
   late List<FlowNode> flows;
   late List<SettingsPair> settings;
+  late List<Node> nodesWithoutParent;
 
   DBController._create(this.store) {
     settingsBox = store.settingsPairDao;
@@ -34,6 +35,7 @@ class DBController {
     positions = [];
     flows = [];
     settings = [];
+    nodesWithoutParent = [];
   }
 
   Future<void> loadData() async {
@@ -48,7 +50,7 @@ class DBController {
       await putSettingsPairValueByKey(flowIndex, '1');
     }
 
-    await regeneratePositionsList();
+    await regenerateLists();
     flows = await flowNodeBox.findAllFlowNodes();
     settings = await settingsBox.findAll();
 
@@ -77,7 +79,7 @@ class DBController {
     }
   }
 
-  Future<void> regeneratePositionsList() async {
+  Future<void> regenerateLists() async {
     List<NodeEntity> nodes = await nodeBox.findAll();
     Set<String> setOfPositions = {};
     setOfPositions.addAll(nodes
@@ -85,6 +87,7 @@ class DBController {
             element.isLeaf && element.isEnabled && element.isSwitched)
         .map<String>((e) => e.label));
     positions = setOfPositions.map((e) => e).toList(growable: false);
+    nodesWithoutParent = await nodeBox.findNodesWithoutParent();
   }
 
   /// Create an instance of DBController to use throughout the app.
@@ -140,11 +143,6 @@ class DBController {
     flows.remove(flow);
   }
 
-  Future<List<Node>> findNodesWithoutParent() async {
-    List<Node> nodesWithoutParent = await nodeBox.findNodesWithoutParent();
-    return nodesWithoutParent;
-  }
-
   Node? findParent(Node child) {
     return child.parent;
   }
@@ -172,39 +170,39 @@ class DBController {
   Future<int> createPosture(Node parent, String posture) async {
     // insert the posture into the db
     int id = await nodeBox.createPosture(parent, posture);
-    await regeneratePositionsList();
+    await regenerateLists();
     return id;
   }
 
   Future<void> updateNodeLabel(Node node, String label) async {
     node.label = label;
     await nodeBox.updateNode(node);
-    await regeneratePositionsList();
+    await regenerateLists();
   }
 
   Future<void> updateNodeIsExpanded(Node tree, bool isExpanded) async {
     tree.isExpanded = isExpanded;
     await nodeBox.updateNode(tree);
-    await regeneratePositionsList();
+    await regenerateLists();
   }
 
   Future<void> deletePosture(Node child) async {
     await nodeBox.deletePosture(child);
-    await regeneratePositionsList();
+    await regenerateLists();
   }
 
   Future<void> deleteCategory(Node category) async {
     await nodeBox.deleteCategory(category);
-    await regeneratePositionsList();
+    await regenerateLists();
   }
 
   Future<void> createCategory(Node? parent, String category) async {
     await nodeBox.createCategory(parent, category);
-    await regeneratePositionsList();
+    await regenerateLists();
   }
 
   Future<void> onSwitch(bool switched, Node tree) async {
     await nodeBox.enableOrDisable(nodeBox.toNodeEntity(tree)!, switched);
-    await regeneratePositionsList();
+    await regenerateLists();
   }
 }

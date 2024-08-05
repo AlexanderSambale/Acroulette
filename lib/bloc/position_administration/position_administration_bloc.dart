@@ -26,31 +26,31 @@ class PositionAdministrationBloc
   Future<void> onSwitch(bool switched, Node tree) async {
     add(PositionsBDStartChangeEvent());
     await dbController.onSwitch(switched, tree);
-    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
+    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
   }
 
   void toggleExpand(Node tree) async {
     add(PositionsBDStartChangeEvent());
     await dbController.updateNodeIsExpanded(tree, !tree.isExpanded);
-    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
+    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
   }
 
   Future<void> createPosture(Node parent, String posture) async {
     add(PositionsBDStartChangeEvent());
     await dbController.createPosture(parent, posture);
-    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
+    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
   }
 
   Future<void> updateNodeLabel(Node child, String label) async {
     add(PositionsBDStartChangeEvent());
     await dbController.updateNodeLabel(child, label);
-    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
+    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
   }
 
   Future<void> deletePosture(Node child) async {
     add(PositionsBDStartChangeEvent());
     await dbController.deletePosture(child);
-    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
+    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
   }
 
   /// Returns a list of Pairs
@@ -67,13 +67,13 @@ class PositionAdministrationBloc
   Future<void> deleteCategory(Node category) async {
     add(PositionsBDStartChangeEvent());
     await dbController.deleteCategory(category);
-    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
+    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
   }
 
   Future<void> createCategory(Node? parent, String category) async {
     add(PositionsBDStartChangeEvent());
     await dbController.createCategory(parent, category);
-    add(PositionsDBIsIdleEvent(await dbController.findNodesWithoutParent()));
+    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
   }
 
   Future<void> onDeleteClick(Node child) async {
@@ -117,9 +117,9 @@ class PositionAdministrationBloc
     return null;
   }
 
-  Future<String?> validatorRootCategory(String? label) async {
+  String? validatorRootCategory(String? label) {
     if (label == null || label.isEmpty) return enterText;
-    List<Node> rootCategories = await dbController.findNodesWithoutParent();
+    List<Node> rootCategories = dbController.nodesWithoutParent;
     for (var category in rootCategories) {
       if (category.label == label) {
         return existsText('Category', label);

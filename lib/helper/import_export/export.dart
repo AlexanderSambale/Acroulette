@@ -17,7 +17,7 @@ void export(DBController dbController) async {
 
 Uint8List getData(DBController dbController) {
   String result = '''{
-  "$nodesKey": ${dbController.findNodesWithoutParent().toString()},
+  "$nodesKey": ${dbController.nodesWithoutParent.toString()},
   "$flowsKey": ${dbController.flowNodeBox.findAllFlowNodes().toString()}
 }''';
   return convertStringToUint8List(result);
