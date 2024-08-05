@@ -113,7 +113,7 @@ class DBController {
   Future<void> putSettingsPairValueByKey(String key, String value) async {
     SettingsPair? keyQueryFirstValue = await settingsBox.findEntityByKey(key);
     if (keyQueryFirstValue == null) {
-      await settingsBox.put(SettingsPair(null, key, value));
+      await settingsBox.insertObject(SettingsPair(null, key, value));
     } else {
       if (keyQueryFirstValue.value == value) return;
       keyQueryFirstValue.value = value;
