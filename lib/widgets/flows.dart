@@ -22,10 +22,12 @@ class Flows extends StatelessWidget {
                   context.read<FlowAdministrationBloc>();
               return Stack(children: [
                 ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: dbController.flows.length,
-                    itemBuilder: (context, index) {
-                      return FlowView(
+                  shrinkWrap: true,
+                  itemCount: dbController.flows.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      child: FlowView(
                         flow: dbController.flows[index],
                         toggleExpand: bloc.toggleExpand,
                         deletePosture: bloc.deletePosture,
@@ -34,8 +36,10 @@ class Flows extends StatelessWidget {
                         onEditFlowClick: bloc.onEditFlowClick,
                         validator: bloc.validatorFlow,
                         onSavePostureClick: bloc.onSavePostureClick,
-                      );
-                    }),
+                      ),
+                    );
+                  },
+                ),
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: SizedBox(

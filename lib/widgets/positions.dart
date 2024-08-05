@@ -26,17 +26,21 @@ class Positions extends StatelessWidget {
                   shrinkWrap: true,
                   itemCount: state.trees.length,
                   itemBuilder: (context, index) {
-                    return PostureTree(
-                        tree: state.trees[index],
-                        onSwitched: positionAdministrationBloc.onSwitch,
-                        toggleExpand: positionAdministrationBloc.toggleExpand,
-                        onDeleteClick: positionAdministrationBloc.onDeleteClick,
-                        onEditClick: positionAdministrationBloc.onEditClick,
-                        onSaveClick: positionAdministrationBloc.onSaveClick,
-                        path: const [],
-                        listAllNodesRecursively:
-                            positionAdministrationBloc.listAllNodesRecursively,
-                        validator: positionAdministrationBloc.validator);
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      child: PostureTree(
+                          tree: state.trees[index],
+                          onSwitched: positionAdministrationBloc.onSwitch,
+                          toggleExpand: positionAdministrationBloc.toggleExpand,
+                          onDeleteClick:
+                              positionAdministrationBloc.onDeleteClick,
+                          onEditClick: positionAdministrationBloc.onEditClick,
+                          onSaveClick: positionAdministrationBloc.onSaveClick,
+                          path: const [],
+                          listAllNodesRecursively: positionAdministrationBloc
+                              .listAllNodesRecursively,
+                          validator: positionAdministrationBloc.validator),
+                    );
                   }),
               Align(
                   alignment: Alignment.bottomCenter,
