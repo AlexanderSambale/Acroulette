@@ -109,7 +109,7 @@ class PositionAdministrationBloc
   }
 
   String? validatorCategory(Node category, String label) {
-    Node? parent = dbController.findParent(category);
+    Node? parent = category.parent;
     if (parent == null) return null;
     if (parent.children.containsElementWithLabel(false, label)) {
       return existsText('Category', label);

@@ -143,10 +143,6 @@ class DBController {
     flows.remove(flow);
   }
 
-  Node? findParent(Node child) {
-    return child.parent;
-  }
-
   bool flowExists(String label) {
     bool contains = false;
     for (var flow in flows) {
