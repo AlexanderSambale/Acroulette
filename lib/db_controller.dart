@@ -83,7 +83,7 @@ class DBController {
         .where((element) =>
             element.isLeaf && element.isEnabled && element.isSwitched)
         .map<String>((e) => e.label));
-    positions = setOfPositions.map((e) => e).toList();
+    positions = setOfPositions.map((e) => e).toList(growable: false);
   }
 
   /// Create an instance of DBController to use throughout the app.

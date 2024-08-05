@@ -51,7 +51,7 @@ class License extends StatelessWidget {
     List<TableRow> rows = [createLicenseTableRowHeader()];
     rows.addAll(packages
         .map((package) => createLicenseTableRow(package, context))
-        .toList());
+        .toList(growable: false));
 
     return ListView(children: [
       styleLicenseText("This project has the following license:",

@@ -74,7 +74,7 @@ class NodeHelper {
     List<NodeWithoutParent> nodesWithoutParent =
         await nodeWithoutParentDao.findAll();
     List<int> nodeNodesIds =
-        nodesWithoutParent.map((node) => node.nodeId).toList();
+        nodesWithoutParent.map((node) => node.nodeId).toList(growable: false);
     List<NodeEntity?> nodeEntities = await nodeDao.findAllById(nodeNodesIds);
     List<Node> nodes = [];
     for (var nodeEntity in nodeEntities) {
@@ -127,7 +127,7 @@ class NodeHelper {
           await nodeNodeDao.findChildrenByParentId(nodeEntity.id);
       List<int> childIds = childNodeNodes
           .map((childNodeNode) => childNodeNode!.childId)
-          .toList();
+          .toList(growable: false);
       List<NodeEntity?> childNodeEntites = await nodeDao.findAllById(childIds);
       for (var childNodeEntity in childNodeEntites) {
         children.add((await toNodeWithChildren(childNodeEntity))!);
@@ -189,7 +189,7 @@ class NodeHelper {
       ids.add(nodeNode.childId);
       ids.add(nodeNode.parentId);
     }
-    return ids.toList();
+    return ids.toList(growable: false);
   }
 
   Future<void> deletePosture(Node node) async {
@@ -243,8 +243,8 @@ class NodeHelper {
     // get children through parent child relationship
     List<NodeNode> nodeNodes =
         await nodeNodeDao.findChildrenByParentId(newTree.id);
-    List<NodeEntity?> children = await nodeDao
-        .findAllById(nodeNodes.map((nodeNode) => nodeNode.childId).toList());
+    List<NodeEntity?> children = await nodeDao.findAllById(
+        nodeNodes.map((nodeNode) => nodeNode.childId).toList(growable: false));
     for (var node in children) {
       assert(node != null); // nodes to childIds should be available
       if (node!.isSwitched) {

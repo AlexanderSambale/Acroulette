@@ -65,8 +65,8 @@ class TransitionBloc extends Bloc<TransitionEvent, TransitionState> {
     });
     on<InitFlowTransitionEvent>((event, emit) {
       loop = event.loop;
-      emit(TransitionState(
-          event.figures.toList(), 0, TransitionStatus.changingStateProps));
+      emit(TransitionState(event.figures.toList(growable: false), 0,
+          TransitionStatus.changingStateProps));
       add(CurrentTransitionEvent());
     });
 

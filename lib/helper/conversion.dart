@@ -19,7 +19,7 @@ Uint8List convertStringToUint8List(String str) {
 }
 
 String convertUint8ListToString(Uint8List uint8List) {
-  List<int> lowIntegerBytes = uint8List.toList();
+  List<int> lowIntegerBytes = uint8List.toList(growable: false);
   List<int> charCodes = [];
   int lowByte = 0;
   int highByte = 0;

@@ -160,7 +160,7 @@ List<DropdownMenuItem<String>> getWashingMachineItems(
       .map((flow) => DropdownMenuItem<String>(
           value: flow.id.toString(),
           child: Center(child: Text(flow.name, style: displayTextStyle))))
-      .toList();
+      .toList(growable: false);
 }
 
 Column getControls(
@@ -214,7 +214,7 @@ Widget modeSelect(String mode, AcrouletteBloc acrouletteBloc) {
                   value: itemLabel,
                   child:
                       Center(child: Text(itemLabel, style: displayTextStyle)));
-            })).toList(),
+            })).toList(growable: false),
             onChanged: (value) {
               if (value == null || mode == value) return;
               acrouletteBloc.add(AcrouletteChangeMode(value));
