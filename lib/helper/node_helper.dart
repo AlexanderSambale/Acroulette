@@ -214,7 +214,7 @@ class NodeHelper {
     List<int> ids = await getChildrenIdsRecursively(node.id!);
     // Delete relationships
     await nodeNodeDao.deleteByParentIds(ids);
-    await nodeWithoutParentDao.deleteById(node.id!);
+    await nodeWithoutParentDao.removeObject(NodeWithoutParent(node.id!));
     // Delete nodes
     await nodeDao.deleteByIds(ids);
   }
