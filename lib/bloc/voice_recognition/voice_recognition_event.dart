@@ -5,7 +5,7 @@ abstract class VoiceRecognitionEvent {}
 
 class VoiceRecognitionStart extends VoiceRecognitionEvent {
   final void Function(dynamic event) onData;
-  final void Function() onRecognitionStarted;
+  final Future<void> Function() onRecognitionStarted;
   VoiceRecognitionStart(this.onData, this.onRecognitionStarted);
 }
 

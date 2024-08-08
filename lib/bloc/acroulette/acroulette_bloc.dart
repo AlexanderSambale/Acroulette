@@ -36,7 +36,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     on<AcrouletteStart>((event, emit) async {
       await dbController.putSettingsPairValueByKey(playingKey, "true");
       voiceRecognitionBloc.add(VoiceRecognitionStart(
-          onData, () => onRecognitionStarted(dbController)));
+          onData, () async => await onRecognitionStarted(dbController)));
       emit(AcrouletteInitModel());
     });
     on<AcrouletteInitModelEvent>((event, emit) {
@@ -178,8 +178,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     }
   }
 
-  void onRecognitionStarted(DBController dbController) {
-    setTransitionsDependingOnMode(dbController);
+  Future<void> onRecognitionStarted(DBController dbController) async {
+    await setTransitionsDependingOnMode(dbController);
   }
 
   void recognizeCommand(String command) {
