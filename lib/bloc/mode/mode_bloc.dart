@@ -8,9 +8,9 @@ part 'mode_state.dart';
 
 class ModeBloc extends Bloc<ModeEvent, ModeState> {
   ModeBloc(DBController dbController) : super(const ModeInitial()) {
-    on<ModeChange>((event, emit) {
+    on<ModeChange>((event, emit) async {
       if (mode != event.mode) {
-        dbController.putSettingsPairValueByKey(appMode, event.mode);
+        await dbController.putSettingsPairValueByKey(appMode, event.mode);
         mode = event.mode;
         event.onModeChange();
       }
