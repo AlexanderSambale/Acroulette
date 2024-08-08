@@ -48,20 +48,26 @@ void main() async {
     });
 
     blocTest<AcrouletteBloc, BaseAcrouletteState>(
-        'emits [AcrouletteInitModel()] when AcrouletteStart is added',
-        build: () => acrouletteBloc,
-        act: (bloc) => bloc.add(AcrouletteStart()),
-        expect: () => [AcrouletteInitModel()],
-        verify: (bloc) =>
-            expect(dbController.getSettingsPairValueByKey(playingKey), "true"));
+      'emits [AcrouletteInitModel()] when AcrouletteStart is added',
+      build: () => acrouletteBloc,
+      act: (bloc) => bloc.add(AcrouletteStart()),
+      expect: () => [AcrouletteInitModel()],
+      verify: (bloc) async => expect(
+        await dbController.getSettingsPairValueByKey(playingKey),
+        "true",
+      ),
+      wait: const Duration(milliseconds: 100),
+    );
 
     blocTest<AcrouletteBloc, BaseAcrouletteState>(
-        'emits [AcrouletteModelInitiatedState()] when AcrouletteStop is added',
-        build: () => acrouletteBloc,
-        act: (bloc) => bloc.add(AcrouletteStop()),
-        expect: () => [AcrouletteModelInitiatedState()],
-        verify: (bloc) => expect(
-            dbController.getSettingsPairValueByKey(playingKey), "false"));
+      'emits [AcrouletteModelInitiatedState()] when AcrouletteStop is added',
+      build: () => acrouletteBloc,
+      act: (bloc) => bloc.add(AcrouletteStop()),
+      expect: () => [AcrouletteModelInitiatedState()],
+      verify: (bloc) async => expect(
+          await dbController.getSettingsPairValueByKey(playingKey), "false"),
+      wait: const Duration(milliseconds: 100),
+    );
 
     blocTest<AcrouletteBloc, BaseAcrouletteState>(
       'emits [AcrouletteModelInitiatedState()] when AcrouletteInitModelEvent is added',
