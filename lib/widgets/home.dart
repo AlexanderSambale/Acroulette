@@ -3,7 +3,9 @@ import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/constants/widgets.dart';
-import 'package:acroulette/storage_provider.dart';
+import 'package:acroulette/domain_layer/flow_node_repository.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
+import 'package:acroulette/domain_layer/settings_repository.dart';
 import 'package:acroulette/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,16 +20,19 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    StorageProvider storageProvider = context.read<StorageProvider>();
+    SettingsRepository settingsRepository = context.read<SettingsRepository>();
+    FlowNodeRepository flowNodeRepository = context.read<FlowNodeRepository>();
 
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           BlocProvider(
             create: (_) => AcrouletteBloc(
-              context.read<TtsBloc>(),
-              storageProvider,
-              context.read<VoiceRecognitionBloc>(),
+              ttsBloc: context.read<TtsBloc>(),
+              voiceRecognitionBloc: context.read<VoiceRecognitionBloc>(),
+              nodeRepository: context.read<NodeRepository>(),
+              settingsRepository: settingsRepository,
+              flowNodeRepository: flowNodeRepository,
             ),
             child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
                 buildWhen: (previous, current) {
@@ -43,7 +48,8 @@ class _HomeState extends State<Home> {
               var machine = acrouletteBloc.machine;
 
               return FutureBuilder(
-                  future: storageProvider.getSettingsPairValueByKey(playingKey),
+                  future:
+                      settingsRepository.getSettingsPairValueByKey(playingKey),
                   builder: (context, snapshot) {
                     switch (state.runtimeType) {
                       case AcrouletteModelInitiatedState:
@@ -155,8 +161,8 @@ Widget noPosture() {
 }
 
 List<DropdownMenuItem<String>> getWashingMachineItems(
-    StorageProvider storageProvider) {
-  return storageProvider.flows
+    FlowNodeRepository flowNodeRepository) {
+  return flowNodeRepository.flows
       .map((flow) => DropdownMenuItem<String>(
           value: flow.id.toString(),
           child: Center(child: Text(flow.name, style: displayTextStyle))))
@@ -248,7 +254,7 @@ Widget washingMachineDropdown(String machine, AcrouletteBloc acrouletteBloc) {
               const EdgeInsets.symmetric(horizontal: 16.0, vertical: size / 4),
           child: DropdownButton<String>(
             value: machine,
-            items: getWashingMachineItems(acrouletteBloc.storageProvider),
+            items: getWashingMachineItems(acrouletteBloc.flowNodeRepository),
             onChanged: (value) {
               if (value == null || machine == value) return;
               acrouletteBloc.add(AcrouletteChangeMachine(value));

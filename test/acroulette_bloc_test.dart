@@ -3,6 +3,9 @@ import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
+import 'package:acroulette/domain_layer/flow_node_repository.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
+import 'package:acroulette/domain_layer/settings_repository.dart';
 import 'package:acroulette/storage_provider.dart';
 import 'package:acroulette/models/database.dart';
 import 'package:flutter/material.dart';
@@ -23,18 +26,26 @@ void main() async {
     late StorageProvider storageProvider;
     late TtsBloc ttsBloc;
     late VoiceRecognitionBloc voiceRecognitionBloc;
+    late NodeRepository nodeRepository;
+    late FlowNodeRepository flowNodeRepository;
+    late SettingsRepository settingsRepository;
 
     setUp(() async {
       database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
       storageProvider = await StorageProvider.create(database);
+      nodeRepository = NodeRepository(storageProvider);
+      flowNodeRepository = FlowNodeRepository(storageProvider);
+      settingsRepository = SettingsRepository(storageProvider);
       ttsBloc = MockFlutterTts();
       voiceRecognitionBloc = MockVoiceRecognitionBloc();
       when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
       when(() => ttsBloc.notAvailable).thenReturn(true);
       acrouletteBloc = AcrouletteBloc(
-        ttsBloc,
-        storageProvider,
-        voiceRecognitionBloc,
+        ttsBloc: ttsBloc,
+        nodeRepository: nodeRepository,
+        settingsRepository: settingsRepository,
+        flowNodeRepository: flowNodeRepository,
+        voiceRecognitionBloc: voiceRecognitionBloc,
       );
     });
 
@@ -53,7 +64,7 @@ void main() async {
       act: (bloc) => bloc.add(AcrouletteStart()),
       expect: () => [AcrouletteInitModel()],
       verify: (bloc) async => expect(
-        await storageProvider.getSettingsPairValueByKey(playingKey),
+        await settingsRepository.getSettingsPairValueByKey(playingKey),
         "true",
       ),
       wait: const Duration(milliseconds: 100),
@@ -65,7 +76,7 @@ void main() async {
       act: (bloc) => bloc.add(AcrouletteStop()),
       expect: () => [AcrouletteModelInitiatedState()],
       verify: (bloc) async => expect(
-        await storageProvider.getSettingsPairValueByKey(playingKey),
+        await settingsRepository.getSettingsPairValueByKey(playingKey),
         "false",
       ),
       wait: const Duration(milliseconds: 100),
@@ -110,7 +121,7 @@ void main() async {
                 .thenReturn(const VoiceRecognitionState(true));
             when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
             bloc.transitionBloc.add(InitFlowTransitionEvent(
-                await storageProvider.flowPositions(), true));
+                await flowNodeRepository.flowPositions(1), true));
             bloc.add(AcrouletteTransition(nextPosition));
             bloc.add(AcrouletteTransition(currentPosition));
             bloc.add(AcrouletteTransition(previousPosition));

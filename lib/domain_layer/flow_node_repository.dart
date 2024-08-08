@@ -12,7 +12,7 @@ class FlowNodeRepository {
   Future<void> initialize() async {
     if (await storageProvider.flowNodeBox.count() == 0) {
       String data = await loadAsset('models/AcrouletteBasisFlows.json');
-      await importData(data, storageProvider);
+      await importFlowNodes(data, this);
     }
 
     flows = await storageProvider.flowNodeBox.findAllFlowNodes();
@@ -49,5 +49,9 @@ class FlowNodeRepository {
     } else {
       return flow.positions;
     }
+  }
+
+  Future<List<int>> putAll(List<FlowNode> objects) async {
+    return await storageProvider.flowNodeBox.putAll(objects);
   }
 }

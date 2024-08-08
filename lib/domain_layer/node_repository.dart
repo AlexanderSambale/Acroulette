@@ -14,7 +14,7 @@ class NodeRepository {
   Future<void> initialize() async {
     if (await storageProvider.nodeBox.count() == 0) {
       String data = await loadAsset('models/AcrouletteBasisNodes.json');
-      await importData(data, storageProvider);
+      await importNodes(data, this);
     }
     await regenerateLists();
   }
@@ -72,5 +72,9 @@ class NodeRepository {
     await storageProvider.nodeBox
         .enableOrDisable(storageProvider.nodeBox.toNodeEntity(tree)!, switched);
     await regenerateLists();
+  }
+
+  Future<List<int>> insertTrees(List<Node> nodes) async {
+    return await storageProvider.nodeBox.insertTrees(nodes);
   }
 }

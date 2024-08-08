@@ -1,5 +1,5 @@
 import 'package:acroulette/bloc/flow_administration/flow_administration_bloc.dart';
-import 'package:acroulette/storage_provider.dart';
+import 'package:acroulette/domain_layer/flow_node_repository.dart';
 import 'package:acroulette/widgets/dialogs/flow_dialog/create_flow_dialog.dart';
 import 'package:acroulette/widgets/flows/flow_view.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +10,10 @@ class Flows extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    StorageProvider storageProvider = context.read<StorageProvider>();
+    FlowNodeRepository flowNodeRepository = context.read<FlowNodeRepository>();
 
     return BlocProvider(
-        create: (_) => FlowAdministrationBloc(storageProvider),
+        create: (_) => FlowAdministrationBloc(flowNodeRepository),
         child: BlocBuilder<FlowAdministrationBloc, BaseFlowAdministrationState>(
             buildWhen: (previous, current) =>
                 current is FlowAdministrationState,
@@ -23,12 +23,12 @@ class Flows extends StatelessWidget {
               return Stack(children: [
                 ListView.builder(
                   shrinkWrap: true,
-                  itemCount: storageProvider.flows.length,
+                  itemCount: flowNodeRepository.flows.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                       child: FlowView(
-                        flow: storageProvider.flows[index],
+                        flow: flowNodeRepository.flows[index],
                         toggleExpand: bloc.toggleExpand,
                         deletePosture: bloc.deletePosture,
                         deleteFlow: bloc.deleteFlow,

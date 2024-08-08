@@ -1,4 +1,5 @@
-import 'package:acroulette/storage_provider.dart';
+import 'package:acroulette/domain_layer/flow_node_repository.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
 import 'package:acroulette/helper/import_export/export.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/widgets/formWidgets/import_export_settings_view.dart';
@@ -10,10 +11,18 @@ class ImportExportSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    StorageProvider storageProvider = context.read<StorageProvider>();
+    NodeRepository nodeRepository = context.read<NodeRepository>();
+    FlowNodeRepository flowNodeRepository = context.read<FlowNodeRepository>();
 
     return ImportExportSettingsView(
-        import: () => import(storageProvider),
-        export: () => export(storageProvider));
+      import: () => import(
+        nodeRepository,
+        flowNodeRepository,
+      ),
+      export: () => export(
+        nodeRepository,
+        flowNodeRepository,
+      ),
+    );
   }
 }

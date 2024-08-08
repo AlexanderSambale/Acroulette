@@ -1,6 +1,7 @@
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/validator.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
 import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/entities/node_entity.dart';
 import 'package:acroulette/models/node.dart';
@@ -49,10 +50,12 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late AppDatabase database;
   late StorageProvider storageProvider;
+  late NodeRepository nodeRepository;
 
   setUp(() async {
     database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
     storageProvider = await StorageProvider.create(database);
+    nodeRepository = NodeRepository(storageProvider);
   });
 
   tearDown(() async {
@@ -62,7 +65,7 @@ void main() {
   group('onDeleteClick', () {
     test('delete leaf', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(storageProvider);
+          PositionAdministrationBloc(nodeRepository);
       // create category, create leaf
       int categoryId =
           await storageProvider.nodeBox.createCategory(null, 'category');
@@ -82,7 +85,7 @@ void main() {
 
     test('delete node with children', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(storageProvider);
+          PositionAdministrationBloc(nodeRepository);
       int numberOfNodesBefore = (await storageProvider.nodeBox.count())!;
       Node complexTree = await setupComplexTree(storageProvider);
       int numberOfNodesAfterAdding = (await storageProvider.nodeBox.count())!;
@@ -95,7 +98,7 @@ void main() {
 
   test('onSaveClick', () async {
     PositionAdministrationBloc bloc =
-        PositionAdministrationBloc(storageProvider);
+        PositionAdministrationBloc(nodeRepository);
     // create category
     int categoryId =
         await storageProvider.nodeBox.createCategory(null, 'category');
@@ -111,7 +114,7 @@ void main() {
 
   test('onEditClick', () async {
     PositionAdministrationBloc bloc =
-        PositionAdministrationBloc(storageProvider);
+        PositionAdministrationBloc(nodeRepository);
     // create category, create leaf
     int categoryId =
         await storageProvider.nodeBox.createCategory(null, 'category');
@@ -132,7 +135,7 @@ void main() {
   group('onSwitchClick', () {
     test('click false', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(storageProvider);
+          PositionAdministrationBloc(nodeRepository);
       Node simpleTree = createSimpleTree();
       int simpleTreeId =
           await storageProvider.nodeBox.insertTree(simpleTree, null);
@@ -162,7 +165,7 @@ void main() {
 
     test('click true', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(storageProvider);
+          PositionAdministrationBloc(nodeRepository);
       Node simpleTree = createSimpleTree();
       simpleTree.isSwitched = false;
       int simpleTreeId =
@@ -194,7 +197,7 @@ void main() {
   group('validate', () {
     test('validate posture', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(storageProvider);
+          PositionAdministrationBloc(nodeRepository);
       // create category, create leaf
       int categoryId =
           await storageProvider.nodeBox.createCategory(null, 'category');
@@ -216,7 +219,7 @@ void main() {
 
     test('validate category', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(storageProvider);
+          PositionAdministrationBloc(nodeRepository);
       Node complexTree = await setupComplexTree(storageProvider);
       String testLabel = "testCategory";
       expect(bloc.validator(complexTree, false, ''), enterText);

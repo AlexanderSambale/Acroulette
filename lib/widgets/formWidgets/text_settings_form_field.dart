@@ -1,8 +1,8 @@
-import 'package:acroulette/storage_provider.dart';
+import 'package:acroulette/domain_layer/settings_repository.dart';
 import 'package:flutter/material.dart';
 
 FutureBuilder<List<Widget>> textSettingsFormField(
-    String key, StorageProvider storageProvider) {
+    String key, SettingsRepository settingsRepository) {
   Future<List<Widget>> future = Future(() async => [
         Text(key),
         TextFormField(
@@ -15,9 +15,9 @@ FutureBuilder<List<Widget>> textSettingsFormField(
             }
             return null;
           },
-          initialValue: await storageProvider.getSettingsPairValueByKey(key),
-          onSaved: (newValue) async =>
-              await storageProvider.putSettingsPairValueByKey(key, newValue!),
+          initialValue: await settingsRepository.getSettingsPairValueByKey(key),
+          onSaved: (newValue) async => await settingsRepository
+              .putSettingsPairValueByKey(key, newValue!),
         ),
       ]);
   return FutureBuilder(

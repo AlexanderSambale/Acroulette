@@ -6,9 +6,12 @@ import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/bloc/washing_machine/washing_machine_bloc.dart';
+import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
+import 'package:acroulette/domain_layer/flow_node_repository.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
+import 'package:acroulette/domain_layer/settings_repository.dart';
 import 'package:acroulette/models/entities/settings_pair.dart';
-import 'package:acroulette/storage_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -20,7 +23,9 @@ part 'acroulette_state.dart';
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   final VoiceRecognitionBloc voiceRecognitionBloc;
   final TtsBloc ttsBloc;
-  final StorageProvider storageProvider;
+  final NodeRepository nodeRepository;
+  final SettingsRepository settingsRepository;
+  final FlowNodeRepository flowNodeRepository;
 
   late final TransitionBloc transitionBloc;
   late final ModeBloc modeBloc;
@@ -31,12 +36,17 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   late RegExp rPreviousPosition;
   late RegExp rCurrentPosition;
 
-  AcrouletteBloc(this.ttsBloc, this.storageProvider, this.voiceRecognitionBloc)
-      : super(AcrouletteInitialState()) {
+  AcrouletteBloc({
+    required this.ttsBloc,
+    required this.nodeRepository,
+    required this.settingsRepository,
+    required this.flowNodeRepository,
+    required this.voiceRecognitionBloc,
+  }) : super(AcrouletteInitialState()) {
     on<AcrouletteStart>((event, emit) async {
-      await storageProvider.putSettingsPairValueByKey(playingKey, "true");
+      await settingsRepository.putSettingsPairValueByKey(playingKey, "true");
       voiceRecognitionBloc.add(VoiceRecognitionStart(
-          onData, () async => await onRecognitionStarted(storageProvider)));
+          onData, () async => await onRecognitionStarted()));
       emit(AcrouletteInitModel());
     });
     on<AcrouletteInitModelEvent>((event, emit) {
@@ -53,14 +63,14 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           mode: mode));
     });
     on<AcrouletteStop>((event, emit) async {
-      await storageProvider.putSettingsPairValueByKey(playingKey, "false");
+      await settingsRepository.putSettingsPairValueByKey(playingKey, "false");
       voiceRecognitionBloc.add(VoiceRecognitionStop());
       emit(AcrouletteModelInitiatedState());
     });
     on<AcrouletteTransition>((event, emit) {
       switch (event.transition) {
         case newPosition:
-          transitionBloc.add(NewTransitionEvent(storageProvider.positions));
+          transitionBloc.add(NewTransitionEvent(nodeRepository.positions));
           break;
         case nextPosition:
           transitionBloc.add(NextTransitionEvent());
@@ -77,14 +87,14 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       if (mode == event.mode) return;
       var positions = <String>[];
       if (event.mode == acroulette) {
-        positions = storageProvider.positions;
+        positions = nodeRepository.positions;
         modeBloc.add(ModeChange(
             event.mode,
             () => transitionBloc
                 .add(InitAcrouletteTransitionEvent(positions, false))));
       }
       if (event.mode == washingMachine) {
-        positions = await storageProvider.flowPositions();
+        positions = await flowPositions();
         modeBloc.add(ModeChange(
             event.mode,
             () =>
@@ -99,20 +109,19 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
         WashingMachineChange(
           event.machine,
           () async => transitionBloc.add(
-            InitFlowTransitionEvent(
-                await storageProvider.flowPositions(), true),
+            InitFlowTransitionEvent(await flowPositions(), true),
           ),
         ),
       );
       emit(AcrouletteFlowState(event.machine));
     });
     // initialize blocs
-    modeBloc = ModeBloc(storageProvider);
-    washingMachineBloc = WashingMachineBloc(storageProvider);
+    modeBloc = ModeBloc(settingsRepository);
+    washingMachineBloc = WashingMachineBloc(settingsRepository);
 
     // initialize transitionBloc
     transitionBloc = TransitionBloc(onTransitionChange, Random());
-    storageProvider.getSettingsPairValueByKey(playingKey).then((value) {
+    settingsRepository.getSettingsPairValueByKey(playingKey).then((value) {
       if (value == "true") {
         add(AcrouletteStart());
       }
@@ -127,7 +136,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     // get settings
     HashMap<String, String> settingsMap =
-        SettingsPair.toMap(storageProvider.settings);
+        SettingsPair.toMap(settingsRepository.settings);
 
     // set regex for voice commands
     rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
@@ -168,20 +177,26 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     add(AcrouletteInitModelEvent());
   }
 
-  Future<void> setTransitionsDependingOnMode(
-      StorageProvider storageProvider) async {
+  Future<List<String>> flowPositions() async {
+    return await flowNodeRepository.flowPositions(
+      int.parse(
+        await settingsRepository.getSettingsPairValueByKey(flowIndex),
+      ),
+    );
+  }
+
+  Future<void> setTransitionsDependingOnMode() async {
     if (mode == washingMachine) {
-      transitionBloc.add(
-          InitFlowTransitionEvent(await storageProvider.flowPositions(), true));
+      transitionBloc.add(InitFlowTransitionEvent(await flowPositions(), true));
     }
     if (mode == acroulette) {
       transitionBloc
-          .add(InitAcrouletteTransitionEvent(storageProvider.positions, false));
+          .add(InitAcrouletteTransitionEvent(nodeRepository.positions, false));
     }
   }
 
-  Future<void> onRecognitionStarted(StorageProvider storageProvider) async {
-    await setTransitionsDependingOnMode(storageProvider);
+  Future<void> onRecognitionStarted() async {
+    await setTransitionsDependingOnMode();
   }
 
   void recognizeCommand(String command) {

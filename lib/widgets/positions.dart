@@ -1,5 +1,5 @@
 import 'package:acroulette/bloc/position_administration/position_administration_bloc.dart';
-import 'package:acroulette/storage_provider.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
 import 'package:acroulette/widgets/dialogs/category_dialog/create_category_dialog.dart';
 import 'package:acroulette/widgets/posture_tree/posture_tree.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +10,10 @@ class Positions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    StorageProvider storageProvider = context.read<StorageProvider>();
+    NodeRepository nodeRepository = context.read<NodeRepository>();
 
     return BlocProvider(
-        create: (_) => PositionAdministrationBloc(storageProvider),
+        create: (_) => PositionAdministrationBloc(nodeRepository),
         child: BlocBuilder<PositionAdministrationBloc,
             BasePositionAdministrationState>(
           buildWhen: (previous, current) =>

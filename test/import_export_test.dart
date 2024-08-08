@@ -1,3 +1,5 @@
+import 'package:acroulette/domain_layer/flow_node_repository.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
 import 'package:acroulette/helper/conversion.dart';
 import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/flow_node.dart';
@@ -23,10 +25,14 @@ void main() {
 
     late AppDatabase database;
     late StorageProvider storageProvider;
+    late NodeRepository nodeRepository;
+    late FlowNodeRepository flowNodeRepository;
 
     setUp(() async {
       database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
       storageProvider = await StorageProvider.create(database);
+      nodeRepository = NodeRepository(storageProvider);
+      flowNodeRepository = FlowNodeRepository(storageProvider);
     });
 
     tearDown(() async {
@@ -35,14 +41,14 @@ void main() {
 
     test('import basic nodes', () async {
       String data = await loadAsset('models/AcrouletteBasisNodes.json');
-      await importData(data, storageProvider);
+      await importNodes(data, nodeRepository);
       int? actual = await storageProvider.nodeBox.count();
       expect(actual, isNot(0));
     });
 
     test('import basic flows', () async {
       String data = await loadAsset('models/AcrouletteBasisFlows.json');
-      await importData(data, storageProvider);
+      await importFlowNodes(data, flowNodeRepository);
       int? actual = await storageProvider.flowNodeBox.count();
       expect(actual, isNot(0));
     });

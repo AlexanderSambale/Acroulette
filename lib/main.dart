@@ -1,5 +1,8 @@
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
+import 'package:acroulette/domain_layer/flow_node_repository.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
+import 'package:acroulette/domain_layer/settings_repository.dart';
 import 'package:acroulette/storage_provider.dart';
 import 'package:acroulette/widgets/flows.dart';
 import 'package:acroulette/widgets/home.dart';
@@ -17,12 +20,26 @@ Future<void> main() async {
 
   StorageProvider storageProvider = await StorageProvider.create(null);
   Bloc.observer = SimpleBlocObserver();
-  runApp(Acroulette(storageProvider: storageProvider));
+  NodeRepository nodeRepository = NodeRepository(storageProvider);
+  FlowNodeRepository flowNodeRepository = FlowNodeRepository(storageProvider);
+  SettingsRepository settingsRepository = SettingsRepository(storageProvider);
+  runApp(Acroulette(
+    nodeRepository: nodeRepository,
+    flowNodeRepository: flowNodeRepository,
+    settingsRepository: settingsRepository,
+  ));
 }
 
 class Acroulette extends StatelessWidget {
-  const Acroulette({super.key, required this.storageProvider});
-  final StorageProvider storageProvider;
+  const Acroulette({
+    super.key,
+    required this.nodeRepository,
+    required this.flowNodeRepository,
+    required this.settingsRepository,
+  });
+  final NodeRepository nodeRepository;
+  final FlowNodeRepository flowNodeRepository;
+  final SettingsRepository settingsRepository;
 
   // This widget is the root of your application.
   @override
@@ -41,15 +58,22 @@ class Acroulette extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: RepositoryProvider(
-        create: (context) => storageProvider,
+      home: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider(create: (BuildContext context) => nodeRepository),
+          RepositoryProvider(
+              create: (BuildContext context) => flowNodeRepository),
+          RepositoryProvider(
+              create: (BuildContext context) => settingsRepository),
+        ],
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
               create: (BuildContext context) => VoiceRecognitionBloc(),
             ),
             BlocProvider(
-              create: (BuildContext context) => TtsBloc(storageProvider),
+              create: (BuildContext context) =>
+                  TtsBloc(context.read<SettingsRepository>()),
             ),
           ],
           child: const AcrouletteHomePage(title: 'Acroulette'),

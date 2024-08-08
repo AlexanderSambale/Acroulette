@@ -1,8 +1,8 @@
 import 'package:acroulette/constants/validator.dart';
+import 'package:acroulette/domain_layer/node_repository.dart';
 import 'package:acroulette/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
-import 'package:acroulette/storage_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -11,7 +11,7 @@ part 'position_administration_state.dart';
 
 class PositionAdministrationBloc
     extends Bloc<PositionAdministrationEvent, BasePositionAdministrationState> {
-  PositionAdministrationBloc(this.storageProvider)
+  PositionAdministrationBloc(this.nodeRepository)
       : super(const PositionAdministrationInitialState([])) {
     on<PositionsBDStartChangeEvent>((event, emit) {
       emit(PositionAdministrationState(state.trees));
@@ -21,36 +21,36 @@ class PositionAdministrationBloc
     });
   }
 
-  late StorageProvider storageProvider;
+  late NodeRepository nodeRepository;
 
   Future<void> onSwitch(bool switched, Node tree) async {
     add(PositionsBDStartChangeEvent());
-    await storageProvider.onSwitch(switched, tree);
-    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
+    await nodeRepository.onSwitch(switched, tree);
+    add(PositionsDBIsIdleEvent(nodeRepository.nodesWithoutParent));
   }
 
   void toggleExpand(Node tree) async {
     add(PositionsBDStartChangeEvent());
-    await storageProvider.updateNodeIsExpanded(tree, !tree.isExpanded);
-    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
+    await nodeRepository.updateNodeIsExpanded(tree, !tree.isExpanded);
+    add(PositionsDBIsIdleEvent(nodeRepository.nodesWithoutParent));
   }
 
   Future<void> createPosture(Node parent, String posture) async {
     add(PositionsBDStartChangeEvent());
-    await storageProvider.createPosture(parent, posture);
-    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
+    await nodeRepository.createPosture(parent, posture);
+    add(PositionsDBIsIdleEvent(nodeRepository.nodesWithoutParent));
   }
 
   Future<void> updateNodeLabel(Node child, String label) async {
     add(PositionsBDStartChangeEvent());
-    await storageProvider.updateNodeLabel(child, label);
-    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
+    await nodeRepository.updateNodeLabel(child, label);
+    add(PositionsDBIsIdleEvent(nodeRepository.nodesWithoutParent));
   }
 
   Future<void> deletePosture(Node child) async {
     add(PositionsBDStartChangeEvent());
-    await storageProvider.deletePosture(child);
-    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
+    await nodeRepository.deletePosture(child);
+    add(PositionsDBIsIdleEvent(nodeRepository.nodesWithoutParent));
   }
 
   /// Returns a list of Pairs
@@ -66,14 +66,14 @@ class PositionAdministrationBloc
 
   Future<void> deleteCategory(Node category) async {
     add(PositionsBDStartChangeEvent());
-    await storageProvider.deleteCategory(category);
-    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
+    await nodeRepository.deleteCategory(category);
+    add(PositionsDBIsIdleEvent(nodeRepository.nodesWithoutParent));
   }
 
   Future<void> createCategory(Node? parent, String category) async {
     add(PositionsBDStartChangeEvent());
-    await storageProvider.createCategory(parent, category);
-    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
+    await nodeRepository.createCategory(parent, category);
+    add(PositionsDBIsIdleEvent(nodeRepository.nodesWithoutParent));
   }
 
   Future<void> onDeleteClick(Node child) async {
@@ -119,7 +119,7 @@ class PositionAdministrationBloc
 
   String? validatorRootCategory(String? label) {
     if (label == null || label.isEmpty) return enterText;
-    List<Node> rootCategories = storageProvider.nodesWithoutParent;
+    List<Node> rootCategories = nodeRepository.nodesWithoutParent;
     for (var category in rootCategories) {
       if (category.label == label) {
         return existsText('Category', label);
