@@ -30,10 +30,20 @@ abstract class SettingsPairDao {
     return object.id;
   }
 
+  @transaction
   Future<void> setDefaultValues(List<Pair> defaultValues) async {
-    await insertObjects(defaultValues
-        .map((defaultValue) =>
-            SettingsPair(null, defaultValue.first, defaultValue.second))
-        .toList(growable: false));
+    for (var defaultValue in defaultValues) {
+      try {
+        await insertObject(
+          SettingsPair(
+            null,
+            defaultValue.first,
+            defaultValue.second,
+          ),
+        );
+      } catch (e) {
+        // ignore if the value already exists
+      }
+    }
   }
 }

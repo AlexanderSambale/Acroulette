@@ -1,5 +1,6 @@
 import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/entities/settings_pair.dart';
+import 'package:acroulette/models/pair.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -43,6 +44,27 @@ void main() {
       SettingsPair? output =
           await database.settingsPairDao.findEntityByKey(key);
       expect(output!.value, expected);
+    });
+
+    test('set default values with same key_text', () async {
+      String key = 'key';
+      String key1 = '${key}1';
+      String key3 = '${key}3';
+      String value = 'value';
+      List<Pair> defaultValues = [
+        Pair(key1, value),
+        Pair(key, value),
+        Pair(key, value),
+        Pair(key3, value),
+      ];
+      await database.settingsPairDao.setDefaultValues(defaultValues);
+      SettingsPair? defaultValue;
+      defaultValue = await database.settingsPairDao.findEntityByKey(key);
+      expect(defaultValue, isNotNull);
+      defaultValue = await database.settingsPairDao.findEntityByKey(key1);
+      expect(key1, isNotNull);
+      defaultValue = await database.settingsPairDao.findEntityByKey(key3);
+      expect(key3, isNotNull);
     });
   });
 }

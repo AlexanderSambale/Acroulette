@@ -15,6 +15,7 @@ import 'package:acroulette/models/relations/node_node.dart';
 import 'package:acroulette/models/relations/node_without_parent.dart';
 import 'package:floor/floor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:acroulette/models/pair.dart';
 
 part 'database.g.dart'; // the generated code will be there
 
