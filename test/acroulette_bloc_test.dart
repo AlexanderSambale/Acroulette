@@ -150,29 +150,12 @@ void main() async {
     group('ChangeMode', () {
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
         'new Position ends in AcrouletteCommandRecognizedState with mode washingMachine',
-        setUp: () async {
-          database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
-          dbController = await DBController.create(database);
-          await dbController.putSettingsPairValueByKey(appMode, washingMachine);
-          ttsBloc = MockFlutterTts();
-          voiceRecognitionBloc = MockVoiceRecognitionBloc();
-          when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
-          when(() => ttsBloc.notAvailable).thenReturn(true);
-          acrouletteBloc = AcrouletteBloc(
-            ttsBloc,
-            dbController,
-            voiceRecognitionBloc,
-          );
-        },
-        tearDown: () async {
-          await database.close();
-          await acrouletteBloc.close();
-        },
         build: () => acrouletteBloc,
         act: (bloc) {
           when(() => bloc.voiceRecognitionBloc.state)
               .thenReturn(const VoiceRecognitionState(true));
           when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
+          bloc.add(AcrouletteChangeMode(washingMachine));
           bloc.add(AcrouletteChangeMode(acroulette));
         },
         wait: const Duration(milliseconds: 100),
@@ -197,24 +180,6 @@ void main() async {
 
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
         'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
-        setUp: () async {
-          database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
-          dbController = await DBController.create(database);
-          await dbController.putSettingsPairValueByKey(appMode, acroulette);
-          ttsBloc = MockFlutterTts();
-          voiceRecognitionBloc = MockVoiceRecognitionBloc();
-          when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
-          when(() => ttsBloc.notAvailable).thenReturn(true);
-          acrouletteBloc = AcrouletteBloc(
-            ttsBloc,
-            dbController,
-            voiceRecognitionBloc,
-          );
-        },
-        tearDown: () async {
-          await database.close();
-          await acrouletteBloc.close();
-        },
         build: () => acrouletteBloc,
         act: (bloc) {
           when(() => bloc.voiceRecognitionBloc.state)
