@@ -10,6 +10,7 @@ import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/models/entities/settings_pair.dart';
 import 'package:acroulette/models/node.dart';
+import 'package:acroulette/models/pair.dart';
 import 'helper/io/assets.dart';
 
 class DBController {
@@ -54,21 +55,24 @@ class DBController {
     flows = await flowNodeBox.findAllFlowNodes();
     settings = await settingsBox.findAll();
 
-    setDefaultValue(appMode, acroulette);
+    List<Pair> defaultValues = [
+      Pair(appMode, acroulette),
+      // voice recognition
+      Pair(newPosition, newPosition),
+      Pair(nextPosition, nextPosition),
+      Pair(previousPosition, previousPosition),
+      Pair(currentPosition, currentPosition),
 
-    // voice recognition
-    setDefaultValue(newPosition, newPosition);
-    setDefaultValue(nextPosition, nextPosition);
-    setDefaultValue(previousPosition, previousPosition);
-    setDefaultValue(currentPosition, currentPosition);
+      // text to speech
+      Pair(rateKey, "0.5"),
+      Pair(pitchKey, "0.5"),
+      Pair(volumeKey, "0.5"),
+      Pair(languageKey, "en-US"),
+      Pair(engineKey, "com.google.android.tts"),
+      Pair(playingKey, "false"),
+    ];
 
-    // text to speech
-    setDefaultValue(rateKey, "0.5");
-    setDefaultValue(pitchKey, "0.5");
-    setDefaultValue(volumeKey, "0.5");
-    setDefaultValue(languageKey, "en-US");
-    setDefaultValue(engineKey, "com.google.android.tts");
-    setDefaultValue(playingKey, "false");
+    await setDefaultValues(defaultValues);
   }
 
   void setDefaultValue(String key, String value) async {
@@ -77,6 +81,10 @@ class DBController {
     } on PairValueException {
       await putSettingsPairValueByKey(key, value);
     }
+  }
+
+  Future<void> setDefaultValues(List<Pair> values) async {
+    await settingsBox.setDefaultValues(values);
   }
 
   Future<void> regenerateLists() async {

@@ -3,9 +3,13 @@ import 'dart:collection';
 import 'package:acroulette/models/entities/base_entity.dart';
 import 'package:floor/floor.dart';
 
-@entity
+const keyText = 'key_text';
+
+@Entity(indices: [
+  Index(value: [keyText], unique: true)
+])
 class SettingsPair extends BaseEntity {
-  @ColumnInfo(name: 'key_text')
+  @ColumnInfo(name: keyText)
   late String key;
   late String value;
 

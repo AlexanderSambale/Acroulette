@@ -1,4 +1,5 @@
 import 'package:acroulette/models/entities/settings_pair.dart';
+import 'package:acroulette/models/pair.dart';
 import 'package:floor/floor.dart';
 
 @dao
@@ -27,5 +28,12 @@ abstract class SettingsPairDao {
   Future<int> remove(SettingsPair object) async {
     await removeObject(object);
     return object.id;
+  }
+
+  Future<void> setDefaultValues(List<Pair> defaultValues) async {
+    await insertObjects(defaultValues
+        .map((defaultValue) =>
+            SettingsPair(null, defaultValue.first, defaultValue.second))
+        .toList(growable: false));
   }
 }
