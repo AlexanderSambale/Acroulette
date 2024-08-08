@@ -1,6 +1,6 @@
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:acroulette/widgets/formWidgets/heading.dart';
 import 'package:acroulette/widgets/formWidgets/text_settings_form_field.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class _VoiceRecognitionSettings extends State<VoiceRecognitionSettings> {
 
   @override
   Widget build(BuildContext context) {
-    DBController dbController = context.read<DBController>();
+    StorageProvider storageProvider = context.read<StorageProvider>();
 
     return BlocProvider.value(
         value: widget.voiceRecognitionBloc,
@@ -39,10 +39,10 @@ class _VoiceRecognitionSettings extends State<VoiceRecognitionSettings> {
               child: Card(
                 child: ListView(shrinkWrap: true, children: [
                   const Heading(headingLabel: "Voice recognition commands"),
-                  textSettingsFormField(newPosition, dbController),
-                  textSettingsFormField(nextPosition, dbController),
-                  textSettingsFormField(previousPosition, dbController),
-                  textSettingsFormField(currentPosition, dbController),
+                  textSettingsFormField(newPosition, storageProvider),
+                  textSettingsFormField(nextPosition, storageProvider),
+                  textSettingsFormField(previousPosition, storageProvider),
+                  textSettingsFormField(currentPosition, storageProvider),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 16.0, horizontal: 16.0),

@@ -8,7 +8,7 @@ import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/bloc/washing_machine/washing_machine_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/models/entities/settings_pair.dart';
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -20,7 +20,7 @@ part 'acroulette_state.dart';
 class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   final VoiceRecognitionBloc voiceRecognitionBloc;
   final TtsBloc ttsBloc;
-  final DBController dbController;
+  final StorageProvider storageProvider;
 
   late final TransitionBloc transitionBloc;
   late final ModeBloc modeBloc;
@@ -31,12 +31,12 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   late RegExp rPreviousPosition;
   late RegExp rCurrentPosition;
 
-  AcrouletteBloc(this.ttsBloc, this.dbController, this.voiceRecognitionBloc)
+  AcrouletteBloc(this.ttsBloc, this.storageProvider, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
     on<AcrouletteStart>((event, emit) async {
-      await dbController.putSettingsPairValueByKey(playingKey, "true");
+      await storageProvider.putSettingsPairValueByKey(playingKey, "true");
       voiceRecognitionBloc.add(VoiceRecognitionStart(
-          onData, () async => await onRecognitionStarted(dbController)));
+          onData, () async => await onRecognitionStarted(storageProvider)));
       emit(AcrouletteInitModel());
     });
     on<AcrouletteInitModelEvent>((event, emit) {
@@ -53,14 +53,14 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           mode: mode));
     });
     on<AcrouletteStop>((event, emit) async {
-      await dbController.putSettingsPairValueByKey(playingKey, "false");
+      await storageProvider.putSettingsPairValueByKey(playingKey, "false");
       voiceRecognitionBloc.add(VoiceRecognitionStop());
       emit(AcrouletteModelInitiatedState());
     });
     on<AcrouletteTransition>((event, emit) {
       switch (event.transition) {
         case newPosition:
-          transitionBloc.add(NewTransitionEvent(dbController.positions));
+          transitionBloc.add(NewTransitionEvent(storageProvider.positions));
           break;
         case nextPosition:
           transitionBloc.add(NextTransitionEvent());
@@ -77,14 +77,14 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       if (mode == event.mode) return;
       var positions = <String>[];
       if (event.mode == acroulette) {
-        positions = dbController.positions;
+        positions = storageProvider.positions;
         modeBloc.add(ModeChange(
             event.mode,
             () => transitionBloc
                 .add(InitAcrouletteTransitionEvent(positions, false))));
       }
       if (event.mode == washingMachine) {
-        positions = await dbController.flowPositions();
+        positions = await storageProvider.flowPositions();
         modeBloc.add(ModeChange(
             event.mode,
             () =>
@@ -99,19 +99,20 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
         WashingMachineChange(
           event.machine,
           () async => transitionBloc.add(
-            InitFlowTransitionEvent(await dbController.flowPositions(), true),
+            InitFlowTransitionEvent(
+                await storageProvider.flowPositions(), true),
           ),
         ),
       );
       emit(AcrouletteFlowState(event.machine));
     });
     // initialize blocs
-    modeBloc = ModeBloc(dbController);
-    washingMachineBloc = WashingMachineBloc(dbController);
+    modeBloc = ModeBloc(storageProvider);
+    washingMachineBloc = WashingMachineBloc(storageProvider);
 
     // initialize transitionBloc
     transitionBloc = TransitionBloc(onTransitionChange, Random());
-    dbController.getSettingsPairValueByKey(playingKey).then((value) {
+    storageProvider.getSettingsPairValueByKey(playingKey).then((value) {
       if (value == "true") {
         add(AcrouletteStart());
       }
@@ -126,7 +127,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     // get settings
     HashMap<String, String> settingsMap =
-        SettingsPair.toMap(dbController.settings);
+        SettingsPair.toMap(storageProvider.settings);
 
     // set regex for voice commands
     rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
@@ -167,19 +168,20 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     add(AcrouletteInitModelEvent());
   }
 
-  Future<void> setTransitionsDependingOnMode(DBController dbController) async {
+  Future<void> setTransitionsDependingOnMode(
+      StorageProvider storageProvider) async {
     if (mode == washingMachine) {
       transitionBloc.add(
-          InitFlowTransitionEvent(await dbController.flowPositions(), true));
+          InitFlowTransitionEvent(await storageProvider.flowPositions(), true));
     }
     if (mode == acroulette) {
       transitionBloc
-          .add(InitAcrouletteTransitionEvent(dbController.positions, false));
+          .add(InitAcrouletteTransitionEvent(storageProvider.positions, false));
     }
   }
 
-  Future<void> onRecognitionStarted(DBController dbController) async {
-    await setTransitionsDependingOnMode(dbController);
+  Future<void> onRecognitionStarted(StorageProvider storageProvider) async {
+    await setTransitionsDependingOnMode(storageProvider);
   }
 
   void recognizeCommand(String command) {

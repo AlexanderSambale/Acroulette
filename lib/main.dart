@@ -1,6 +1,6 @@
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:acroulette/widgets/flows.dart';
 import 'package:acroulette/widgets/home.dart';
 import 'package:acroulette/widgets/positions.dart';
@@ -15,14 +15,14 @@ import 'widgets/license.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  DBController dbController = await DBController.create(null);
+  StorageProvider storageProvider = await StorageProvider.create(null);
   Bloc.observer = SimpleBlocObserver();
-  runApp(Acroulette(dbController: dbController));
+  runApp(Acroulette(storageProvider: storageProvider));
 }
 
 class Acroulette extends StatelessWidget {
-  const Acroulette({super.key, required this.dbController});
-  final DBController dbController;
+  const Acroulette({super.key, required this.storageProvider});
+  final StorageProvider storageProvider;
 
   // This widget is the root of your application.
   @override
@@ -42,14 +42,14 @@ class Acroulette extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: RepositoryProvider(
-        create: (context) => dbController,
+        create: (context) => storageProvider,
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
               create: (BuildContext context) => VoiceRecognitionBloc(),
             ),
             BlocProvider(
-              create: (BuildContext context) => TtsBloc(dbController),
+              create: (BuildContext context) => TtsBloc(storageProvider),
             ),
           ],
           child: const AcrouletteHomePage(title: 'Acroulette'),

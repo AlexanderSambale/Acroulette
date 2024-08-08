@@ -13,18 +13,16 @@ import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
 import 'helper/io/assets.dart';
 
-class DBController {
+class StorageProvider {
   late final AppDatabase store;
 
   late final SettingsPairDao settingsBox;
   late final NodeHelper nodeBox;
   late final FlowNodeDao flowNodeBox;
-  late List<String> positions;
   late List<FlowNode> flows;
   late List<SettingsPair> settings;
-  late List<Node> nodesWithoutParent;
 
-  DBController._create(this.store) {
+  StorageProvider._create(this.store) {
     settingsBox = store.settingsPairDao;
     flowNodeBox = store.flowNodeDao;
     nodeBox = NodeHelper(
@@ -98,18 +96,18 @@ class DBController {
     nodesWithoutParent = await nodeBox.findNodesWithoutParent();
   }
 
-  /// Create an instance of DBController to use throughout the app.
-  static Future<DBController> create(AppDatabase? store) async {
-    DBController dbController;
+  /// Create an instance of StorageProvider to use throughout the app.
+  static Future<StorageProvider> create(AppDatabase? store) async {
+    StorageProvider storageProvider;
     if (store == null) {
       AppDatabase newStore =
           await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-      dbController = DBController._create(newStore);
+      storageProvider = StorageProvider._create(newStore);
     } else {
-      dbController = DBController._create(store);
+      storageProvider = StorageProvider._create(store);
     }
-    await dbController.loadData();
-    return dbController;
+    await storageProvider.loadData();
+    return storageProvider;
   }
 
   Future<String> getSettingsPairValueByKey(String key) async {

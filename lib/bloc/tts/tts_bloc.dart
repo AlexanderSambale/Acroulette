@@ -1,5 +1,5 @@
 import 'package:acroulette/constants/settings.dart';
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -11,7 +11,7 @@ part 'tts_state.dart';
 
 class TtsBloc extends Bloc<TtsEvent, TtsState> {
   late FlutterTts flutterTts;
-  late DBController dbController;
+  late StorageProvider storageProvider;
   bool notAvailable = true;
 
   // initialized so that we can check in the setter
@@ -25,7 +25,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   late final Future<dynamic> defaultEngine;
   late final Future<dynamic> defaultVoice;
 
-  TtsBloc(this.dbController) : super(TtsIdleState()) {
+  TtsBloc(this.storageProvider) : super(TtsIdleState()) {
     on<TtsChangeEvent>((event, emit) {
       emit(TtsChangeState(event.property));
       add(const TtsIdleEvent());
@@ -35,7 +35,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     });
 
     flutterTts = FlutterTts();
-    init(dbController).then((value) => notAvailable = false);
+    init(storageProvider).then((value) => notAvailable = false);
   }
 
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
@@ -50,17 +50,17 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   set language(String? newLanguage) => setLanguage(newLanguage);
   set engine(String? newLanguage) => setEngine(newLanguage);
 
-  Future init(DBController dbController) async {
+  Future init(StorageProvider storageProvider) async {
     try {
       await _setAwaitOptions();
-      volume =
-          double.parse(await dbController.getSettingsPairValueByKey(volumeKey));
-      speechRate =
-          double.parse(await dbController.getSettingsPairValueByKey(rateKey));
-      pitch =
-          double.parse(await dbController.getSettingsPairValueByKey(pitchKey));
-      _language = await dbController.getSettingsPairValueByKey(languageKey);
-      engine = await dbController.getSettingsPairValueByKey(engineKey);
+      volume = double.parse(
+          await storageProvider.getSettingsPairValueByKey(volumeKey));
+      speechRate = double.parse(
+          await storageProvider.getSettingsPairValueByKey(rateKey));
+      pitch = double.parse(
+          await storageProvider.getSettingsPairValueByKey(pitchKey));
+      _language = await storageProvider.getSettingsPairValueByKey(languageKey);
+      engine = await storageProvider.getSettingsPairValueByKey(engineKey);
       languages = _getLanguages();
       engines = _getEngines();
       defaultEngine = _getDefaultEngine();
@@ -78,7 +78,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     if (_volume == newVolume) return;
     _volume = newVolume;
     add(const TtsChangeEvent(volumeKey));
-    dbController.putSettingsPairValueByKey(volumeKey, _volume.toString());
+    storageProvider.putSettingsPairValueByKey(volumeKey, _volume.toString());
     await flutterTts.setVolume(_volume);
   }
 
@@ -86,7 +86,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     if (_rate == newRate) return;
     _rate = newRate;
     add(const TtsChangeEvent(rateKey));
-    dbController.putSettingsPairValueByKey(rateKey, _rate.toString());
+    storageProvider.putSettingsPairValueByKey(rateKey, _rate.toString());
     await flutterTts.setSpeechRate(_rate);
   }
 
@@ -94,14 +94,14 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
     if (_pitch == newPitch) return;
     _pitch = newPitch;
     add(const TtsChangeEvent(pitchKey));
-    dbController.putSettingsPairValueByKey(pitchKey, _pitch.toString());
+    storageProvider.putSettingsPairValueByKey(pitchKey, _pitch.toString());
     await flutterTts.setPitch(_pitch);
   }
 
   Future<void> setLanguage(String? newLanguage) async {
     if (newLanguage == null || _language == newLanguage) return;
     _language = newLanguage;
-    dbController.putSettingsPairValueByKey(languageKey, newLanguage);
+    storageProvider.putSettingsPairValueByKey(languageKey, newLanguage);
     if (_engine == null) return;
     setLanguageShortened(newLanguage);
   }
@@ -118,7 +118,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   Future<void> setEngine(String? newEngine) async {
     if (newEngine == null || _engine == newEngine) return;
     _engine = newEngine;
-    dbController.putSettingsPairValueByKey(engineKey, newEngine);
+    storageProvider.putSettingsPairValueByKey(engineKey, newEngine);
     await flutterTts.setEngine(newEngine);
     await setLanguageShortened(_language!); // should implicitly be not null
     add(const TtsChangeEvent(engineKey));

@@ -1,4 +1,4 @@
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:acroulette/helper/import_export/export.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/widgets/formWidgets/import_export_settings_view.dart';
@@ -10,9 +10,10 @@ class ImportExportSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DBController dbController = context.read<DBController>();
+    StorageProvider storageProvider = context.read<StorageProvider>();
 
     return ImportExportSettingsView(
-        import: () => import(dbController), export: () => export(dbController));
+        import: () => import(storageProvider),
+        export: () => export(storageProvider));
   }
 }

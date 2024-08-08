@@ -3,7 +3,7 @@ import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/constants/widgets.dart';
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:acroulette/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +18,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    DBController dbController = context.read<DBController>();
+    StorageProvider storageProvider = context.read<StorageProvider>();
 
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
           BlocProvider(
             create: (_) => AcrouletteBloc(
               context.read<TtsBloc>(),
-              dbController,
+              storageProvider,
               context.read<VoiceRecognitionBloc>(),
             ),
             child: BlocBuilder<AcrouletteBloc, BaseAcrouletteState>(
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
               var machine = acrouletteBloc.machine;
 
               return FutureBuilder(
-                  future: dbController.getSettingsPairValueByKey(playingKey),
+                  future: storageProvider.getSettingsPairValueByKey(playingKey),
                   builder: (context, snapshot) {
                     switch (state.runtimeType) {
                       case AcrouletteModelInitiatedState:
@@ -155,8 +155,8 @@ Widget noPosture() {
 }
 
 List<DropdownMenuItem<String>> getWashingMachineItems(
-    DBController dbController) {
-  return dbController.flows
+    StorageProvider storageProvider) {
+  return storageProvider.flows
       .map((flow) => DropdownMenuItem<String>(
           value: flow.id.toString(),
           child: Center(child: Text(flow.name, style: displayTextStyle))))
@@ -248,7 +248,7 @@ Widget washingMachineDropdown(String machine, AcrouletteBloc acrouletteBloc) {
               const EdgeInsets.symmetric(horizontal: 16.0, vertical: size / 4),
           child: DropdownButton<String>(
             value: machine,
-            items: getWashingMachineItems(acrouletteBloc.dbController),
+            items: getWashingMachineItems(acrouletteBloc.storageProvider),
             onChanged: (value) {
               if (value == null || machine == value) return;
               acrouletteBloc.add(AcrouletteChangeMachine(value));

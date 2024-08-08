@@ -2,7 +2,7 @@ import 'package:acroulette/constants/validator.dart';
 import 'package:acroulette/helper/objectbox/to_many_extension.dart';
 import 'package:acroulette/models/node.dart';
 import 'package:acroulette/models/pair.dart';
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -11,7 +11,7 @@ part 'position_administration_state.dart';
 
 class PositionAdministrationBloc
     extends Bloc<PositionAdministrationEvent, BasePositionAdministrationState> {
-  PositionAdministrationBloc(this.dbController)
+  PositionAdministrationBloc(this.storageProvider)
       : super(const PositionAdministrationInitialState([])) {
     on<PositionsBDStartChangeEvent>((event, emit) {
       emit(PositionAdministrationState(state.trees));
@@ -21,36 +21,36 @@ class PositionAdministrationBloc
     });
   }
 
-  late DBController dbController;
+  late StorageProvider storageProvider;
 
   Future<void> onSwitch(bool switched, Node tree) async {
     add(PositionsBDStartChangeEvent());
-    await dbController.onSwitch(switched, tree);
-    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
+    await storageProvider.onSwitch(switched, tree);
+    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
   }
 
   void toggleExpand(Node tree) async {
     add(PositionsBDStartChangeEvent());
-    await dbController.updateNodeIsExpanded(tree, !tree.isExpanded);
-    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
+    await storageProvider.updateNodeIsExpanded(tree, !tree.isExpanded);
+    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
   }
 
   Future<void> createPosture(Node parent, String posture) async {
     add(PositionsBDStartChangeEvent());
-    await dbController.createPosture(parent, posture);
-    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
+    await storageProvider.createPosture(parent, posture);
+    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
   }
 
   Future<void> updateNodeLabel(Node child, String label) async {
     add(PositionsBDStartChangeEvent());
-    await dbController.updateNodeLabel(child, label);
-    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
+    await storageProvider.updateNodeLabel(child, label);
+    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
   }
 
   Future<void> deletePosture(Node child) async {
     add(PositionsBDStartChangeEvent());
-    await dbController.deletePosture(child);
-    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
+    await storageProvider.deletePosture(child);
+    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
   }
 
   /// Returns a list of Pairs
@@ -66,14 +66,14 @@ class PositionAdministrationBloc
 
   Future<void> deleteCategory(Node category) async {
     add(PositionsBDStartChangeEvent());
-    await dbController.deleteCategory(category);
-    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
+    await storageProvider.deleteCategory(category);
+    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
   }
 
   Future<void> createCategory(Node? parent, String category) async {
     add(PositionsBDStartChangeEvent());
-    await dbController.createCategory(parent, category);
-    add(PositionsDBIsIdleEvent(dbController.nodesWithoutParent));
+    await storageProvider.createCategory(parent, category);
+    add(PositionsDBIsIdleEvent(storageProvider.nodesWithoutParent));
   }
 
   Future<void> onDeleteClick(Node child) async {
@@ -119,7 +119,7 @@ class PositionAdministrationBloc
 
   String? validatorRootCategory(String? label) {
     if (label == null || label.isEmpty) return enterText;
-    List<Node> rootCategories = dbController.nodesWithoutParent;
+    List<Node> rootCategories = storageProvider.nodesWithoutParent;
     for (var category in rootCategories) {
       if (category.label == label) {
         return existsText('Category', label);

@@ -3,7 +3,7 @@ import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/flow_node.dart';
 import 'package:acroulette/helper/import_export/import.dart';
 import 'package:acroulette/helper/io/assets.dart';
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -22,11 +22,11 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
 
     late AppDatabase database;
-    late DBController dbController;
+    late StorageProvider storageProvider;
 
     setUp(() async {
       database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
-      dbController = await DBController.create(database);
+      storageProvider = await StorageProvider.create(database);
     });
 
     tearDown(() async {
@@ -35,15 +35,15 @@ void main() {
 
     test('import basic nodes', () async {
       String data = await loadAsset('models/AcrouletteBasisNodes.json');
-      await importData(data, dbController);
-      int? actual = await dbController.nodeBox.count();
+      await importData(data, storageProvider);
+      int? actual = await storageProvider.nodeBox.count();
       expect(actual, isNot(0));
     });
 
     test('import basic flows', () async {
       String data = await loadAsset('models/AcrouletteBasisFlows.json');
-      await importData(data, dbController);
-      int? actual = await dbController.flowNodeBox.count();
+      await importData(data, storageProvider);
+      int? actual = await storageProvider.flowNodeBox.count();
       expect(actual, isNot(0));
     });
   });

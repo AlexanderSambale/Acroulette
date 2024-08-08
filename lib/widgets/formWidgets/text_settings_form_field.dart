@@ -1,8 +1,8 @@
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:flutter/material.dart';
 
 FutureBuilder<List<Widget>> textSettingsFormField(
-    String key, DBController dbController) {
+    String key, StorageProvider storageProvider) {
   Future<List<Widget>> future = Future(() async => [
         Text(key),
         TextFormField(
@@ -15,9 +15,9 @@ FutureBuilder<List<Widget>> textSettingsFormField(
             }
             return null;
           },
-          initialValue: await dbController.getSettingsPairValueByKey(key),
+          initialValue: await storageProvider.getSettingsPairValueByKey(key),
           onSaved: (newValue) async =>
-              await dbController.putSettingsPairValueByKey(key, newValue!),
+              await storageProvider.putSettingsPairValueByKey(key, newValue!),
         ),
       ]);
   return FutureBuilder(

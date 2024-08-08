@@ -4,7 +4,7 @@ import 'package:acroulette/constants/validator.dart';
 import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/entities/node_entity.dart';
 import 'package:acroulette/models/node.dart';
-import 'package:acroulette/db_controller.dart';
+import 'package:acroulette/storage_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Node createSimpleTree({
@@ -39,20 +39,20 @@ Node createComplexTree() {
   return root;
 }
 
-Future<Node> setupComplexTree(DBController dbController) async {
+Future<Node> setupComplexTree(StorageProvider storageProvider) async {
   Node complexTree = createComplexTree();
-  complexTree.id = await dbController.nodeBox.insertTree(complexTree, null);
+  complexTree.id = await storageProvider.nodeBox.insertTree(complexTree, null);
   return complexTree;
 }
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late AppDatabase database;
-  late DBController dbController;
+  late StorageProvider storageProvider;
 
   setUp(() async {
     database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
-    dbController = await DBController.create(database);
+    storageProvider = await StorageProvider.create(database);
   });
 
   tearDown(() async {
@@ -62,82 +62,84 @@ void main() {
   group('onDeleteClick', () {
     test('delete leaf', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(dbController);
+          PositionAdministrationBloc(storageProvider);
       // create category, create leaf
       int categoryId =
-          await dbController.nodeBox.createCategory(null, 'category');
+          await storageProvider.nodeBox.createCategory(null, 'category');
       NodeEntity? category =
-          await dbController.nodeBox.nodeDao.findEntityById(categoryId);
-      int leafId = await dbController.nodeBox
-          .createPosture(dbController.nodeBox.toNode(category!)!, 'leaf');
+          await storageProvider.nodeBox.nodeDao.findEntityById(categoryId);
+      int leafId = await storageProvider.nodeBox
+          .createPosture(storageProvider.nodeBox.toNode(category!)!, 'leaf');
       NodeEntity? leaf =
-          await dbController.nodeBox.nodeDao.findEntityById(leafId);
+          await storageProvider.nodeBox.nodeDao.findEntityById(leafId);
       // leaf exists
       expect(leaf, isNot(null));
       // delete leaf
-      await bloc.onDeleteClick(dbController.nodeBox.toNode(leaf)!);
-      leaf = await dbController.nodeBox.nodeDao.findEntityById(leafId);
+      await bloc.onDeleteClick(storageProvider.nodeBox.toNode(leaf)!);
+      leaf = await storageProvider.nodeBox.nodeDao.findEntityById(leafId);
       expect(leaf, equals(null));
     });
 
     test('delete node with children', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(dbController);
-      int numberOfNodesBefore = (await dbController.nodeBox.count())!;
-      Node complexTree = await setupComplexTree(dbController);
-      int numberOfNodesAfterAdding = (await dbController.nodeBox.count())!;
+          PositionAdministrationBloc(storageProvider);
+      int numberOfNodesBefore = (await storageProvider.nodeBox.count())!;
+      Node complexTree = await setupComplexTree(storageProvider);
+      int numberOfNodesAfterAdding = (await storageProvider.nodeBox.count())!;
       expect(numberOfNodesBefore, isNot(equals(numberOfNodesAfterAdding)));
       await bloc.onDeleteClick(complexTree);
-      int numberOfNodesAfterDeleting = (await dbController.nodeBox.count())!;
+      int numberOfNodesAfterDeleting = (await storageProvider.nodeBox.count())!;
       expect(numberOfNodesBefore, numberOfNodesAfterDeleting);
     });
   });
 
   test('onSaveClick', () async {
-    PositionAdministrationBloc bloc = PositionAdministrationBloc(dbController);
+    PositionAdministrationBloc bloc =
+        PositionAdministrationBloc(storageProvider);
     // create category
     int categoryId =
-        await dbController.nodeBox.createCategory(null, 'category');
+        await storageProvider.nodeBox.createCategory(null, 'category');
     NodeEntity? category =
-        await dbController.nodeBox.nodeDao.findEntityById(categoryId);
-    Node? parent = dbController.nodeBox.toNode(category);
+        await storageProvider.nodeBox.nodeDao.findEntityById(categoryId);
+    Node? parent = storageProvider.nodeBox.toNode(category);
     String postureName = 'newPosture';
-    int numberOfNodesBeforeSaving = (await dbController.nodeBox.count())!;
+    int numberOfNodesBeforeSaving = (await storageProvider.nodeBox.count())!;
     await bloc.onSaveClick(parent, true, postureName);
-    int numberOfNodesAfterSaving = (await dbController.nodeBox.count())!;
+    int numberOfNodesAfterSaving = (await storageProvider.nodeBox.count())!;
     expect(numberOfNodesAfterSaving, numberOfNodesBeforeSaving + 1);
   });
 
   test('onEditClick', () async {
-    PositionAdministrationBloc bloc = PositionAdministrationBloc(dbController);
+    PositionAdministrationBloc bloc =
+        PositionAdministrationBloc(storageProvider);
     // create category, create leaf
     int categoryId =
-        await dbController.nodeBox.createCategory(null, 'category');
+        await storageProvider.nodeBox.createCategory(null, 'category');
     NodeEntity? category =
-        await dbController.nodeBox.nodeDao.findEntityById(categoryId);
-    int leafId = await dbController.nodeBox
-        .createPosture(dbController.nodeBox.toNode(category!)!, 'leaf');
+        await storageProvider.nodeBox.nodeDao.findEntityById(categoryId);
+    int leafId = await storageProvider.nodeBox
+        .createPosture(storageProvider.nodeBox.toNode(category!)!, 'leaf');
     NodeEntity? leaf =
-        await dbController.nodeBox.nodeDao.findEntityById(leafId);
+        await storageProvider.nodeBox.nodeDao.findEntityById(leafId);
     String testLabel = "testPosture";
     expect(leaf!.label, isNot(equals(testLabel)));
     await bloc.onEditClick(
-        dbController.nodeBox.toNode(leaf)!, false, testLabel);
-    leaf = await dbController.nodeBox.nodeDao.findEntityById(leafId);
+        storageProvider.nodeBox.toNode(leaf)!, false, testLabel);
+    leaf = await storageProvider.nodeBox.nodeDao.findEntityById(leafId);
     expect(leaf!.label, testLabel);
   });
 
   group('onSwitchClick', () {
     test('click false', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(dbController);
+          PositionAdministrationBloc(storageProvider);
       Node simpleTree = createSimpleTree();
       int simpleTreeId =
-          await dbController.nodeBox.insertTree(simpleTree, null);
+          await storageProvider.nodeBox.insertTree(simpleTree, null);
       NodeEntity? loadedTreeEntity =
-          await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
+          await storageProvider.nodeBox.nodeDao.findEntityById(simpleTreeId);
       Node? loadedTree =
-          await dbController.nodeBox.toNodeWithChildren(loadedTreeEntity);
+          await storageProvider.nodeBox.toNodeWithChildren(loadedTreeEntity);
       expect(loadedTree, isNotNull);
       expect(simpleTree.isSwitched, loadedTree!.isSwitched);
       List<bool> isEnabledList = [];
@@ -147,9 +149,9 @@ void main() {
       expect(isEnabledList, [true, false, true]);
       await bloc.onSwitch(false, loadedTree);
       loadedTreeEntity =
-          await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
+          await storageProvider.nodeBox.nodeDao.findEntityById(simpleTreeId);
       loadedTree =
-          await dbController.nodeBox.toNodeWithChildren(loadedTreeEntity);
+          await storageProvider.nodeBox.toNodeWithChildren(loadedTreeEntity);
       expect(loadedTree!.isSwitched, false);
       List<bool> isEnabledListAfter = [];
       for (Node child in loadedTree.children) {
@@ -160,15 +162,15 @@ void main() {
 
     test('click true', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(dbController);
+          PositionAdministrationBloc(storageProvider);
       Node simpleTree = createSimpleTree();
       simpleTree.isSwitched = false;
       int simpleTreeId =
-          await dbController.nodeBox.insertTree(simpleTree, null);
+          await storageProvider.nodeBox.insertTree(simpleTree, null);
       NodeEntity? loadedTreeEntity =
-          await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
+          await storageProvider.nodeBox.nodeDao.findEntityById(simpleTreeId);
       Node? loadedTree =
-          await dbController.nodeBox.toNodeWithChildren(loadedTreeEntity);
+          await storageProvider.nodeBox.toNodeWithChildren(loadedTreeEntity);
       expect(loadedTree, isNotNull);
       expect(simpleTree.isSwitched, loadedTree!.isSwitched);
       List<bool> isEnabledList = [];
@@ -177,9 +179,9 @@ void main() {
       }
       await bloc.onSwitch(true, loadedTree);
       loadedTreeEntity =
-          await dbController.nodeBox.nodeDao.findEntityById(simpleTreeId);
+          await storageProvider.nodeBox.nodeDao.findEntityById(simpleTreeId);
       loadedTree =
-          await dbController.nodeBox.toNodeWithChildren(loadedTreeEntity);
+          await storageProvider.nodeBox.toNodeWithChildren(loadedTreeEntity);
       expect(loadedTree!.isSwitched, true);
       List<bool> isEnabledListAfter = [];
       for (Node child in loadedTree.children) {
@@ -192,19 +194,19 @@ void main() {
   group('validate', () {
     test('validate posture', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(dbController);
+          PositionAdministrationBloc(storageProvider);
       // create category, create leaf
       int categoryId =
-          await dbController.nodeBox.createCategory(null, 'category');
+          await storageProvider.nodeBox.createCategory(null, 'category');
       NodeEntity? category =
-          await dbController.nodeBox.nodeDao.findEntityById(categoryId);
-      int leafId = await dbController.nodeBox
-          .createPosture(dbController.nodeBox.toNode(category!)!, 'test leaf');
+          await storageProvider.nodeBox.nodeDao.findEntityById(categoryId);
+      int leafId = await storageProvider.nodeBox.createPosture(
+          storageProvider.nodeBox.toNode(category!)!, 'test leaf');
       NodeEntity? leafEntity =
-          await dbController.nodeBox.nodeDao.findEntityById(leafId);
+          await storageProvider.nodeBox.nodeDao.findEntityById(leafId);
       String testLabel = "testPosture";
-      Node? parent = dbController.nodeBox.toNode(category);
-      Node? leaf = dbController.nodeBox.toNode(leafEntity);
+      Node? parent = storageProvider.nodeBox.toNode(category);
+      Node? leaf = storageProvider.nodeBox.toNode(leafEntity);
       parent!.addNode(leaf!);
       expect(bloc.validator(parent, true, ''), enterText);
       expect(bloc.validator(parent, true, leaf.label),
@@ -214,8 +216,8 @@ void main() {
 
     test('validate category', () async {
       PositionAdministrationBloc bloc =
-          PositionAdministrationBloc(dbController);
-      Node complexTree = await setupComplexTree(dbController);
+          PositionAdministrationBloc(storageProvider);
+      Node complexTree = await setupComplexTree(storageProvider);
       String testLabel = "testCategory";
       expect(bloc.validator(complexTree, false, ''), enterText);
       expect(bloc.validator(complexTree, false, complexTree.label), null);
