@@ -48,10 +48,9 @@ abstract class FlowNodeDao {
   }
 
   Future<List<int>> putAll(List<FlowNode> objects) async {
-    List<int> ids = [];
-    for (var object in objects) {
-      ids.add(await put(object));
-    }
+    List<int> ids = await insertObjects(objects
+        .map((object) => toFlowNodeEntity(object)!)
+        .toList(growable: false));
     return ids;
   }
 
