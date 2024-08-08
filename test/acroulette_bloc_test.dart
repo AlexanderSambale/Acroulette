@@ -65,7 +65,9 @@ void main() async {
       act: (bloc) => bloc.add(AcrouletteStop()),
       expect: () => [AcrouletteModelInitiatedState()],
       verify: (bloc) async => expect(
-          await dbController.getSettingsPairValueByKey(playingKey), "false"),
+        await dbController.getSettingsPairValueByKey(playingKey),
+        "false",
+      ),
       wait: const Duration(milliseconds: 100),
     );
 
@@ -147,41 +149,92 @@ void main() async {
 
     group('ChangeMode', () {
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
-          'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
-          build: () {
-            dbController.putSettingsPairValueByKey(appMode, acroulette);
-            return acrouletteBloc;
-          },
-          act: (bloc) {
-            when(() => bloc.voiceRecognitionBloc.state)
-                .thenReturn(const VoiceRecognitionState(true));
-            when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
-            bloc.add(AcrouletteChangeMode(acroulette));
-            bloc.add(AcrouletteChangeMode(washingMachine));
-            bloc.add(AcrouletteChangeMode(acroulette));
-          },
-          expect: () => [
-                isA<AcrouletteFlowState>().having(
-                    (state) => state.flowName, 'flowName', 'ninja side star'),
-                // is fired immediately because of the test AcrouletteChangeMode(acroulette)
-                isA<AcrouletteFlowState>().having(
-                    (state) => state.flowName, 'flowName', isA<String>()),
-                isA<AcrouletteCommandRecognizedState>()
-                    .having((state) => state.currentFigure, 'currentFigure',
-                        'ninja side star')
-                    .having((state) => state.nextFigure, 'nextFigure',
-                        'reverse bird')
-                    .having((state) => state.previousFigure, 'previousFigure',
-                        'buddha')
-                    .having((state) => state.mode, 'mode', acroulette),
-                isA<AcrouletteCommandRecognizedState>()
-                    .having((state) => state.currentFigure, 'currentFigure',
-                        isA<String>())
-                    .having((state) => state.nextFigure, 'nextFigure', '')
-                    .having(
-                        (state) => state.previousFigure, 'previousFigure', '')
-                    .having((state) => state.mode, 'mode', acroulette),
-              ]);
+        'new Position ends in AcrouletteCommandRecognizedState with mode washingMachine',
+        setUp: () async {
+          database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
+          dbController = await DBController.create(database);
+          await dbController.putSettingsPairValueByKey(appMode, washingMachine);
+          ttsBloc = MockFlutterTts();
+          voiceRecognitionBloc = MockVoiceRecognitionBloc();
+          when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
+          when(() => ttsBloc.notAvailable).thenReturn(true);
+          acrouletteBloc = AcrouletteBloc(
+            ttsBloc,
+            dbController,
+            voiceRecognitionBloc,
+          );
+        },
+        tearDown: () async {
+          await database.close();
+          await acrouletteBloc.close();
+        },
+        build: () => acrouletteBloc,
+        act: (bloc) {
+          when(() => bloc.voiceRecognitionBloc.state)
+              .thenReturn(const VoiceRecognitionState(true));
+          when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
+          bloc.add(AcrouletteChangeMode(acroulette));
+        },
+        wait: const Duration(milliseconds: 100),
+        expect: () => [
+          isA<AcrouletteFlowState>()
+              .having((state) => state.flowName, 'flowName', 'ninja side star'),
+          isA<AcrouletteCommandRecognizedState>()
+              .having((state) => state.currentFigure, 'currentFigure',
+                  'ninja side star')
+              .having((state) => state.nextFigure, 'nextFigure', 'reverse bird')
+              .having(
+                  (state) => state.previousFigure, 'previousFigure', 'buddha')
+              .having((state) => state.mode, 'mode', washingMachine),
+          isA<AcrouletteCommandRecognizedState>()
+              .having((state) => state.currentFigure, 'currentFigure',
+                  isA<String>())
+              .having((state) => state.nextFigure, 'nextFigure', '')
+              .having((state) => state.previousFigure, 'previousFigure', '')
+              .having((state) => state.mode, 'mode', acroulette),
+        ],
+      );
+
+      blocTest<AcrouletteBloc, BaseAcrouletteState>(
+        'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
+        setUp: () async {
+          database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
+          dbController = await DBController.create(database);
+          await dbController.putSettingsPairValueByKey(appMode, acroulette);
+          ttsBloc = MockFlutterTts();
+          voiceRecognitionBloc = MockVoiceRecognitionBloc();
+          when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
+          when(() => ttsBloc.notAvailable).thenReturn(true);
+          acrouletteBloc = AcrouletteBloc(
+            ttsBloc,
+            dbController,
+            voiceRecognitionBloc,
+          );
+        },
+        tearDown: () async {
+          await database.close();
+          await acrouletteBloc.close();
+        },
+        build: () => acrouletteBloc,
+        act: (bloc) {
+          when(() => bloc.voiceRecognitionBloc.state)
+              .thenReturn(const VoiceRecognitionState(true));
+          when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
+          bloc.add(AcrouletteChangeMode(washingMachine));
+        },
+        wait: const Duration(milliseconds: 100),
+        expect: () => [
+          isA<AcrouletteFlowState>()
+              .having((state) => state.flowName, 'flowName', 'ninja side star'),
+          isA<AcrouletteCommandRecognizedState>()
+              .having((state) => state.currentFigure, 'currentFigure',
+                  'ninja side star')
+              .having((state) => state.nextFigure, 'nextFigure', 'reverse bird')
+              .having(
+                  (state) => state.previousFigure, 'previousFigure', 'buddha')
+              .having((state) => state.mode, 'mode', washingMachine),
+        ],
+      );
     });
   });
 }
