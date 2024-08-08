@@ -33,8 +33,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
   AcrouletteBloc(this.ttsBloc, this.dbController, this.voiceRecognitionBloc)
       : super(AcrouletteInitialState()) {
-    on<AcrouletteStart>((event, emit) {
-      dbController.putSettingsPairValueByKey(playingKey, "true");
+    on<AcrouletteStart>((event, emit) async {
+      await dbController.putSettingsPairValueByKey(playingKey, "true");
       voiceRecognitionBloc.add(VoiceRecognitionStart(
           onData, () => onRecognitionStarted(dbController)));
       emit(AcrouletteInitModel());
@@ -52,8 +52,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           nextFigure: event.nextFigure,
           mode: mode));
     });
-    on<AcrouletteStop>((event, emit) {
-      dbController.putSettingsPairValueByKey(playingKey, "false");
+    on<AcrouletteStop>((event, emit) async {
+      await dbController.putSettingsPairValueByKey(playingKey, "false");
       voiceRecognitionBloc.add(VoiceRecognitionStop());
       emit(AcrouletteModelInitiatedState());
     });
