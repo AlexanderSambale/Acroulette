@@ -163,7 +163,7 @@ void main() async {
 
     group('ChangeMode', () {
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
-        'new Position ends in AcrouletteCommandRecognizedState with mode washingMachine',
+        'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
         build: () => acrouletteBloc,
         act: (bloc) {
           when(() => bloc.voiceRecognitionBloc.state)
@@ -193,7 +193,7 @@ void main() async {
       );
 
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
-        'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
+        'new Position ends in AcrouletteCommandRecognizedState with mode washingMachine',
         build: () => acrouletteBloc,
         act: (bloc) {
           when(() => bloc.voiceRecognitionBloc.state)
