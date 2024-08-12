@@ -23,6 +23,9 @@ Future<void> main() async {
   NodeRepository nodeRepository = NodeRepository(storageProvider);
   FlowNodeRepository flowNodeRepository = FlowNodeRepository(storageProvider);
   SettingsRepository settingsRepository = SettingsRepository(storageProvider);
+  await nodeRepository.initialize();
+  await flowNodeRepository.initialize();
+  await settingsRepository.initialize();
   runApp(Acroulette(
     nodeRepository: nodeRepository,
     flowNodeRepository: flowNodeRepository,

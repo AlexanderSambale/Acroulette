@@ -36,6 +36,9 @@ void main() async {
       nodeRepository = NodeRepository(storageProvider);
       flowNodeRepository = FlowNodeRepository(storageProvider);
       settingsRepository = SettingsRepository(storageProvider);
+      await nodeRepository.initialize();
+      await flowNodeRepository.initialize();
+      await settingsRepository.initialize();
       ttsBloc = MockFlutterTts();
       voiceRecognitionBloc = MockVoiceRecognitionBloc();
       when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
