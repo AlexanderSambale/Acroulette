@@ -12,8 +12,6 @@ class SettingsRepository {
   SettingsRepository(this.storageProvider);
 
   Future<void> initialize() async {
-    settings = await storageProvider.settingsBox.findAll();
-
     List<Pair> defaultValues = [
       Pair(appMode, acroulette),
       // voice recognition
@@ -33,6 +31,7 @@ class SettingsRepository {
     ];
 
     await setDefaultValues(defaultValues);
+    settings = await storageProvider.settingsBox.findAll();
   }
 
   void setDefaultValue(String key, String value) async {
@@ -69,5 +68,9 @@ class SettingsRepository {
       await storageProvider.settingsBox.updateObject(keyQueryFirstValue);
     }
     settings = await storageProvider.settingsBox.findAll();
+  }
+
+  String get(String key) {
+    return settings.where((pair) => pair.key == key).single.value;
   }
 }

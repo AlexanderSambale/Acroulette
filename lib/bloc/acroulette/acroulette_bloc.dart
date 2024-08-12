@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:acroulette/bloc/mode/mode_bloc.dart';
@@ -11,7 +10,6 @@ import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/domain_layer/flow_node_repository.dart';
 import 'package:acroulette/domain_layer/node_repository.dart';
 import 'package:acroulette/domain_layer/settings_repository.dart';
-import 'package:acroulette/models/entities/settings_pair.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -31,10 +29,10 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   late final ModeBloc modeBloc;
   late final WashingMachineBloc washingMachineBloc;
 
-  late RegExp rNextPosition;
-  late RegExp rNewPosition;
-  late RegExp rPreviousPosition;
-  late RegExp rCurrentPosition;
+  RegExp get rNextPosition => RegExp(settingsRepository.get(nextPosition));
+  RegExp get rNewPosition => RegExp(settingsRepository.get(nextPosition));
+  RegExp get rPreviousPosition => RegExp(settingsRepository.get(nextPosition));
+  RegExp get rCurrentPosition => RegExp(settingsRepository.get(nextPosition));
 
   AcrouletteBloc({
     required this.ttsBloc,
@@ -133,17 +131,6 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     } else {
       voiceRecognitionBloc.initialize(onInitiated);
     }
-
-    // get settings
-    HashMap<String, String> settingsMap =
-        SettingsPair.toMap(settingsRepository.settings);
-
-    // set regex for voice commands
-    rNextPosition = RegExp(settingsMap[nextPosition] ?? nextPosition);
-    rNewPosition = RegExp(settingsMap[newPosition] ?? newPosition);
-    rPreviousPosition =
-        RegExp(settingsMap[previousPosition] ?? previousPosition);
-    rCurrentPosition = RegExp(settingsMap[currentPosition] ?? currentPosition);
   }
 
   String get mode {
