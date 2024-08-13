@@ -26,7 +26,7 @@ class Flows extends StatelessWidget {
                   itemCount: flowNodeRepository.flows.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      padding: const EdgeInsets.only(right: 10.0),
                       child: FlowView(
                         flow: flowNodeRepository.flows[index],
                         toggleExpand: bloc.toggleExpand,
