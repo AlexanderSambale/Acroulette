@@ -19,6 +19,7 @@ class PositionAdministrationBloc
     on<PositionsDBIsIdleEvent>((event, emit) {
       emit(PositionAdministrationInitialState(event.trees));
     });
+    add(PositionsDBIsIdleEvent(nodeRepository.nodesWithoutParent));
   }
 
   late NodeRepository nodeRepository;
