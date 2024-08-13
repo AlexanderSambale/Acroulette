@@ -48,7 +48,11 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       emit(AcrouletteInitModel());
     });
     on<AcrouletteInitModelEvent>((event, emit) {
-      emit(AcrouletteModelInitiatedState());
+      if (settingsRepository.get(playingKey) == "false") {
+        emit(AcrouletteModelInitiatedState());
+      } else {
+        add(AcrouletteStart());
+      }
     });
     on<AcrouletteRecognizeCommand>((event, emit) {
       recognizeCommand(event.command);
