@@ -27,7 +27,7 @@ class Positions extends StatelessWidget {
                   itemCount: state.trees.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      padding: const EdgeInsets.only(right: 10.0),
                       child: PostureTree(
                           tree: state.trees[index],
                           onSwitched: positionAdministrationBloc.onSwitch,
