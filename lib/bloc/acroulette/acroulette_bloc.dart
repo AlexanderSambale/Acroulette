@@ -119,11 +119,9 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
 
     // initialize transitionBloc
     transitionBloc = TransitionBloc(onTransitionChange, Random());
-    settingsRepository.getSettingsPairValueByKey(playingKey).then((value) {
-      if (value == "true") {
-        add(AcrouletteStart());
-      }
-    });
+    if (settingsRepository.get(playingKey) == "true") {
+      add(AcrouletteStart());
+    }
 
     // when Model is loaded call onInitiated
     if (voiceRecognitionBloc.isDisabled) {
