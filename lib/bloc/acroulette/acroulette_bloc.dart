@@ -81,7 +81,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
           break;
       }
     });
-    on<AcrouletteChangeMode>((event, emit) async {
+    on<AcrouletteChangeMode>((event, emit) {
       if (mode == event.mode) return;
       var positions = <String>[];
       if (event.mode == acroulette) {
@@ -92,7 +92,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
                 .add(InitAcrouletteTransitionEvent(positions, false))));
       }
       if (event.mode == washingMachine) {
-        positions = await flowPositions();
+        positions = flowPositions();
         modeBloc.add(ModeChange(
             event.mode,
             () =>
@@ -106,8 +106,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       washingMachineBloc.add(
         WashingMachineChange(
           event.machine,
-          () async => transitionBloc.add(
-            InitFlowTransitionEvent(await flowPositions(), true),
+          () => transitionBloc.add(
+            InitFlowTransitionEvent(flowPositions(), true),
           ),
         ),
       );
@@ -162,17 +162,17 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     add(AcrouletteInitModelEvent());
   }
 
-  Future<List<String>> flowPositions() async {
-    return await flowNodeRepository.flowPositions(
+  List<String> flowPositions() {
+    return flowNodeRepository.flowPositions(
       int.parse(
-        await settingsRepository.getSettingsPairValueByKey(flowIndex),
+        settingsRepository.get(flowIndex),
       ),
     );
   }
 
-  Future<void> setTransitionsDependingOnMode() async {
+  void setTransitionsDependingOnMode() {
     if (mode == washingMachine) {
-      transitionBloc.add(InitFlowTransitionEvent(await flowPositions(), true));
+      transitionBloc.add(InitFlowTransitionEvent(flowPositions(), true));
     }
     if (mode == acroulette) {
       transitionBloc
@@ -180,8 +180,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     }
   }
 
-  Future<void> onRecognitionStarted() async {
-    await setTransitionsDependingOnMode();
+  void onRecognitionStarted() {
+    setTransitionsDependingOnMode();
   }
 
   void recognizeCommand(String command) {

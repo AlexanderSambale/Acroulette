@@ -124,7 +124,7 @@ void main() async {
                 .thenReturn(const VoiceRecognitionState(true));
             when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
             bloc.transitionBloc.add(InitFlowTransitionEvent(
-                await flowNodeRepository.flowPositions(1), true));
+                flowNodeRepository.flowPositions(1), true));
             bloc.add(AcrouletteTransition(nextPosition));
             bloc.add(AcrouletteTransition(currentPosition));
             bloc.add(AcrouletteTransition(previousPosition));

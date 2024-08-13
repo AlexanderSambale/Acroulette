@@ -42,12 +42,12 @@ class FlowNodeRepository {
     return contains;
   }
 
-  Future<List<String>> flowPositions(int flowIndex) async {
-    FlowNode? flow = await storageProvider.flowNodeBox.findById(flowIndex);
-    if (flow == null) {
-      return [];
-    } else {
+  List<String> flowPositions(int flowIndex) {
+    try {
+      FlowNode flow = flows.where((flow) => flow.id == flowIndex).single;
       return flow.positions;
+    } catch (e) {
+      return [];
     }
   }
 
