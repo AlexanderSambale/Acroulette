@@ -254,12 +254,10 @@ class NodeHelper {
         nodeNodes.map((nodeNode) => nodeNode.childId).toList(growable: false));
     for (var node in children) {
       assert(node != null); // nodes to childIds should be available
-      if (node!.isSwitched) {
-        // if child switch is on, change [isEnabled] to [isSwitched]
-        // recursive for all childs of the child
-        NodeEntity newNode = node.copyWith(isEnabled: isSwitched);
-        enableOrDisable(newNode, isSwitched);
-      }
+      // if child switch is on, change [isEnabled] to [isSwitched]
+      // recursive for all childs of the child
+      NodeEntity newNode = node!.copyWith(isEnabled: isSwitched);
+      enableOrDisable(newNode, isSwitched);
     }
   }
 }
