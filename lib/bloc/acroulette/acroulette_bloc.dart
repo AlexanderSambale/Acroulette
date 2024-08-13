@@ -43,8 +43,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   }) : super(AcrouletteInitialState()) {
     on<AcrouletteStart>((event, emit) async {
       await settingsRepository.putSettingsPairValueByKey(playingKey, "true");
-      voiceRecognitionBloc.add(VoiceRecognitionStart(
-          onData, () async => await onRecognitionStarted()));
+      voiceRecognitionBloc
+          .add(VoiceRecognitionStart(onData, () => onRecognitionStarted()));
       emit(AcrouletteInitModel());
     });
     on<AcrouletteInitModelEvent>((event, emit) {
