@@ -53,6 +53,9 @@ RUN yes | sdkmanager \
   "build-tools;$ANDROID_BUILD_TOOLS_VERSION" \
   "platform-tools"
 
+WORKDIR $ANDROID_SDK_ROOT
+RUN curl -O https://github.com/google/bundletool/releases/download/1.17.1/bundletool-all-1.17.1.jar
+
 FROM android-sdk
 
 ENV FLUTTER_VERSION=3.22.3
