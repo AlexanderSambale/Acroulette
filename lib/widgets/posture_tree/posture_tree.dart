@@ -34,7 +34,7 @@ class PostureTree extends StatelessWidget {
     newPath.add(tree.label);
     if (tree.isLeaf) {
       return Container(
-          margin: const EdgeInsets.only(left: 16),
+          margin: const EdgeInsets.only(left: 8),
           child: PostureListItem(
               isSwitched: tree.isSwitched,
               postureLabel: tree.label,
@@ -48,43 +48,50 @@ class PostureTree extends StatelessWidget {
               path: newPath,
               enabled: tree.isEnabled));
     }
-    return ExpansionTile(
-      title: PostureCategoryItem(
-        categoryLabel: tree.label,
-        isSwitched: tree.isSwitched,
-        onChanged: (isOn) => onSwitched(isOn, tree),
-        onEditClick: (String? value) => onEditClick(tree, false, value),
-        onDeleteClick: () => onDeleteClick(tree),
-        onSaveClick: (bool isPosture, String? value) =>
-            onSaveClick(tree, isPosture, value),
-        enabled: tree.isEnabled,
-        path: newPath,
-        listAllNodesRecursively: () => listAllNodesRecursively(tree),
-        validator: (bool isPosture, String? value) {
-          if (validator == null) return null;
-          return validator!(tree, isPosture, value);
-        },
+
+    final theme = Theme.of(context).copyWith(dividerColor: Colors.transparent);
+    return Card(
+      child: Theme(
+        data: theme,
+        child: ExpansionTile(
+          title: PostureCategoryItem(
+            categoryLabel: tree.label,
+            isSwitched: tree.isSwitched,
+            onChanged: (isOn) => onSwitched(isOn, tree),
+            onEditClick: (String? value) => onEditClick(tree, false, value),
+            onDeleteClick: () => onDeleteClick(tree),
+            onSaveClick: (bool isPosture, String? value) =>
+                onSaveClick(tree, isPosture, value),
+            enabled: tree.isEnabled,
+            path: newPath,
+            listAllNodesRecursively: () => listAllNodesRecursively(tree),
+            validator: (bool isPosture, String? value) {
+              if (validator == null) return null;
+              return validator!(tree, isPosture, value);
+            },
+          ),
+          onExpansionChanged: (value) {
+            toggleExpand(tree);
+          },
+          initiallyExpanded: tree.isExpanded,
+          controlAffinity: ListTileControlAffinity.leading,
+          children: tree.children.map((Node child) {
+            return Container(
+              margin: const EdgeInsets.only(left: 8),
+              child: PostureTree(
+                  tree: child,
+                  onSwitched: onSwitched,
+                  toggleExpand: toggleExpand,
+                  onEditClick: onEditClick,
+                  onDeleteClick: onDeleteClick,
+                  onSaveClick: onSaveClick,
+                  path: newPath,
+                  listAllNodesRecursively: listAllNodesRecursively,
+                  validator: validator),
+            );
+          }).toList(),
+        ),
       ),
-      onExpansionChanged: (value) {
-        toggleExpand(tree);
-      },
-      initiallyExpanded: tree.isExpanded,
-      controlAffinity: ListTileControlAffinity.leading,
-      children: tree.children.map((Node child) {
-        return Container(
-          margin: const EdgeInsets.only(left: 24),
-          child: PostureTree(
-              tree: child,
-              onSwitched: onSwitched,
-              toggleExpand: toggleExpand,
-              onEditClick: onEditClick,
-              onDeleteClick: onDeleteClick,
-              onSaveClick: onSaveClick,
-              path: newPath,
-              listAllNodesRecursively: listAllNodesRecursively,
-              validator: validator),
-        );
-      }).toList(),
     );
   }
 }
