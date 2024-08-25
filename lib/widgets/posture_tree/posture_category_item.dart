@@ -10,12 +10,10 @@ class PostureCategoryItem extends StatelessWidget {
   const PostureCategoryItem({
     super.key,
     required this.isSwitched,
-    required this.isExpanded,
     required this.onChanged,
     required this.onEditClick,
     required this.onDeleteClick,
     required this.onSaveClick,
-    required this.toggleExpand,
     required this.categoryLabel,
     required this.path,
     required this.listAllNodesRecursively,
@@ -24,7 +22,6 @@ class PostureCategoryItem extends StatelessWidget {
   });
 
   final bool isSwitched;
-  final bool isExpanded;
   final bool enabled;
   final String categoryLabel;
   final void Function(bool) onChanged;
@@ -32,7 +29,6 @@ class PostureCategoryItem extends StatelessWidget {
   final String? Function(bool, String?)? validator;
   final void Function(String?) onEditClick;
   final void Function() onDeleteClick;
-  final void Function() toggleExpand;
   final List<Pair> Function() listAllNodesRecursively;
   final List<String> path;
 
@@ -43,13 +39,6 @@ class PostureCategoryItem extends StatelessWidget {
         height: 50,
         child: Row(
           children: [
-            IconButton(
-              constraints: const BoxConstraints(minWidth: 32),
-              padding: const EdgeInsets.all(0),
-              icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
-              tooltip: isExpanded ? 'collapse' : 'expand',
-              onPressed: toggleExpand,
-            ),
             categoryIcon,
             Container(
               width: 10,

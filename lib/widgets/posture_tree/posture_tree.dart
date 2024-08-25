@@ -57,8 +57,6 @@ class PostureTree extends StatelessWidget {
         onDeleteClick: () => onDeleteClick(tree),
         onSaveClick: (bool isPosture, String? value) =>
             onSaveClick(tree, isPosture, value),
-        toggleExpand: () => toggleExpand(tree),
-        isExpanded: tree.isExpanded,
         enabled: tree.isEnabled,
         path: newPath,
         listAllNodesRecursively: () => listAllNodesRecursively(tree),
@@ -67,6 +65,10 @@ class PostureTree extends StatelessWidget {
           return validator!(tree, isPosture, value);
         },
       ),
+      onExpansionChanged: (value) {
+        toggleExpand(tree);
+      },
+      initiallyExpanded: tree.isExpanded,
       controlAffinity: ListTileControlAffinity.leading,
       children: tree.children.map((Node child) {
         return Container(
