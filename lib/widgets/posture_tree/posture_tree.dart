@@ -48,42 +48,39 @@ class PostureTree extends StatelessWidget {
               path: newPath,
               enabled: tree.isEnabled));
     }
-    return ExpansionPanelList(
+    return ExpansionTile(
+      title: PostureCategoryItem(
+        categoryLabel: tree.label,
+        isSwitched: tree.isSwitched,
+        onChanged: (isOn) => onSwitched(isOn, tree),
+        onEditClick: (String? value) => onEditClick(tree, false, value),
+        onDeleteClick: () => onDeleteClick(tree),
+        onSaveClick: (bool isPosture, String? value) =>
+            onSaveClick(tree, isPosture, value),
+        toggleExpand: () => toggleExpand(tree),
+        isExpanded: tree.isExpanded,
+        enabled: tree.isEnabled,
+        path: newPath,
+        listAllNodesRecursively: () => listAllNodesRecursively(tree),
+        validator: (bool isPosture, String? value) {
+          if (validator == null) return null;
+          return validator!(tree, isPosture, value);
+        },
+      ),
+      controlAffinity: ListTileControlAffinity.leading,
       children: tree.children.map((Node child) {
-        return ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return PostureCategoryItem(
-              categoryLabel: tree.label,
-              isSwitched: tree.isSwitched,
-              onChanged: (isOn) => onSwitched(isOn, tree),
-              onEditClick: (String? value) => onEditClick(tree, false, value),
-              onDeleteClick: () => onDeleteClick(tree),
-              onSaveClick: (bool isPosture, String? value) =>
-                  onSaveClick(tree, isPosture, value),
-              toggleExpand: () => toggleExpand(tree),
-              isExpanded: tree.isExpanded,
-              enabled: tree.isEnabled,
+        return Container(
+          margin: const EdgeInsets.only(left: 24),
+          child: PostureTree(
+              tree: child,
+              onSwitched: onSwitched,
+              toggleExpand: toggleExpand,
+              onEditClick: onEditClick,
+              onDeleteClick: onDeleteClick,
+              onSaveClick: onSaveClick,
               path: newPath,
-              listAllNodesRecursively: () => listAllNodesRecursively(tree),
-              validator: (bool isPosture, String? value) {
-                if (validator == null) return null;
-                return validator!(tree, isPosture, value);
-              },
-            );
-          },
-          body: Container(
-            margin: const EdgeInsets.only(left: 24),
-            child: PostureTree(
-                tree: child,
-                onSwitched: onSwitched,
-                toggleExpand: toggleExpand,
-                onEditClick: onEditClick,
-                onDeleteClick: onDeleteClick,
-                onSaveClick: onSaveClick,
-                path: newPath,
-                listAllNodesRecursively: listAllNodesRecursively,
-                validator: validator),
-          ),
+              listAllNodesRecursively: listAllNodesRecursively,
+              validator: validator),
         );
       }).toList(),
     );
