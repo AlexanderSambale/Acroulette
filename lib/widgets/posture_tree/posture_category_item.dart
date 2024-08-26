@@ -5,6 +5,7 @@ import 'package:acroulette/widgets/dialogs/posture_dialog/create_posture_dialog.
 import 'package:acroulette/widgets/icons/icons.dart';
 import 'package:acroulette/models/pair.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class PostureCategoryItem extends StatelessWidget {
   const PostureCategoryItem({
@@ -36,12 +37,22 @@ class PostureCategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return SizedBox(
-        height: 50,
+      height: 50,
+      child: Slidable(
+        key: Key(categoryLabel),
+        startActionPane: const ActionPane(
+          motion: ScrollMotion(),
+          children: [],
+        ),
+        endActionPane: const ActionPane(
+          motion: ScrollMotion(),
+          children: [],
+        ),
         child: Row(
           children: [
             categoryIcon,
             Container(
-              width: 10,
+              width: 8,
             ),
             Center(child: Text(categoryLabel)),
             const Spacer(),
@@ -140,6 +151,8 @@ class PostureCategoryItem extends StatelessWidget {
               },
             )
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
