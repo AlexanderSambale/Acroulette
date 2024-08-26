@@ -32,25 +32,9 @@ class PostureListItem extends StatelessWidget {
         height: 50,
         child: Slidable(
           key: Key(postureLabel),
-          startActionPane: const ActionPane(
-            motion: ScrollMotion(),
-            children: [],
-          ),
-          endActionPane: const ActionPane(
-            motion: ScrollMotion(),
-            children: [],
-          ),
-          child: Row(
+          startActionPane: ActionPane(
+            motion: const ScrollMotion(),
             children: [
-              Container(
-                width: 5,
-              ),
-              postureIcon,
-              Container(
-                width: 10,
-              ),
-              Center(child: Text(postureLabel)),
-              const Spacer(),
               IconButton(
                 constraints: const BoxConstraints(minWidth: 32),
                 padding: const EdgeInsets.all(0),
@@ -72,6 +56,31 @@ class PostureListItem extends StatelessWidget {
                   });
                 },
               ),
+            ],
+          ),
+          endActionPane: ActionPane(
+            motion: const ScrollMotion(),
+            children: [
+              IconButton(
+                constraints: const BoxConstraints(minWidth: 32),
+                padding: const EdgeInsets.all(0),
+                icon: const Icon(Icons.delete),
+                tooltip: 'Delete position',
+                onPressed: () => showDeletePositionDialog(context),
+              )
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 5,
+              ),
+              postureIcon,
+              Container(
+                width: 10,
+              ),
+              Center(child: Text(postureLabel)),
+              const Spacer(),
               SizedBox(
                   height: 24.0,
                   width: 32.0,
@@ -82,13 +91,6 @@ class PostureListItem extends StatelessWidget {
                         ? theme.toggleButtonsTheme.color
                         : theme.toggleButtonsTheme.disabledColor,
                   )),
-              IconButton(
-                constraints: const BoxConstraints(minWidth: 32),
-                padding: const EdgeInsets.all(0),
-                icon: const Icon(Icons.delete),
-                tooltip: 'Delete position',
-                onPressed: () => showDeletePositionDialog(context),
-              )
             ],
           ),
         ),
