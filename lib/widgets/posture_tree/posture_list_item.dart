@@ -1,5 +1,6 @@
-import 'package:acroulette/constants/widgets.dart';
+import 'package:acroulette/helper/widgets/action_pane.dart';
 import 'package:acroulette/widgets/dialogs/posture_dialog/edit_posture_dialog.dart';
+import 'package:acroulette/widgets/formWidgets/icon_button.dart';
 import 'package:acroulette/widgets/icons/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -27,78 +28,92 @@ class PostureListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    return Card(
-      child: SizedBox(
-        height: 50,
-        child: Slidable(
-          key: Key(postureLabel),
-          startActionPane: ActionPane(
-            extentRatio: extentRatio,
-            motion: const ScrollMotion(),
-            children: [
-              IconButton(
-                constraints: const BoxConstraints(minWidth: 32),
-                padding: const EdgeInsets.all(0),
-                icon: const Icon(Icons.edit),
-                tooltip: 'Edit position',
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return EditPosture(
-                            path: path,
-                            onEditClick: onEditClick,
-                            validator: (posture) {
-                              if (validator == null) return null;
-                              return validator!(true, posture);
-                            });
-                      }).then((exit) {
-                    if (exit) return;
-                  });
-                },
+    const double size = 32;
+    const double padding = 4;
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return SizedBox(
+          height: size,
+          child: ClipRRect(
+            child: Slidable(
+              key: Key(postureLabel),
+              startActionPane: ActionPane(
+                extentRatio: calculateExtentRatio(
+                  size: size,
+                  padding: padding,
+                  maxWidth: constraints.maxWidth,
+                  numberOfWidgets: 1,
+                ),
+                motion: const ScrollMotion(),
+                children: [
+                  createIconButton(
+                    padding: padding,
+                    context: context,
+                    size: size,
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'Edit position',
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return EditPosture(
+                                path: path,
+                                onEditClick: onEditClick,
+                                validator: (posture) {
+                                  if (validator == null) return null;
+                                  return validator!(true, posture);
+                                });
+                          }).then((exit) {
+                        if (exit) return;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-          endActionPane: ActionPane(
-            extentRatio: extentRatio,
-            motion: const ScrollMotion(),
-            children: [
-              const Spacer(),
-              IconButton(
-                constraints: const BoxConstraints(minWidth: 32),
-                padding: const EdgeInsets.all(0),
-                icon: const Icon(Icons.delete),
-                tooltip: 'Delete position',
-                onPressed: () => showDeletePositionDialog(context),
-              )
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 5,
+              endActionPane: ActionPane(
+                extentRatio: calculateExtentRatio(
+                  size: size,
+                  padding: padding,
+                  maxWidth: constraints.maxWidth,
+                  numberOfWidgets: 1,
+                ),
+                motion: const ScrollMotion(),
+                children: [
+                  const Spacer(),
+                  createIconButton(
+                    padding: padding,
+                    context: context,
+                    size: size,
+                    icon: const Icon(Icons.delete),
+                    tooltip: 'Delete position',
+                    onPressed: () => showDeletePositionDialog(context),
+                  )
+                ],
               ),
-              postureIcon,
-              Container(
-                width: 10,
+              child: Row(
+                children: [
+                  Container(
+                    width: 5,
+                  ),
+                  postureIcon,
+                  Container(
+                    width: 10,
+                  ),
+                  Center(child: Text(postureLabel)),
+                  const Spacer(),
+                  createSwitch(
+                    size: size,
+                    isSwitched: isSwitched,
+                    enabled: enabled,
+                    onChanged: onChanged,
+                    context: context,
+                  )
+                ],
               ),
-              Center(child: Text(postureLabel)),
-              const Spacer(),
-              SizedBox(
-                  height: 24.0,
-                  width: 32.0,
-                  child: Switch(
-                    value: isSwitched,
-                    onChanged: enabled ? onChanged : null,
-                    activeColor: enabled
-                        ? theme.toggleButtonsTheme.color
-                        : theme.toggleButtonsTheme.disabledColor,
-                  )),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
