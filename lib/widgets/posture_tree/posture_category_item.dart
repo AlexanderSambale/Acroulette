@@ -37,7 +37,6 @@ class PostureCategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
     const double size = 32;
     const double padding = 4;
     return LayoutBuilder(
@@ -165,20 +164,13 @@ class PostureCategoryItem extends StatelessWidget {
                   ),
                   Center(child: Text(categoryLabel)),
                   const Spacer(),
-                  SizedBox(
-                    width: size * 1.75,
-                    height: size,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: Switch(
-                        value: isSwitched,
-                        onChanged: enabled ? onChanged : null,
-                        activeColor: enabled
-                            ? theme.toggleButtonsTheme.color
-                            : theme.toggleButtonsTheme.disabledColor,
-                      ),
-                    ),
-                  ),
+                  createSwitch(
+                    size: size,
+                    isSwitched: isSwitched,
+                    enabled: enabled,
+                    onChanged: onChanged,
+                    context: context,
+                  )
                 ],
               ),
             ),
