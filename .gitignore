@@ -51,4 +51,4 @@ app.*.map.json
 # vscode
 /.vscode/*
 
-libisar.so
+/android/key.properties

@@ -39,6 +39,14 @@ flutter build apk
 flutter build appbundle -v 
 ```
 
+For upload to play console:
+
+```bash
+bundletool build-apks --bundle=./build/app/outputs/bundle/release/app-release.aab --output=./build/app/outputs/apks/release/app-release.apks --ks=~/upload-keystore.jks --ks-key-alias=upload
+```
+
+Use this file for upload.
+
 #### Install on device
 
 If file exists
