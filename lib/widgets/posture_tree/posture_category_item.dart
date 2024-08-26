@@ -40,22 +40,9 @@ class PostureCategoryItem extends StatelessWidget {
       height: 50,
       child: Slidable(
         key: Key(categoryLabel),
-        startActionPane: const ActionPane(
-          motion: ScrollMotion(),
-          children: [],
-        ),
-        endActionPane: const ActionPane(
-          motion: ScrollMotion(),
-          children: [],
-        ),
-        child: Row(
+        startActionPane: ActionPane(
+          motion: const ScrollMotion(),
           children: [
-            categoryIcon,
-            Container(
-              width: 8,
-            ),
-            Center(child: Text(categoryLabel)),
-            const Spacer(),
             IconButton(
               constraints: const BoxConstraints(minWidth: 32),
               padding: const EdgeInsets.all(0),
@@ -120,16 +107,11 @@ class PostureCategoryItem extends StatelessWidget {
                 });
               },
             ),
-            SizedBox(
-                height: 24.0,
-                width: 32.0,
-                child: Switch(
-                  value: isSwitched,
-                  onChanged: enabled ? onChanged : null,
-                  activeColor: enabled
-                      ? theme.toggleButtonsTheme.color
-                      : theme.toggleButtonsTheme.disabledColor,
-                )),
+          ],
+        ),
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
+          children: [
             IconButton(
               constraints: const BoxConstraints(minWidth: 32),
               padding: const EdgeInsets.all(0),
@@ -150,6 +132,27 @@ class PostureCategoryItem extends StatelessWidget {
                 });
               },
             )
+          ],
+        ),
+        child: Row(
+          children: [
+            categoryIcon,
+            Container(
+              width: 8,
+            ),
+            Center(child: Text(categoryLabel)),
+            const Spacer(),
+            SizedBox(
+              height: 24.0,
+              width: 32.0,
+              child: Switch(
+                value: isSwitched,
+                onChanged: enabled ? onChanged : null,
+                activeColor: enabled
+                    ? theme.toggleButtonsTheme.color
+                    : theme.toggleButtonsTheme.disabledColor,
+              ),
+            ),
           ],
         ),
       ),
