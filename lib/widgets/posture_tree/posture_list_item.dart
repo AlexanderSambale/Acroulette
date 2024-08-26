@@ -64,6 +64,7 @@ class PostureListItem extends StatelessWidget {
             extentRatio: extentRatio,
             motion: const ScrollMotion(),
             children: [
+              const Spacer(),
               IconButton(
                 constraints: const BoxConstraints(minWidth: 32),
                 padding: const EdgeInsets.all(0),
