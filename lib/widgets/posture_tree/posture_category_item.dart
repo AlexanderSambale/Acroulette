@@ -1,3 +1,4 @@
+import 'package:acroulette/constants/widgets.dart';
 import 'package:acroulette/widgets/dialogs/category_dialog/create_category_dialog.dart';
 import 'package:acroulette/widgets/dialogs/category_dialog/delete_category_dialog.dart';
 import 'package:acroulette/widgets/dialogs/category_dialog/edit_category_dialog.dart';
@@ -41,6 +42,7 @@ class PostureCategoryItem extends StatelessWidget {
       child: Slidable(
         key: Key(categoryLabel),
         startActionPane: ActionPane(
+          extentRatio: extentRatio,
           motion: const ScrollMotion(),
           children: [
             IconButton(
@@ -110,6 +112,7 @@ class PostureCategoryItem extends StatelessWidget {
           ],
         ),
         endActionPane: ActionPane(
+          extentRatio: extentRatio,
           motion: const ScrollMotion(),
           children: [
             IconButton(
