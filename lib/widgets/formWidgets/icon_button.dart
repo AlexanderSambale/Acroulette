@@ -32,7 +32,7 @@ createSwitch({
   ThemeData theme = Theme.of(context);
 
   return SizedBox(
-    width: size * 1.75,
+    width: size * 1.5,
     height: size,
     child: FittedBox(
       fit: BoxFit.fill,
