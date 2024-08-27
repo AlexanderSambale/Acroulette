@@ -94,6 +94,18 @@ void main() {
       int numberOfNodesAfterDeleting = (await storageProvider.nodeBox.count())!;
       expect(numberOfNodesBefore, numberOfNodesAfterDeleting);
     });
+
+    test('delete leaf from initial tree', () async {
+      PositionAdministrationBloc bloc =
+          PositionAdministrationBloc(nodeRepository);
+      await nodeRepository.initialize();
+      List<Node> tree = nodeRepository.nodesWithoutParent;
+      int numberOfChildrenBefore = tree.first.children.length;
+      await bloc.onDeleteClick(tree.first.children.first);
+      tree = nodeRepository.nodesWithoutParent;
+      int numberOfChildrenAfter = tree.first.children.length;
+      expect(numberOfChildrenBefore, numberOfChildrenAfter - 1);
+    });
   });
 
   test('onSaveClick', () async {
