@@ -13,16 +13,16 @@ abstract class NodeNodeDao {
   Future<void> removeObject(NodeNode nodeNode);
 
   @Query('SELECT * FROM NodeNode WHERE childId = :id')
-  Future<NodeNode?> findParentByChildId(int id);
+  Future<List<NodeNode>> findByChildId(int id);
 
-  @Query('DELETE * FROM NodeNode WHERE childId = :id')
+  @Query('DELETE FROM NodeNode WHERE childId = :id')
   Future<void> deleteByChildId(int id);
 
-  @Query('DELETE * FROM NodeNode WHERE parentId = :id')
+  @Query('DELETE FROM NodeNode WHERE parentId = :id')
   Future<void> deleteByParentId(int id);
 
   @Query('SELECT * FROM NodeNode WHERE parentId = :id')
-  Future<List<NodeNode>> findChildrenByParentId(int id);
+  Future<List<NodeNode>> findByParentId(int id);
 
   Future<void> deleteByParentIds(List<int> ids) async {
     for (var id in ids) {

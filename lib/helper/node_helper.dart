@@ -131,7 +131,7 @@ class NodeHelper {
     List<Node> children = [];
     try {
       List<NodeNode?> childNodeNodes =
-          await nodeNodeDao.findChildrenByParentId(nodeEntity.id);
+          await nodeNodeDao.findByParentId(nodeEntity.id);
       List<int> childIds = childNodeNodes
           .map((childNodeNode) => childNodeNode!.childId)
           .toList(growable: false);
@@ -248,8 +248,7 @@ class NodeHelper {
     NodeEntity newTree = tree.copyWith(isSwitched: isSwitched);
     await nodeDao.updateObject(newTree);
     // get children through parent child relationship
-    List<NodeNode> nodeNodes =
-        await nodeNodeDao.findChildrenByParentId(newTree.id);
+    List<NodeNode> nodeNodes = await nodeNodeDao.findByParentId(newTree.id);
     List<NodeEntity?> children = await nodeDao.findAllById(
         nodeNodes.map((nodeNode) => nodeNode.childId).toList(growable: false));
     for (var node in children) {
