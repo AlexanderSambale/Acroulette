@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - changelog.md
 
+### Changed
+
+- UI for positions and flows, left swipe for create and edit - right swipe for delete
+
 ## [1.0.6] - 2024-08-13
 
 ### Added
@@ -146,7 +150,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - controls for tts settings
 - controls for voice recognition settings
-- default values for languange and engine (google)
+- default values for language and engine (google)
 
 ### Changed
 
