@@ -223,14 +223,11 @@ class HotReload extends StatelessWidget {
               WidgetbookUseCase(
                   name: 'Show',
                   builder: (context) => FlowItem(
-                        isExpanded: context.knobs
-                            .boolean(label: 'isExpanded', initialValue: true),
                         flowLabel: context.knobs.string(
                           label: 'Label',
                           initialValue: 'Flow1',
                         ),
                         onEditClick: onEditClick,
-                        toggleExpand: () {},
                         onSavePostureClick: (p0) {},
                         showDeleteFlowDialog: (BuildContext context) {},
                       )),

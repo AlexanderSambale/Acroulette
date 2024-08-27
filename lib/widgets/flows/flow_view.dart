@@ -29,45 +29,57 @@ class FlowView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: flow.positions.length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return FlowItem(
-                  flowLabel: flow.name,
-                  onEditClick: (flowName) => onEditFlowClick(flow, flowName),
-                  onSavePostureClick: (position) =>
-                      onSavePostureClick(flow, position),
-                  toggleExpand: () => toggleExpand(flow),
-                  isExpanded: flow.isExpanded,
-                  showDeleteFlowDialog: (BuildContext context) {
-                    showDeleteFlowDialog(context, flow, () => deleteFlow(flow));
-                  },
-                  validator: validator,
-                );
-              }
-              if (flow.isExpanded) {
-                String positionLabel = flow.positions.elementAt(index - 1);
-                return Container(
+    final theme = Theme.of(context).copyWith(dividerColor: Colors.transparent);
+    return Theme(
+      data: theme,
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.only(),
+        title: FlowItem(
+          flowLabel: flow.name,
+          onEditClick: (flowName) => onEditFlowClick(flow, flowName),
+          onSavePostureClick: (position) => onSavePostureClick(flow, position),
+          showDeleteFlowDialog: (BuildContext context) {
+            showDeleteFlowDialog(context, flow, () => deleteFlow(flow));
+          },
+          validator: validator,
+        ),
+        onExpansionChanged: (value) => toggleExpand(flow),
+        initiallyExpanded: flow.isExpanded,
+        controlAffinity: ListTileControlAffinity.leading,
+        children: flow.positions
+            .asMap()
+            .map(
+              (int index, String position) => MapEntry(
+                index,
+                Container(
                   margin: const EdgeInsets.only(left: 24),
                   child: FlowPositionItem(
-                    positionLabel: positionLabel,
+                    positionLabel: position,
                     showEditPositionDialog: (context) => showEditPositionDialog(
-                        context,
-                        [flow.name, positionLabel],
-                        (positionLabel) =>
-                            onEditClick(flow, index - 1, positionLabel)),
+                      context,
+                      [flow.name, position],
+                      (positionLabel) => onEditClick(
+                        flow,
+                        index,
+                        positionLabel,
+                      ),
+                    ),
                     showDeletePositionDialog: (context) =>
                         showDeletePositionDialog(
-                            context,
-                            [flow.name, positionLabel],
-                            () => deletePosture(flow, index - 1)),
+                      context,
+                      [flow.name, position],
+                      () => deletePosture(
+                        flow,
+                        index,
+                      ),
+                    ),
                   ),
-                );
-              }
-              return Container();
-            }));
+                ),
+              ),
+            )
+            .values
+            .toList(),
+      ),
+    );
   }
 }
