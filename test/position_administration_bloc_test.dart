@@ -5,6 +5,7 @@ import 'package:acroulette/domain_layer/node_repository.dart';
 import 'package:acroulette/models/database.dart';
 import 'package:acroulette/models/entities/node_entity.dart';
 import 'package:acroulette/models/node.dart';
+import 'package:acroulette/models/relations/node_node.dart';
 import 'package:acroulette/storage_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -101,10 +102,17 @@ void main() {
       await nodeRepository.initialize();
       List<Node> tree = nodeRepository.nodesWithoutParent;
       int numberOfChildrenBefore = tree.first.children.length;
-      await bloc.onDeleteClick(tree.first.children.first);
+      Node firstChild = tree.first.children.first;
+      List<NodeNode> relation = await storageProvider.nodeBox.nodeNodeDao
+          .findByChildId(firstChild.id!);
+      expect(relation, isNotEmpty);
+      await bloc.onDeleteClick(firstChild);
+      relation = await storageProvider.nodeBox.nodeNodeDao
+          .findByChildId(firstChild.id!);
+      expect(relation, isEmpty);
       tree = nodeRepository.nodesWithoutParent;
       int numberOfChildrenAfter = tree.first.children.length;
-      expect(numberOfChildrenBefore, numberOfChildrenAfter - 1);
+      expect(numberOfChildrenAfter, numberOfChildrenBefore - 1);
     });
   });
 
