@@ -68,7 +68,7 @@ abstract class FlowNodeDao {
     return flowNode;
   }
 
-  FlowNodeEntity? toFlowNodeEntity(FlowNode? flowNode) {
+  static FlowNodeEntity? toFlowNodeEntity(FlowNode? flowNode) {
     if (flowNode == null) {
       return null;
     }
