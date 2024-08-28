@@ -5,23 +5,6 @@ import 'package:acroulette/models/flow_node.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  FlowNode generateFlowNode({
-    String name = 'ninja star',
-  }) {
-    return FlowNode(name, [
-      'ninja side star',
-      'reverse bird',
-      'ninja side star',
-      'buddha',
-    ]);
-  }
-
-  FlowNodeEntity generateFlowNodeEntity({
-    String name = 'ninja star',
-  }) {
-    return FlowNodeDao.toFlowNodeEntity(generateFlowNode(name: name))!;
-  }
-
   group('flow_node_dao', () {
     late AppDatabase database;
     late FlowNodeDao flowNodeDao;
@@ -34,6 +17,23 @@ void main() {
     tearDown(() async {
       await database.close();
     });
+
+    FlowNode generateFlowNode({
+      String name = 'ninja star',
+    }) {
+      return FlowNode(name, [
+        'ninja side star',
+        'reverse bird',
+        'ninja side star',
+        'buddha',
+      ]);
+    }
+
+    FlowNodeEntity generateFlowNodeEntity({
+      String name = 'ninja star',
+    }) {
+      return FlowNodeDao.toFlowNodeEntity(generateFlowNode(name: name))!;
+    }
 
     Future<List<int>> insertFlowNodeEntities() async {
       List<FlowNodeEntity> flows = [
@@ -69,7 +69,7 @@ void main() {
         "FlowNode",
         () async {
           FlowNode flow = generateFlowNode();
-          int flowId = await flowNodeDao.put(flow);
+          int flowId = await flowNodeDao.create(flow);
           expect(flowId, 1);
         },
       );
@@ -109,7 +109,7 @@ void main() {
           "FlowNode by name",
           () async {
             String name = 'FlowNodeEntityName';
-            await flowNodeDao.put(generateFlowNode(name: name));
+            await flowNodeDao.create(generateFlowNode(name: name));
             FlowNode? flowByName = await flowNodeDao.findByName(name);
             expect(flowByName, isNotNull);
           },
@@ -147,14 +147,33 @@ void main() {
 
     group('update', () {
       test(
-        "test description",
-        () {},
+        "name to test",
+        () async {
+          String name = 'FlowNodeEntityName';
+          await flowNodeDao.insertObject(generateFlowNodeEntity(name: name));
+          FlowNode? nodeToEdit = await flowNodeDao.findByName(name);
+          expect(nodeToEdit, isNotNull);
+          String newName = 'test';
+          nodeToEdit!.name = newName;
+          flowNodeDao.updateFlowNode(nodeToEdit);
+          FlowNode? nodeWithNameTest = await flowNodeDao.findByName(newName);
+          expect(nodeWithNameTest, isNotNull);
+          expect(nodeWithNameTest!.id, nodeToEdit.id);
+        },
       );
     });
     group('delete', () {
       test(
-        "test description",
-        () {},
+        "flow",
+        () async {
+          String name = 'FlowNodeEntityName';
+          await flowNodeDao.insertObject(generateFlowNodeEntity(name: name));
+          FlowNode? nodeToRemove = await flowNodeDao.findByName(name);
+          expect(nodeToRemove, isNotNull);
+          flowNodeDao.removeFlowNode(nodeToRemove!);
+          FlowNode? shouldBeRemoved = await flowNodeDao.findByName(name);
+          expect(shouldBeRemoved, isNull);
+        },
       );
     });
 
@@ -162,15 +181,6 @@ void main() {
       int? count = await flowNodeDao.count();
       int expected = 0;
       expect(count, expected);
-    });
-
-    test('create ninjaStar flow with with put and it should have id 1',
-        () async {
-      FlowNode ninjaStar = FlowNode('ninja star',
-          ['ninja side star', 'reverse bird', 'ninja side star', 'buddha']);
-      int? id = await flowNodeDao.put(ninjaStar);
-      int expectedId = 1;
-      expect(id, expectedId);
     });
 
     test('create multiple flows and delete flow with id 2', () async {

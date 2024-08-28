@@ -18,10 +18,15 @@ class FlowNodeRepository {
     flows = await storageProvider.flowNodeBox.findAllFlowNodes();
   }
 
-  Future<int> putFlowNode(FlowNode flow) async {
-    int id = await storageProvider.flowNodeBox.put(flow);
+  Future<int> createFlow(FlowNode flow) async {
+    int id = await storageProvider.flowNodeBox.create(flow);
     flows.add(flow);
     return id;
+  }
+
+  Future<void> editFlow(FlowNode flow) async {
+    await storageProvider.flowNodeBox.updateFlowNode(flow);
+    flows = await storageProvider.flowNodeBox.findAllFlowNodes();
   }
 
   Future<void> removeFlowNode(FlowNode flow) async {

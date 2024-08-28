@@ -24,35 +24,35 @@ class FlowAdministrationBloc
   void toggleExpand(FlowNode flow) {
     add(FlowDBStartChangeEvent());
     flow.isExpanded = !flow.isExpanded;
-    flowNodeRepository.putFlowNode(flow);
+    flowNodeRepository.editFlow(flow);
     add(FlowDBIsIdleEvent());
   }
 
   void createPosture(FlowNode flowNode, String posture) {
     add(FlowDBStartChangeEvent());
     flowNode.positions.add(posture);
-    flowNodeRepository.putFlowNode(flowNode);
+    flowNodeRepository.editFlow(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void editPosture(FlowNode flowNode, int index, String label) {
     add(FlowDBStartChangeEvent());
     flowNode.positions[index] = label;
-    flowNodeRepository.putFlowNode(flowNode);
+    flowNodeRepository.editFlow(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void editFlow(FlowNode flowNode, String label) {
     add(FlowDBStartChangeEvent());
     flowNode.name = label;
-    flowNodeRepository.putFlowNode(flowNode);
+    flowNodeRepository.editFlow(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
   void deletePosture(FlowNode flowNode, int index) {
     add(FlowDBStartChangeEvent());
     flowNode.positions.removeAt(index);
-    flowNodeRepository.putFlowNode(flowNode);
+    flowNodeRepository.editFlow(flowNode);
     add(FlowDBIsIdleEvent());
   }
 
@@ -64,7 +64,7 @@ class FlowAdministrationBloc
 
   void createFlow(String flow) {
     add(FlowDBStartChangeEvent());
-    flowNodeRepository.putFlowNode(FlowNode(flow, []));
+    flowNodeRepository.createFlow(FlowNode(flow, []));
     add(FlowDBIsIdleEvent());
   }
 

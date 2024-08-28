@@ -43,8 +43,15 @@ abstract class FlowNodeDao {
     return await removeObject(toFlowNodeEntity(flow)!);
   }
 
-  Future<int> put(FlowNode flow) async {
+  Future<int> create(FlowNode flow) async {
     return await insertObject(toFlowNodeEntity(flow)!);
+  }
+
+  @update
+  Future<void> updateObject(FlowNodeEntity object);
+
+  Future<void> updateFlowNode(FlowNode flow) async {
+    return await updateObject(toFlowNodeEntity(flow)!);
   }
 
   Future<List<int>> putAll(List<FlowNode> objects) async {
