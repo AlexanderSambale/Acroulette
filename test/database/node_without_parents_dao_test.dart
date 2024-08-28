@@ -34,6 +34,15 @@ void main() {
       int count = (await database.nodeWithoutParentDao.findAll()).length;
       int expected = 2;
       expect(count, expected);
+    });
+
+    test('create nodes without parent with id 1 and 2 and delete with id 1',
+        () async {
+      await database.nodeWithoutParentDao.insertObject(NodeWithoutParent(1));
+      await database.nodeWithoutParentDao.insertObject(NodeWithoutParent(2));
+      int count = (await database.nodeWithoutParentDao.findAll()).length;
+      int expected = 2;
+      expect(count, expected);
       await database.nodeWithoutParentDao.removeObject(NodeWithoutParent(1));
       count = (await database.nodeWithoutParentDao.findAll()).length;
       expected = 1;
