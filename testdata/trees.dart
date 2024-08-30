@@ -73,119 +73,75 @@ Node createComplexTreeSwitchedOff({bool childrenSwitched = false}) {
       children: [
         Node.optional(
           children: [
-            Node.optional(
-              label: leaf1Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf2Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf3Name,
-              isEnabled: false,
-            ),
+            Node.optional(label: leaf1Name),
+            Node.optional(label: leaf2Name),
+            Node.optional(label: leaf3Name),
           ],
-          isEnabled: false,
           label: 'root1',
-          isSwitched: false,
         ),
         Node.optional(
           children: [
-            Node.optional(
-              label: leaf1Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf2Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf3Name,
-              isEnabled: false,
-            ),
+            Node.optional(label: leaf1Name),
+            Node.optional(label: leaf2Name),
+            Node.optional(label: leaf3Name),
           ],
-          isEnabled: false,
           label: 'root3',
-          isSwitched: false,
         ),
         Node.optional(
           children: [
-            Node.optional(
-              label: leaf1Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf2Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf3Name,
-              isEnabled: false,
-            ),
+            Node.optional(label: leaf1Name),
+            Node.optional(label: leaf2Name),
+            Node.optional(label: leaf3Name),
           ],
-          isEnabled: false,
-          isSwitched: false,
           label: 'root2',
         ),
       ],
       label: 'root',
-      isSwitched: false,
     );
+
+    root.isSwitched = false;
+    root.children[0].isEnabled = false;
+    root.children[1].isEnabled = false;
+    root.children[2].isEnabled = false;
+
+    root.children[1].isSwitched = false;
+
+    root.children[0].children[0].isEnabled = false;
+    root.children[0].children[1].isEnabled = false;
+    root.children[0].children[2].isEnabled = false;
+
+    root.children[1].children[0].isEnabled = false;
+    root.children[1].children[1].isEnabled = false;
+    root.children[1].children[2].isEnabled = false;
+
+    root.children[2].children[0].isEnabled = false;
+    root.children[2].children[1].isEnabled = false;
+    root.children[2].children[2].isEnabled = false;
   } else {
-    // one child is switched off
+    // child with index 1 is switched off
     root = Node.optional(
       children: [
         Node.optional(
           children: [
-            Node.optional(
-              label: leaf1Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf2Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf3Name,
-              isEnabled: false,
-            ),
+            Node.optional(label: leaf1Name),
+            Node.optional(label: leaf2Name),
+            Node.optional(label: leaf3Name),
           ],
-          isEnabled: false,
           label: 'root1',
         ),
         Node.optional(
           children: [
-            Node.optional(
-              label: leaf1Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf2Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf3Name,
-              isEnabled: false,
-            ),
+            Node.optional(label: leaf1Name),
+            Node.optional(label: leaf2Name),
+            Node.optional(label: leaf3Name),
           ],
-          isEnabled: false,
           label: 'root3',
         ),
         Node.optional(
           children: [
-            Node.optional(
-              label: leaf1Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf2Name,
-              isEnabled: false,
-            ),
-            Node.optional(
-              label: leaf3Name,
-              isEnabled: false,
-            ),
+            Node.optional(label: leaf1Name),
+            Node.optional(label: leaf2Name),
+            Node.optional(label: leaf3Name),
           ],
           isEnabled: false,
           isSwitched: false,
@@ -193,8 +149,28 @@ Node createComplexTreeSwitchedOff({bool childrenSwitched = false}) {
         ),
       ],
       label: 'root',
-      isSwitched: false,
     );
+
+    root.isSwitched = false;
+    root.children[0].isEnabled = false;
+    root.children[1].isEnabled = false;
+    root.children[2].isEnabled = false;
+
+    root.children[0].isSwitched = false;
+    root.children[1].isSwitched = false;
+    root.children[2].isSwitched = false;
+
+    root.children[0].children[0].isEnabled = false;
+    root.children[0].children[1].isEnabled = false;
+    root.children[0].children[2].isEnabled = false;
+
+    root.children[1].children[0].isEnabled = false;
+    root.children[1].children[1].isEnabled = false;
+    root.children[1].children[2].isEnabled = false;
+
+    root.children[2].children[0].isEnabled = false;
+    root.children[2].children[1].isEnabled = false;
+    root.children[2].children[2].isEnabled = false;
   }
   return root;
 }

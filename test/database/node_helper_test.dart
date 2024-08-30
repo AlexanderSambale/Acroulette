@@ -149,6 +149,10 @@ void main() {
           expect(loadedTree.children[1].isEnabled, false);
           expect(loadedTree.children[2].isEnabled, false);
 
+          expect(loadedTree.children[0].isSwitched, false);
+          expect(loadedTree.children[1].isSwitched, false);
+          expect(loadedTree.children[2].isSwitched, false);
+
           expect(loadedTree.children[0].children[0].isEnabled, false);
           expect(loadedTree.children[0].children[1].isEnabled, false);
           expect(loadedTree.children[0].children[2].isEnabled, false);
@@ -202,6 +206,10 @@ void main() {
           expect(loadedTree.children[1].isEnabled, false);
           expect(loadedTree.children[2].isEnabled, false);
 
+          expect(loadedTree.children[0].isSwitched, true);
+          expect(loadedTree.children[1].isSwitched, false);
+          expect(loadedTree.children[2].isSwitched, true);
+
           expect(loadedTree.children[0].children[0].isEnabled, false);
           expect(loadedTree.children[0].children[1].isEnabled, false);
           expect(loadedTree.children[0].children[2].isEnabled, false);
@@ -223,10 +231,6 @@ void main() {
           expect(loadedTree.children[0].isEnabled, true);
           expect(loadedTree.children[1].isEnabled, true);
           expect(loadedTree.children[2].isEnabled, true);
-
-          expect(loadedTree.children[0].isSwitched, true);
-          expect(loadedTree.children[1].isSwitched, false);
-          expect(loadedTree.children[2].isSwitched, true);
 
           expect(loadedTree.children[0].children[0].isEnabled, true);
           expect(loadedTree.children[0].children[1].isEnabled, true);
