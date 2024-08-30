@@ -80,7 +80,7 @@ SELECT * FROM cte
           -- Base case: root node
           SELECT nn.childId
           FROM NodeNode nn
-          WHERE nn.parentId = ?  -- The starting ID of the root node
+          INNER JOIN NodeEntity n ON nn.parentId = ? AND n.autoId = nn.childId AND n.isSwitched = 1
 
           UNION ALL
           
@@ -101,7 +101,7 @@ SELECT * FROM cte
           -- Base case: root node
           SELECT nn.childId
           FROM NodeNode nn
-          WHERE nn.parentId = ?  -- The starting ID of the root node
+          INNER JOIN NodeEntity n ON nn.parentId = ? AND n.autoId = nn.childId AND n.isEnabled = 1
 
           UNION ALL
           
