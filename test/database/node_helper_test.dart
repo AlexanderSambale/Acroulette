@@ -28,7 +28,7 @@ void main() {
       test(
         "simple tree switched on to switch off",
         () async {
-          Node simpleTree = createSimpleTreeEnabled();
+          Node simpleTree = createSimpleTreeSwitchedOn();
           int simpleTreeId =
               await storageProvider.nodeBox.insertTree(simpleTree, null);
           NodeEntity? loadedTreeEntity = await storageProvider.nodeBox.nodeDao
@@ -46,7 +46,7 @@ void main() {
           loadedTree = (await storageProvider.nodeBox
               .toNodeWithChildren(loadedTreeEntity))!;
           expect(loadedTree.isSwitched, false);
-          expect(loadedTree.isEnabled, false);
+          expect(loadedTree.isEnabled, true);
           expect(loadedTree.children[0].isEnabled, false);
           expect(loadedTree.children[1].isEnabled, false);
           expect(loadedTree.children[2].isEnabled, false);
@@ -56,7 +56,7 @@ void main() {
       test(
         "simple tree switched off to switch on",
         () async {
-          Node simpleTree = createSimpleTreeDisabled();
+          Node simpleTree = createSimpleTreeSwitchedOff();
           int simpleTreeId =
               await storageProvider.nodeBox.insertTree(simpleTree, null);
           NodeEntity? loadedTreeEntity = await storageProvider.nodeBox.nodeDao
@@ -64,10 +64,11 @@ void main() {
           Node loadedTree = (await storageProvider.nodeBox
               .toNodeWithChildren(loadedTreeEntity))!;
           expect(loadedTree.isSwitched, false);
-          expect(loadedTree.isEnabled, false);
+          expect(loadedTree.isEnabled, true);
           expect(loadedTree.children[0].isEnabled, false);
           expect(loadedTree.children[1].isEnabled, false);
           expect(loadedTree.children[2].isEnabled, false);
+
           await nodeBox.enableOrDisable(loadedTreeEntity!, true);
           loadedTreeEntity = await storageProvider.nodeBox.nodeDao
               .findEntityById(simpleTreeId);
@@ -76,8 +77,168 @@ void main() {
           expect(loadedTree.isSwitched, true);
           expect(loadedTree.isEnabled, true);
           expect(loadedTree.children[0].isEnabled, true);
-          expect(loadedTree.children[1].isEnabled, false);
+          expect(loadedTree.children[1].isEnabled, true);
           expect(loadedTree.children[2].isEnabled, true);
+        },
+      );
+      test(
+        "complex tree switched on to switch off",
+        () async {
+          Node complexTree = createComplexTreeSwitchedOn();
+          int complexTreeId =
+              await storageProvider.nodeBox.insertTree(complexTree, null);
+          NodeEntity? loadedTreeEntity = await storageProvider.nodeBox.nodeDao
+              .findEntityById(complexTreeId);
+          Node loadedTree = (await storageProvider.nodeBox
+              .toNodeWithChildren(loadedTreeEntity))!;
+          expect(loadedTree.isSwitched, true);
+          expect(loadedTree.isEnabled, true);
+          expect(loadedTree.children[0].isEnabled, true);
+          expect(loadedTree.children[1].isEnabled, true);
+          expect(loadedTree.children[2].isEnabled, true);
+
+          expect(loadedTree.children[0].children[0].isEnabled, true);
+          expect(loadedTree.children[0].children[1].isEnabled, false);
+          expect(loadedTree.children[0].children[2].isEnabled, true);
+
+          expect(loadedTree.children[1].children[0].isEnabled, false);
+          expect(loadedTree.children[1].children[1].isEnabled, false);
+          expect(loadedTree.children[1].children[2].isEnabled, false);
+
+          expect(loadedTree.children[2].children[0].isEnabled, true);
+          expect(loadedTree.children[2].children[1].isEnabled, false);
+          expect(loadedTree.children[2].children[2].isEnabled, true);
+          await nodeBox.enableOrDisable(loadedTreeEntity!, false);
+          loadedTreeEntity = await storageProvider.nodeBox.nodeDao
+              .findEntityById(complexTreeId);
+          loadedTree = (await storageProvider.nodeBox
+              .toNodeWithChildren(loadedTreeEntity))!;
+          expect(loadedTree.isSwitched, false);
+          expect(loadedTree.isEnabled, true);
+          expect(loadedTree.children[0].isEnabled, false);
+          expect(loadedTree.children[1].isEnabled, false);
+          expect(loadedTree.children[2].isEnabled, false);
+
+          expect(loadedTree.children[0].children[0].isEnabled, false);
+          expect(loadedTree.children[0].children[1].isEnabled, false);
+          expect(loadedTree.children[0].children[2].isEnabled, false);
+
+          expect(loadedTree.children[1].children[0].isEnabled, false);
+          expect(loadedTree.children[1].children[1].isEnabled, false);
+          expect(loadedTree.children[1].children[2].isEnabled, false);
+
+          expect(loadedTree.children[2].children[0].isEnabled, false);
+          expect(loadedTree.children[2].children[1].isEnabled, false);
+          expect(loadedTree.children[2].children[2].isEnabled, false);
+        },
+      );
+
+      test(
+        "complex tree switched off to switch on, subtress switched off",
+        () async {
+          Node complexTree = createComplexTreeSwitchedOff();
+          int complexTreeId =
+              await storageProvider.nodeBox.insertTree(complexTree, null);
+          NodeEntity? loadedTreeEntity = await storageProvider.nodeBox.nodeDao
+              .findEntityById(complexTreeId);
+          Node loadedTree = (await storageProvider.nodeBox
+              .toNodeWithChildren(loadedTreeEntity))!;
+          expect(loadedTree.isSwitched, false);
+          expect(loadedTree.isEnabled, true);
+          expect(loadedTree.children[0].isEnabled, false);
+          expect(loadedTree.children[1].isEnabled, false);
+          expect(loadedTree.children[2].isEnabled, false);
+
+          expect(loadedTree.children[0].children[0].isEnabled, false);
+          expect(loadedTree.children[0].children[1].isEnabled, false);
+          expect(loadedTree.children[0].children[2].isEnabled, false);
+
+          expect(loadedTree.children[1].children[0].isEnabled, false);
+          expect(loadedTree.children[1].children[1].isEnabled, false);
+          expect(loadedTree.children[1].children[2].isEnabled, false);
+
+          expect(loadedTree.children[2].children[0].isEnabled, false);
+          expect(loadedTree.children[2].children[1].isEnabled, false);
+          expect(loadedTree.children[2].children[2].isEnabled, false);
+          await nodeBox.enableOrDisable(loadedTreeEntity!, true);
+          loadedTreeEntity = await storageProvider.nodeBox.nodeDao
+              .findEntityById(complexTreeId);
+          loadedTree = (await storageProvider.nodeBox
+              .toNodeWithChildren(loadedTreeEntity))!;
+          expect(loadedTree.isSwitched, true);
+          expect(loadedTree.isEnabled, true);
+          expect(loadedTree.children[0].isEnabled, true);
+          expect(loadedTree.children[1].isEnabled, true);
+          expect(loadedTree.children[2].isEnabled, true);
+
+          expect(loadedTree.children[0].children[0].isEnabled, false);
+          expect(loadedTree.children[0].children[1].isEnabled, false);
+          expect(loadedTree.children[0].children[2].isEnabled, false);
+
+          expect(loadedTree.children[1].children[0].isEnabled, false);
+          expect(loadedTree.children[1].children[1].isEnabled, false);
+          expect(loadedTree.children[1].children[2].isEnabled, false);
+
+          expect(loadedTree.children[2].children[0].isEnabled, false);
+          expect(loadedTree.children[2].children[1].isEnabled, false);
+          expect(loadedTree.children[2].children[2].isEnabled, false);
+        },
+      );
+
+      test(
+        "complex tree switched off to switch on, subtrees switched on",
+        () async {
+          Node complexTree =
+              createComplexTreeSwitchedOff(childrenSwitched: true);
+          int complexTreeId =
+              await storageProvider.nodeBox.insertTree(complexTree, null);
+          NodeEntity? loadedTreeEntity = await storageProvider.nodeBox.nodeDao
+              .findEntityById(complexTreeId);
+          Node loadedTree = (await storageProvider.nodeBox
+              .toNodeWithChildren(loadedTreeEntity))!;
+          expect(loadedTree.isSwitched, false);
+          expect(loadedTree.isEnabled, true);
+          expect(loadedTree.children[0].isEnabled, false);
+          expect(loadedTree.children[1].isEnabled, false);
+          expect(loadedTree.children[2].isEnabled, false);
+
+          expect(loadedTree.children[0].children[0].isEnabled, false);
+          expect(loadedTree.children[0].children[1].isEnabled, false);
+          expect(loadedTree.children[0].children[2].isEnabled, false);
+
+          expect(loadedTree.children[1].children[0].isEnabled, false);
+          expect(loadedTree.children[1].children[1].isEnabled, false);
+          expect(loadedTree.children[1].children[2].isEnabled, false);
+
+          expect(loadedTree.children[2].children[0].isEnabled, false);
+          expect(loadedTree.children[2].children[1].isEnabled, false);
+          expect(loadedTree.children[2].children[2].isEnabled, false);
+          await nodeBox.enableOrDisable(loadedTreeEntity!, true);
+          loadedTreeEntity = await storageProvider.nodeBox.nodeDao
+              .findEntityById(complexTreeId);
+          loadedTree = (await storageProvider.nodeBox
+              .toNodeWithChildren(loadedTreeEntity))!;
+          expect(loadedTree.isSwitched, true);
+          expect(loadedTree.isEnabled, true);
+          expect(loadedTree.children[0].isEnabled, true);
+          expect(loadedTree.children[1].isEnabled, true);
+          expect(loadedTree.children[2].isEnabled, true);
+
+          expect(loadedTree.children[0].isSwitched, true);
+          expect(loadedTree.children[1].isSwitched, false);
+          expect(loadedTree.children[2].isSwitched, true);
+
+          expect(loadedTree.children[0].children[0].isEnabled, true);
+          expect(loadedTree.children[0].children[1].isEnabled, true);
+          expect(loadedTree.children[0].children[2].isEnabled, true);
+
+          expect(loadedTree.children[1].children[0].isEnabled, false);
+          expect(loadedTree.children[1].children[1].isEnabled, false);
+          expect(loadedTree.children[1].children[2].isEnabled, false);
+
+          expect(loadedTree.children[2].children[0].isEnabled, true);
+          expect(loadedTree.children[2].children[1].isEnabled, true);
+          expect(loadedTree.children[2].children[2].isEnabled, true);
         },
       );
     },

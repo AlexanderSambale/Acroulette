@@ -12,7 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../testdata/trees.dart';
 
 Future<Node> setupComplexTree(StorageProvider storageProvider) async {
-  Node complexTree = createComplexTree();
+  Node complexTree = createComplexTreeSwitchedOn();
   complexTree.id = await storageProvider.nodeBox.insertTree(complexTree, null);
   return complexTree;
 }
@@ -126,7 +126,7 @@ void main() {
     test('click false', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(nodeRepository);
-      Node simpleTree = createSimpleTreeEnabled();
+      Node simpleTree = createSimpleTreeSwitchedOn();
       int simpleTreeId =
           await storageProvider.nodeBox.insertTree(simpleTree, null);
       NodeEntity? loadedTreeEntity =
@@ -156,7 +156,7 @@ void main() {
     test('click true', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(nodeRepository);
-      Node simpleTree = createSimpleTreeDisabled();
+      Node simpleTree = createSimpleTreeSwitchedOff();
       int simpleTreeId =
           await storageProvider.nodeBox.insertTree(simpleTree, null);
       NodeEntity? loadedTreeEntity =
@@ -180,7 +180,7 @@ void main() {
       for (Node child in loadedTree.children) {
         isEnabledListAfter.add(child.isEnabled);
       }
-      expect(isEnabledListAfter, [true, false, true]);
+      expect(isEnabledListAfter, [true, true, true]);
     });
   });
 

@@ -1,6 +1,6 @@
 import 'package:acroulette/models/node.dart';
 
-Node createSimpleTreeEnabled({
+Node createSimpleTreeSwitchedOn({
   String rootName = 'root',
   String leaf1Name = 'leaf1',
   String leaf2Name = 'leaf2',
@@ -24,7 +24,7 @@ Node createSimpleTreeEnabled({
   return category;
 }
 
-Node createSimpleTreeDisabled({
+Node createSimpleTreeSwitchedOff({
   String rootName = 'root',
   String leaf1Name = 'leaf1',
   String leaf2Name = 'leaf2',
@@ -46,20 +46,56 @@ Node createSimpleTreeDisabled({
   Node category = Node.optional(
     children: [leaf1, leaf2, leaf3],
     label: rootName,
-    isEnabled: false,
     isSwitched: false,
   );
   return category;
 }
 
-Node createComplexTree() {
+Node createComplexTreeSwitchedOn() {
   Node root = Node.optional(
     children: [
-      createSimpleTreeEnabled(rootName: 'root1'),
-      createSimpleTreeDisabled(rootName: 'root2'),
-      createSimpleTreeEnabled(rootName: 'root3'),
+      createSimpleTreeSwitchedOn(rootName: 'root1'),
+      createSimpleTreeSwitchedOff(rootName: 'root2'),
+      createSimpleTreeSwitchedOn(rootName: 'root3'),
     ],
     label: 'newRoot',
   );
+  return root;
+}
+
+Node createComplexTreeSwitchedOff({bool childrenSwitched = false}) {
+  var createSimpleTree = childrenSwitched
+      ? createSimpleTreeSwitchedOn
+      : createSimpleTreeSwitchedOff;
+  Node root = Node.optional(
+    children: [
+      createSimpleTree(rootName: 'root1'),
+      createSimpleTree(rootName: 'root2'),
+      createSimpleTree(rootName: 'root3'),
+    ],
+    label: 'newRoot',
+    isSwitched: false,
+  );
+  root.children[0].isEnabled = false;
+  root.children[1].isEnabled = false;
+  root.children[2].isEnabled = false;
+
+  root.children[0].children[0].isEnabled = false;
+  root.children[0].children[1].isEnabled = false;
+  root.children[0].children[2].isEnabled = false;
+
+  root.children[1].children[0].isEnabled = false;
+  root.children[1].children[1].isEnabled = false;
+  root.children[1].children[2].isEnabled = false;
+
+  root.children[2].children[0].isEnabled = false;
+  root.children[2].children[1].isEnabled = false;
+  root.children[2].children[2].isEnabled = false;
+
+  // middle child is switched off
+  if (childrenSwitched) {
+    root.children[1].isSwitched = false;
+  }
+
   return root;
 }
