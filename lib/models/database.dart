@@ -56,18 +56,68 @@ SELECT * FROM cte
         .toList(growable: false);
   }
 
+  @transaction
   Future<void> enableOrDisable(
     NodeEntity tree,
     bool isSwitched,
   ) async {
+    int isSwitchedInt = isSwitched.toInt();
+    // update the root
     String queryString = '''
-    UPDATE NodeEntity
-    SET isSwitched = ?, isEnabled = ?
-    WHERE autoId = ?
-''';
+        UPDATE NodeEntity
+        SET isSwitched = ?, isEnabled = ?
+        WHERE autoId = ?
+  ''';
     await database.rawQuery(queryString, [
-      isSwitched.toInt(),
-      isSwitched.toInt(),
+      isSwitchedInt,
+      isSwitchedInt,
+      tree.id,
+    ]);
+    // update the children
+    if (isSwitched) {
+      queryString = '''
+        WITH RECURSIVE children AS (
+          -- Base case: root node
+          SELECT nn.childId
+          FROM NodeNode nn
+          WHERE nn.parentId = ?  -- The starting ID of the root node
+
+          UNION ALL
+          
+          -- Recursive case: find all disabled children with nested isSwitched true
+          SELECT nn2.childId
+          FROM NodeNode nn2
+            INNER JOIN NodeEntity n ON n.autoId = nn2.parentId
+            INNER JOIN children ON children.childId = n.autoId AND n.isSwitched = 1
+        )
+        -- enable all
+        UPDATE NodeEntity
+        SET isEnabled = 1
+        WHERE autoId IN (SELECT childId FROM children);
+''';
+    } else {
+      queryString = '''
+        WITH RECURSIVE children AS (
+          -- Base case: root node
+          SELECT nn.childId
+          FROM NodeNode nn
+          WHERE nn.parentId = ?  -- The starting ID of the root node
+
+          UNION ALL
+          
+          -- Recursive case: find all disabled children with nested isSwitched true
+          SELECT nn2.childId
+          FROM NodeNode nn2
+            INNER JOIN NodeEntity n ON n.autoId = nn2.parentId
+            INNER JOIN children ON children.childId = n.autoId AND n.isEnabled = 1
+        )
+        -- disable all
+        UPDATE NodeEntity
+        SET isEnabled = 0
+        WHERE autoId IN (SELECT childId FROM children);
+''';
+    }
+    await database.rawQuery(queryString, [
       tree.id,
     ]);
   }
