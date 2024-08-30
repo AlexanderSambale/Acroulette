@@ -26,7 +26,7 @@ void main() {
     "enableOrDisable",
     () {
       test(
-        "simple tree all enabled, all switched",
+        "simple tree switched on to switch off",
         () async {
           Node simpleTree = createSimpleTreeEnabled();
           int simpleTreeId =
@@ -50,6 +50,34 @@ void main() {
           expect(loadedTree.children[0].isEnabled, false);
           expect(loadedTree.children[1].isEnabled, false);
           expect(loadedTree.children[2].isEnabled, false);
+        },
+      );
+
+      test(
+        "simple tree switched off to switch on",
+        () async {
+          Node simpleTree = createSimpleTreeDisabled();
+          int simpleTreeId =
+              await storageProvider.nodeBox.insertTree(simpleTree, null);
+          NodeEntity? loadedTreeEntity = await storageProvider.nodeBox.nodeDao
+              .findEntityById(simpleTreeId);
+          Node loadedTree = (await storageProvider.nodeBox
+              .toNodeWithChildren(loadedTreeEntity))!;
+          expect(loadedTree.isSwitched, false);
+          expect(loadedTree.isEnabled, false);
+          expect(loadedTree.children[0].isEnabled, false);
+          expect(loadedTree.children[1].isEnabled, false);
+          expect(loadedTree.children[2].isEnabled, false);
+          await nodeBox.enableOrDisable(loadedTreeEntity!, true);
+          loadedTreeEntity = await storageProvider.nodeBox.nodeDao
+              .findEntityById(simpleTreeId);
+          loadedTree = (await storageProvider.nodeBox
+              .toNodeWithChildren(loadedTreeEntity))!;
+          expect(loadedTree.isSwitched, true);
+          expect(loadedTree.isEnabled, true);
+          expect(loadedTree.children[0].isEnabled, true);
+          expect(loadedTree.children[1].isEnabled, false);
+          expect(loadedTree.children[2].isEnabled, true);
         },
       );
     },
