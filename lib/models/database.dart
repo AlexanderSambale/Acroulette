@@ -62,10 +62,11 @@ SELECT * FROM cte
   ) async {
     String queryString = '''
     UPDATE NodeEntity
-    SET isSwitched = ?, isEnabled
+    SET isSwitched = ?, isEnabled = ?
     WHERE autoId = ?
 ''';
     await database.rawQuery(queryString, [
+      isSwitched.toInt(),
       isSwitched.toInt(),
       tree.id,
     ]);
