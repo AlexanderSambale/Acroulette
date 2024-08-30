@@ -240,23 +240,31 @@ class NodeHelper {
   /// disabled, switch on| enable on, enable others| /
   /// enabled, switch off| /| disable off, nothing else
   /// disabled, switch off| enable off, nothing else|/
+  // Future<void> enableOrDisable(
+  //   NodeEntity tree,
+  //   bool isSwitched, {
+  //   bool isChild = false,
+  // }) async {
+  //   // update tree node
+  //   NodeEntity newTree = tree.copyWith(isSwitched: isSwitched && !isChild);
+  //   await nodeDao.updateObject(newTree);
+  //   // get children through parent child relationship
+  //   List<NodeNode> nodeNodes = await nodeNodeDao.findByParentId(newTree.id);
+  //   List<NodeEntity?> children = await nodeDao.findAllById(
+  //       nodeNodes.map((nodeNode) => nodeNode.childId).toList(growable: false));
+  //   for (var node in children) {
+  //     assert(node != null); // nodes to childIds should be available
+  //     // if child switch is on, change [isEnabled] to [isSwitched]
+  //     // recursive for all childs of the child
+  //     NodeEntity newNode = node!.copyWith(isEnabled: isSwitched);
+  //     enableOrDisable(newNode, isSwitched, isChild: true);
+  //   }
+  // }
+
   Future<void> enableOrDisable(
     NodeEntity tree,
     bool isSwitched,
   ) async {
-    // update tree node
-    NodeEntity newTree = tree.copyWith(isSwitched: isSwitched);
-    await nodeDao.updateObject(newTree);
-    // get children through parent child relationship
-    List<NodeNode> nodeNodes = await nodeNodeDao.findByParentId(newTree.id);
-    List<NodeEntity?> children = await nodeDao.findAllById(
-        nodeNodes.map((nodeNode) => nodeNode.childId).toList(growable: false));
-    for (var node in children) {
-      assert(node != null); // nodes to childIds should be available
-      // if child switch is on, change [isEnabled] to [isSwitched]
-      // recursive for all childs of the child
-      NodeEntity newNode = node!.copyWith(isEnabled: isSwitched);
-      enableOrDisable(newNode, isSwitched);
-    }
+    await store.enableOrDisable(tree, isSwitched);
   }
 }

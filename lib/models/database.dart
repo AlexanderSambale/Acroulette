@@ -55,4 +55,23 @@ SELECT * FROM cte
             NodeNode(element["parentId"] as int, element["childId"] as int))
         .toList(growable: false);
   }
+
+  Future<void> enableOrDisable(
+    NodeEntity tree,
+    bool isSwitched,
+  ) async {
+    String queryString = '''
+    UPDATE NodeEntity
+    SET isSwitched = ?, isEnabled
+    WHERE autoId = ?
+''';
+    await database.rawQuery(queryString, [
+      isSwitched.toInt(),
+      tree.id,
+    ]);
+  }
+}
+
+extension BooleanExtension on bool {
+  int toInt() => this ? 1 : 0;
 }
