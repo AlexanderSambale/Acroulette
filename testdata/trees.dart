@@ -64,38 +64,137 @@ Node createComplexTreeSwitchedOn() {
 }
 
 Node createComplexTreeSwitchedOff({bool childrenSwitched = false}) {
-  var createSimpleTree = childrenSwitched
-      ? createSimpleTreeSwitchedOn
-      : createSimpleTreeSwitchedOff;
-  Node root = Node.optional(
-    children: [
-      createSimpleTree(rootName: 'root1'),
-      createSimpleTree(rootName: 'root2'),
-      createSimpleTree(rootName: 'root3'),
-    ],
-    label: 'newRoot',
-    isSwitched: false,
-  );
-  root.children[0].isEnabled = false;
-  root.children[1].isEnabled = false;
-  root.children[2].isEnabled = false;
-
-  root.children[0].children[0].isEnabled = false;
-  root.children[0].children[1].isEnabled = false;
-  root.children[0].children[2].isEnabled = false;
-
-  root.children[1].children[0].isEnabled = false;
-  root.children[1].children[1].isEnabled = false;
-  root.children[1].children[2].isEnabled = false;
-
-  root.children[2].children[0].isEnabled = false;
-  root.children[2].children[1].isEnabled = false;
-  root.children[2].children[2].isEnabled = false;
-
-  // middle child is switched off
+  Node root;
+  String leaf1Name = 'leaf1';
+  String leaf2Name = 'leaf2';
+  String leaf3Name = 'leaf3';
   if (childrenSwitched) {
-    root.children[1].isSwitched = false;
+    root = Node.optional(
+      children: [
+        Node.optional(
+          children: [
+            Node.optional(
+              label: leaf1Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf2Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf3Name,
+              isEnabled: false,
+            ),
+          ],
+          isEnabled: false,
+          label: 'root1',
+          isSwitched: false,
+        ),
+        Node.optional(
+          children: [
+            Node.optional(
+              label: leaf1Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf2Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf3Name,
+              isEnabled: false,
+            ),
+          ],
+          isEnabled: false,
+          label: 'root3',
+          isSwitched: false,
+        ),
+        Node.optional(
+          children: [
+            Node.optional(
+              label: leaf1Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf2Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf3Name,
+              isEnabled: false,
+            ),
+          ],
+          isEnabled: false,
+          isSwitched: false,
+          label: 'root2',
+        ),
+      ],
+      label: 'root',
+      isSwitched: false,
+    );
+  } else {
+    // one child is switched off
+    root = Node.optional(
+      children: [
+        Node.optional(
+          children: [
+            Node.optional(
+              label: leaf1Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf2Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf3Name,
+              isEnabled: false,
+            ),
+          ],
+          isEnabled: false,
+          label: 'root1',
+        ),
+        Node.optional(
+          children: [
+            Node.optional(
+              label: leaf1Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf2Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf3Name,
+              isEnabled: false,
+            ),
+          ],
+          isEnabled: false,
+          label: 'root3',
+        ),
+        Node.optional(
+          children: [
+            Node.optional(
+              label: leaf1Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf2Name,
+              isEnabled: false,
+            ),
+            Node.optional(
+              label: leaf3Name,
+              isEnabled: false,
+            ),
+          ],
+          isEnabled: false,
+          isSwitched: false,
+          label: 'root2',
+        ),
+      ],
+      label: 'root',
+      isSwitched: false,
+    );
   }
-
   return root;
 }
