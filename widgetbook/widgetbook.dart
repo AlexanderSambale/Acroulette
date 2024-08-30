@@ -170,7 +170,7 @@ class HotReload extends StatelessWidget {
                 WidgetbookUseCase(
                     name: 'SimpleTree',
                     builder: (context) => PostureTree(
-                          tree: createSimpleTree(),
+                          tree: createSimpleTreeEnabled(),
                           onSwitched: (b, n) {},
                           toggleExpand: (n) {},
                           path: const [],

@@ -126,7 +126,7 @@ void main() {
     test('click false', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(nodeRepository);
-      Node simpleTree = createSimpleTree();
+      Node simpleTree = createSimpleTreeEnabled();
       int simpleTreeId =
           await storageProvider.nodeBox.insertTree(simpleTree, null);
       NodeEntity? loadedTreeEntity =
@@ -156,8 +156,7 @@ void main() {
     test('click true', () async {
       PositionAdministrationBloc bloc =
           PositionAdministrationBloc(nodeRepository);
-      Node simpleTree = createSimpleTree();
-      simpleTree.isSwitched = false;
+      Node simpleTree = createSimpleTreeDisabled();
       int simpleTreeId =
           await storageProvider.nodeBox.insertTree(simpleTree, null);
       NodeEntity? loadedTreeEntity =
@@ -170,6 +169,7 @@ void main() {
       for (Node child in loadedTree.children) {
         isEnabledList.add(child.isEnabled);
       }
+      expect(isEnabledList, [false, false, false]);
       await bloc.onSwitch(true, loadedTree);
       loadedTreeEntity =
           await storageProvider.nodeBox.nodeDao.findEntityById(simpleTreeId);
@@ -180,7 +180,7 @@ void main() {
       for (Node child in loadedTree.children) {
         isEnabledListAfter.add(child.isEnabled);
       }
-      expect(isEnabledListAfter, isEnabledList);
+      expect(isEnabledListAfter, [true, false, true]);
     });
   });
 

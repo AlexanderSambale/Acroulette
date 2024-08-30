@@ -28,7 +28,7 @@ void main() {
       test(
         "simple tree all enabled, all switched",
         () async {
-          Node simpleTree = createSimpleTree();
+          Node simpleTree = createSimpleTreeEnabled();
           int simpleTreeId =
               await storageProvider.nodeBox.insertTree(simpleTree, null);
           NodeEntity? loadedTreeEntity = await storageProvider.nodeBox.nodeDao
