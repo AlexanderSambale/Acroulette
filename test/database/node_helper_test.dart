@@ -40,7 +40,7 @@ void main() {
           expect(loadedTree.children[0].isEnabled, true);
           expect(loadedTree.children[1].isEnabled, false);
           expect(loadedTree.children[2].isEnabled, true);
-          nodeBox.enableOrDisable(loadedTreeEntity!, false);
+          await nodeBox.enableOrDisable(loadedTreeEntity!, false);
           loadedTreeEntity = await storageProvider.nodeBox.nodeDao
               .findEntityById(simpleTreeId);
           loadedTree = (await storageProvider.nodeBox
