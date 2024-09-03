@@ -1,0 +1,14 @@
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Flutter tests
+        run: |
+          flutter pub get
+          flutter pub run build_runner build
+          flutter test
