@@ -68,3 +68,9 @@ bundletool install-apks --apks=./build/app/outputs/apks/release/app-release.apks
 ```bash
 flutter pub run flutter_oss_licenses:generate.dart
 ```
+
+## Run Tests
+
+```bash
+flutter test
+```
