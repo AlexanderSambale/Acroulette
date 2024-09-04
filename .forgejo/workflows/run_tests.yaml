@@ -1,10 +1,12 @@
 on:
   push:
-    branches: [develop]
+    branches: [feature/6-add-CI/CD-in-forgejo]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: docker # name of the runner
+    container:
+      image: forgejo.samxela.eu/samxela/flutter-test:12.6-slim
     steps:
       - uses: actions/checkout@v4
       - name: Run Flutter tests
