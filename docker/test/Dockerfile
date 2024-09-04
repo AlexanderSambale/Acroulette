@@ -1,6 +1,6 @@
 
 ARG IMAGE=debian:12.6-slim
-FROM $IMAGE as flutter-sdk
+FROM $IMAGE AS flutter-sdk
 
 RUN apt-get update \
   && apt-get -y --no-install-recommends install \
