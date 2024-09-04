@@ -6,7 +6,7 @@ jobs:
   test:
     runs-on: docker # name of the runner
     container:
-      image: forgejo.samxela.eu/samxela/flutter-test:12.6-slim
+      image: forgejo.samxela.eu/flutter/flutter-test:12.6-slim
       credentials:
         username: ${{ secrets.username }}
         password: ${{ secrets.password }}
