@@ -5,6 +5,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container:
+      image: samxela/flutter-test-sqlite:latest
     steps:
       - uses: actions/checkout@v4
       - name: Run Flutter tests
