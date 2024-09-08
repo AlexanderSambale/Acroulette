@@ -1,6 +1,6 @@
 
 ARG IMAGE=mcr.microsoft.com/devcontainers/base:bookworm
-FROM $IMAGE as android-sdk
+FROM $IMAGE AS android-sdk
 
 RUN apt-get update \
   && apt-get -y --no-install-recommends install \
