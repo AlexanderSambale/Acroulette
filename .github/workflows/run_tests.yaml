@@ -20,7 +20,9 @@ jobs:
       - name: Generate database files
         run: flutter pub run build_runner build
       - name: Run Flutter tests
-        run: flutter test --machine > test-results.json
+        run:
+          flutter test --machine > test-results.json
+          ls
       - name: Report test results
         uses: dorny/test-reporter@v1
         if: success() || failure()
@@ -28,3 +30,4 @@ jobs:
           name: Flutter Tests
           path: test-results.json
           reporter: flutter-json
+        
