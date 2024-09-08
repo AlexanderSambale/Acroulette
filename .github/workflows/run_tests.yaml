@@ -1,5 +1,5 @@
 name: Flutter run tests
-run-name: ${{ github.actor }} is run tests
+run-name: ${{ github.actor }} is running tests
 on:
   push:
     branches: [develop]
@@ -7,12 +7,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image: samxela/flutter-test-sqlite:latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v3
+        with:
+          channel: stable
+          version: 3.24.2
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Generate database files
+        run: flutter pub run build_runner build
       - name: Run Flutter tests
-        run: |
-          flutter pub get
-          flutter pub run build_runner build
-          flutter test
+        run: flutter test
+
