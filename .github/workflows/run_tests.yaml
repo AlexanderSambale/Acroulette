@@ -23,6 +23,7 @@ jobs:
         run:
           flutter test --machine > test-results.json
       - name: debug
+        if: success() || failure()
         run: ls
       - name: Report test results
         uses: dorny/test-reporter@v1
