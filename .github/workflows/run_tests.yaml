@@ -1,3 +1,5 @@
+name: Flutter run tests
+run-name: ${{ github.actor }} is run tests
 on:
   push:
     branches: [develop]
