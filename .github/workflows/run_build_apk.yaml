@@ -1,0 +1,35 @@
+name: Flutter build apk
+run-name: ${{ github.actor }} is building apk
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Setup Java SDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17     
+          distribution: 'zulu'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v3
+        with:
+          channel: stable
+          version: 3.24.2
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Generate database files
+        run: flutter pub run build_runner build
+      - name: Build apk
+        run: flutter build apk
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: acroulette.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
