@@ -1,6 +1,10 @@
-# acroulette
+# Acroulette
 
-A new Flutter project.
+Acroulette is an app for Acroyoga, which gives you random positions and you have to figure out a way to get there.
+
+Normally you are involved with your hands and feet, so you can control the app with speech. There is speech recognition build in. On certain command words you get the next random position. It can also tell you the position before and switch to it, tell the current position and go to the next one. The position is then announced by an TextToSpeech engine. It also has a washing machine mode, where you can train positions in sequence.
+
+You can configure almost everything. Change the command words, add new positions, add new washing machines, delete them, disable them. Just have fun and be creative. :)
 
 ## Getting Started
 
