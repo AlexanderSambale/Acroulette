@@ -58,7 +58,7 @@ RUN curl -O https://github.com/google/bundletool/releases/download/1.17.1/bundle
 
 FROM android-sdk
 
-ENV FLUTTER_VERSION=3.22.3
+ENV FLUTTER_VERSION=3.22.2
 ARG USERNAME=vscode
 ENV FLUTTER_HOME="/home/${USERNAME}/.flutter-sdk"
 ENV PATH=$PATH:$FLUTTER_HOME/bin

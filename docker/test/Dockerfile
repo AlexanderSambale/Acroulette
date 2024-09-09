@@ -27,7 +27,7 @@ RUN apt-get update \
 
 FROM flutter-sdk
 
-ENV FLUTTER_VERSION=3.22.3
+ENV FLUTTER_VERSION=3.22.2
 ENV FLUTTER_HOME="/root/.flutter-sdk"
 ENV PATH=$PATH:$FLUTTER_HOME/bin
 
