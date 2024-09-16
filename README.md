@@ -12,6 +12,36 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## Tools
+
+### gitlint
+
+<https://jorisroovers.com/gitlint/latest/>
+
+#### Quickstart
+
+Install `gitlint`
+
+```bash
+pip install gitlint
+```
+
+Change to root directory of this repository and install the `commit-msg` hook.
+
+```bash
+gitlint install-hook
+```
+
+<https://jorisroovers.com/gitlint/latest/getting_started/>
+
+#### Alternatives for gitlint
+
+commitlint (Node.js)
+fit-commit (Ruby)
+node-commit-msg (Node.js)
+
+<https://jorisroovers.com/gitlint/latest/alternatives/>
+
 ## Building
 
 if never run before:
