@@ -1,7 +1,2 @@
-# You want gitlint to check enforce this rule for merge commits as well
-[body-is-missing]
-ignore-merge-commits=true
-
-# This also needs to be enabled at the general gitlint level # 
 [general]
-ignore-merge-commits=false 
+ignore=B6
