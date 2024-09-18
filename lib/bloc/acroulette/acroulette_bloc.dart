@@ -1,16 +1,16 @@
 import 'dart:math';
 
-import 'package:acroulette/bloc/mode/mode_bloc.dart';
+import 'package:acroulette/bloc/acroulette/acroulette_settings.dart';
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
-import 'package:acroulette/bloc/washing_machine/washing_machine_bloc.dart';
 import 'package:acroulette/constants/model.dart';
 import 'package:acroulette/constants/settings.dart';
 import 'package:acroulette/domain_layer/flow_node_repository.dart';
 import 'package:acroulette/domain_layer/node_repository.dart';
 import 'package:acroulette/domain_layer/settings_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import 'dart:convert';
@@ -26,50 +26,53 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   final FlowNodeRepository flowNodeRepository;
 
   late final TransitionBloc transitionBloc;
-  late final ModeBloc modeBloc;
-  late final WashingMachineBloc washingMachineBloc;
 
-  RegExp get rNextPosition => RegExp(settingsRepository.get(nextPosition));
-  RegExp get rNewPosition => RegExp(settingsRepository.get(newPosition));
-  RegExp get rPreviousPosition =>
-      RegExp(settingsRepository.get(previousPosition));
-  RegExp get rCurrentPosition =>
-      RegExp(settingsRepository.get(currentPosition));
-
-  AcrouletteBloc({
-    required this.ttsBloc,
-    required this.nodeRepository,
-    required this.settingsRepository,
-    required this.flowNodeRepository,
-    required this.voiceRecognitionBloc,
-  }) : super(AcrouletteInitialState()) {
+  AcrouletteBloc(
+      {required this.ttsBloc,
+      required this.nodeRepository,
+      required this.settingsRepository,
+      required this.flowNodeRepository,
+      required this.voiceRecognitionBloc,
+      AcrouletteInitialState? initialState})
+      : super(
+          initialState ??
+              AcrouletteInitialState(
+                settings: generateInitialSettings(settingsRepository),
+              ),
+        ) {
     on<AcrouletteStart>((event, emit) async {
       await settingsRepository.putSettingsPairValueByKey(playingKey, "true");
-      voiceRecognitionBloc
-          .add(VoiceRecognitionStart(onData, () => onRecognitionStarted()));
-      emit(AcrouletteInitModel());
+      voiceRecognitionBloc.add(VoiceRecognitionStart(
+          onData, () => onRecognitionStarted(state.settings.mode)));
+      emit(AcrouletteInitModel(settings: state.settings.copyWith()));
     });
     on<AcrouletteInitModelEvent>((event, emit) {
       if (settingsRepository.get(playingKey) == "false") {
-        emit(AcrouletteModelInitiatedState());
+        emit(
+          AcrouletteModelInitiatedState(settings: state.settings.copyWith()),
+        );
       } else {
         add(AcrouletteStart());
       }
     });
     on<AcrouletteRecognizeCommand>((event, emit) {
-      recognizeCommand(event.command);
+      recognizeCommand(event.command, state.settings);
     });
     on<AcrouletteCommandRecognizedEvent>((event, emit) {
       _speak(event.currentFigure);
-      emit(AcrouletteCommandRecognizedState(event.currentFigure,
-          previousFigure: event.previousFigure,
-          nextFigure: event.nextFigure,
-          mode: mode));
+      emit(AcrouletteCommandRecognizedState(
+        currentFigure: event.currentFigure,
+        previousFigure: event.previousFigure,
+        nextFigure: event.nextFigure,
+        settings: state.settings.copyWith(),
+      ));
     });
     on<AcrouletteStop>((event, emit) async {
       await settingsRepository.putSettingsPairValueByKey(playingKey, "false");
       voiceRecognitionBloc.add(VoiceRecognitionStop());
-      emit(AcrouletteModelInitiatedState());
+      emit(AcrouletteModelInitiatedState(
+        settings: state.settings.copyWith(),
+      ));
     });
     on<AcrouletteTransition>((event, emit) {
       switch (event.transition) {
@@ -88,40 +91,32 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       }
     });
     on<AcrouletteChangeMode>((event, emit) {
-      if (mode == event.mode) return;
+      if (state.settings.mode == event.mode) return;
       var positions = <String>[];
       if (event.mode == acroulette) {
         positions = nodeRepository.positions;
-        modeBloc.add(ModeChange(
-            event.mode,
-            () => transitionBloc
-                .add(InitAcrouletteTransitionEvent(positions, false))));
+        transitionBloc.add(InitAcrouletteTransitionEvent(positions, false));
       }
       if (event.mode == washingMachine) {
         positions = flowPositions();
-        modeBloc.add(ModeChange(
-            event.mode,
-            () =>
-                transitionBloc.add(InitFlowTransitionEvent(positions, true))));
+        transitionBloc.add(InitFlowTransitionEvent(positions, true));
       }
-      emit(AcrouletteFlowState(positions.first));
+      emit(AcrouletteFlowState(
+        settings: state.settings.copyWith(mode: event.mode),
+        flowName: positions.first,
+      ));
     });
 
     on<AcrouletteChangeMachine>((event, emit) {
-      if (machine == event.machine) return;
-      washingMachineBloc.add(
-        WashingMachineChange(
-          event.machine,
-          () => transitionBloc.add(
-            InitFlowTransitionEvent(flowPositions(), true),
-          ),
-        ),
+      if (state.settings.machine == event.machine) return;
+      transitionBloc.add(
+        InitFlowTransitionEvent(flowPositions(), true),
       );
-      emit(AcrouletteFlowState(event.machine));
+      emit(AcrouletteFlowState(
+        settings: state.settings.copyWith(machine: event.machine),
+        flowName: '',
+      ));
     });
-    // initialize blocs
-    modeBloc = ModeBloc(settingsRepository);
-    washingMachineBloc = WashingMachineBloc(settingsRepository);
 
     // initialize transitionBloc
     transitionBloc = TransitionBloc(onTransitionChange, Random());
@@ -135,14 +130,6 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     } else {
       voiceRecognitionBloc.initialize(onInitiated);
     }
-  }
-
-  String get mode {
-    return modeBloc.mode;
-  }
-
-  String get machine {
-    return washingMachineBloc.machine;
   }
 
   void onTransitionChange(TransitionStatus status) {
@@ -176,7 +163,7 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     );
   }
 
-  void setTransitionsDependingOnMode() {
+  void setTransitionsDependingOnMode(String mode) {
     if (mode == washingMachine) {
       transitionBloc.add(InitFlowTransitionEvent(flowPositions(), true));
     }
@@ -186,27 +173,28 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
     }
   }
 
-  void onRecognitionStarted() {
-    setTransitionsDependingOnMode();
+  void onRecognitionStarted(String mode) {
+    setTransitionsDependingOnMode(mode);
   }
 
-  void recognizeCommand(String command) {
+  void recognizeCommand(String command, AcrouletteSettings settings) {
     final Map<String, dynamic> commandMapped = jsonDecode(command);
     final text = commandMapped["text"];
 
-    if (appMode != washingMachine && rNewPosition.hasMatch(text)) {
+    if (settings.mode != washingMachine &&
+        settings.rNewPosition.hasMatch(text)) {
       add(AcrouletteTransition(newPosition));
       return;
     }
-    if (rNextPosition.hasMatch(text)) {
+    if (settings.rNextPosition.hasMatch(text)) {
       add(AcrouletteTransition(nextPosition));
       return;
     }
-    if (rPreviousPosition.hasMatch(text)) {
+    if (settings.rPreviousPosition.hasMatch(text)) {
       add(AcrouletteTransition(previousPosition));
       return;
     }
-    if (rCurrentPosition.hasMatch(text)) {
+    if (settings.rCurrentPosition.hasMatch(text)) {
       add(AcrouletteTransition(currentPosition));
       return;
     }
@@ -215,5 +203,18 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   Future _speak(String text) async {
     if (ttsBloc.notAvailable) return;
     await ttsBloc.speak(text);
+  }
+
+  static AcrouletteSettings generateInitialSettings(
+    SettingsRepository settingsRepository,
+  ) {
+    return AcrouletteSettings(
+      rNextPosition: RegExp(settingsRepository.get(nextPosition)),
+      rNewPosition: RegExp(settingsRepository.get(nextPosition)),
+      rPreviousPosition: RegExp(settingsRepository.get(nextPosition)),
+      rCurrentPosition: RegExp(settingsRepository.get(nextPosition)),
+      mode: settingsRepository.get(appMode),
+      machine: settingsRepository.get(washingMachine),
+    );
   }
 }

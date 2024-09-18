@@ -1,4 +1,5 @@
 import 'package:acroulette/bloc/acroulette/acroulette_bloc.dart';
+import 'package:acroulette/bloc/acroulette/acroulette_settings.dart';
 import 'package:acroulette/bloc/transition/transition_bloc.dart';
 import 'package:acroulette/bloc/tts/tts_bloc.dart';
 import 'package:acroulette/bloc/voice_recognition/voice_recognition_bloc.dart';
@@ -58,14 +59,20 @@ void main() async {
     });
 
     test('initial state is AcrouletteInitialState()', () {
-      expect(acrouletteBloc.state, AcrouletteInitialState());
+      AcrouletteSettings settings =
+          AcrouletteBloc.generateInitialSettings(settingsRepository);
+      expect(acrouletteBloc.state, AcrouletteInitialState(settings: settings));
     });
 
     blocTest<AcrouletteBloc, BaseAcrouletteState>(
       'emits [AcrouletteInitModel()] when AcrouletteStart is added',
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteStart()),
-      expect: () => [AcrouletteInitModel()],
+      expect: () {
+        AcrouletteSettings settings =
+            AcrouletteBloc.generateInitialSettings(settingsRepository);
+        return [AcrouletteInitModel(settings: settings)];
+      },
       verify: (bloc) async => expect(
         await settingsRepository.getSettingsPairValueByKey(playingKey),
         "true",
@@ -77,7 +84,11 @@ void main() async {
       'emits [AcrouletteModelInitiatedState()] when AcrouletteStop is added',
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteStop()),
-      expect: () => [AcrouletteModelInitiatedState()],
+      expect: () {
+        AcrouletteSettings settings =
+            AcrouletteBloc.generateInitialSettings(settingsRepository);
+        return [AcrouletteModelInitiatedState(settings: settings)];
+      },
       verify: (bloc) async => expect(
         await settingsRepository.getSettingsPairValueByKey(playingKey),
         "false",
@@ -89,15 +100,27 @@ void main() async {
       'emits [AcrouletteModelInitiatedState()] when AcrouletteInitModelEvent is added',
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteInitModelEvent()),
-      expect: () => [AcrouletteModelInitiatedState()],
+      expect: () {
+        AcrouletteSettings settings =
+            AcrouletteBloc.generateInitialSettings(settingsRepository);
+        return [AcrouletteModelInitiatedState(settings: settings)];
+      },
     );
 
     group('transitions', () {
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
           'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
           build: () => acrouletteBloc,
-          seed: () => const AcrouletteCommandRecognizedState('',
-              previousFigure: '', nextFigure: '', mode: acroulette),
+          seed: () {
+            AcrouletteSettings settings =
+                AcrouletteBloc.generateInitialSettings(settingsRepository)
+                    .copyWith(mode: acroulette);
+            return AcrouletteCommandRecognizedState(
+                currentFigure: '',
+                previousFigure: '',
+                nextFigure: '',
+                settings: settings);
+          },
           act: (bloc) {
             when(() => bloc.voiceRecognitionBloc.state)
                 .thenReturn(const VoiceRecognitionState(true));
@@ -111,14 +134,22 @@ void main() async {
                     .having((state) => state.nextFigure, 'nextFigure', '')
                     .having(
                         (state) => state.previousFigure, 'previousFigure', '')
-                    .having((state) => state.mode, 'mode', acroulette),
+                    .having((state) => state.settings.mode, 'mode', acroulette),
               ]);
 
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
           'next Position, current Position and previous Position',
           build: () => acrouletteBloc,
-          seed: () => const AcrouletteCommandRecognizedState('',
-              previousFigure: '', nextFigure: '', mode: acroulette),
+          seed: () {
+            AcrouletteSettings settings =
+                AcrouletteBloc.generateInitialSettings(settingsRepository)
+                    .copyWith(mode: acroulette);
+            return AcrouletteCommandRecognizedState(
+                currentFigure: '',
+                previousFigure: '',
+                nextFigure: '',
+                settings: settings);
+          },
           act: (bloc) async {
             when(() => bloc.voiceRecognitionBloc.state)
                 .thenReturn(const VoiceRecognitionState(true));
@@ -182,13 +213,13 @@ void main() async {
               .having((state) => state.nextFigure, 'nextFigure', 'reverse bird')
               .having(
                   (state) => state.previousFigure, 'previousFigure', 'buddha')
-              .having((state) => state.mode, 'mode', washingMachine),
+              .having((state) => state.settings.mode, 'mode', washingMachine),
           isA<AcrouletteCommandRecognizedState>()
               .having((state) => state.currentFigure, 'currentFigure',
                   isA<String>())
               .having((state) => state.nextFigure, 'nextFigure', '')
               .having((state) => state.previousFigure, 'previousFigure', '')
-              .having((state) => state.mode, 'mode', acroulette),
+              .having((state) => state.settings.mode, 'mode', acroulette),
         ],
       );
 
@@ -211,7 +242,7 @@ void main() async {
               .having((state) => state.nextFigure, 'nextFigure', 'reverse bird')
               .having(
                   (state) => state.previousFigure, 'previousFigure', 'buddha')
-              .having((state) => state.mode, 'mode', washingMachine),
+              .having((state) => state.settings.mode, 'mode', washingMachine),
         ],
       );
     });

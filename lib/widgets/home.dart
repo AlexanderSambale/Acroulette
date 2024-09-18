@@ -44,8 +44,8 @@ class _HomeState extends State<Home> {
               String nextFigure = "";
               String previousFigure = "";
               AcrouletteBloc acrouletteBloc = context.read<AcrouletteBloc>();
-              var mode = acrouletteBloc.mode;
-              var machine = acrouletteBloc.machine;
+              var mode = acrouletteBloc.state.settings.mode;
+              var machine = acrouletteBloc.state.settings.machine;
 
               return FutureBuilder(
                   future:
