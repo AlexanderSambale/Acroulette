@@ -30,9 +30,11 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   late final WashingMachineBloc washingMachineBloc;
 
   RegExp get rNextPosition => RegExp(settingsRepository.get(nextPosition));
-  RegExp get rNewPosition => RegExp(settingsRepository.get(nextPosition));
-  RegExp get rPreviousPosition => RegExp(settingsRepository.get(nextPosition));
-  RegExp get rCurrentPosition => RegExp(settingsRepository.get(nextPosition));
+  RegExp get rNewPosition => RegExp(settingsRepository.get(newPosition));
+  RegExp get rPreviousPosition =>
+      RegExp(settingsRepository.get(previousPosition));
+  RegExp get rCurrentPosition =>
+      RegExp(settingsRepository.get(currentPosition));
 
   AcrouletteBloc({
     required this.ttsBloc,
