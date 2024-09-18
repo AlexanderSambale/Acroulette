@@ -130,10 +130,11 @@ void main() async {
               flowNodeRepository,
             ).copyWith(mode: acroulette);
             return AcrouletteCommandRecognizedState(
-                currentFigure: '',
-                previousFigure: '',
-                nextFigure: '',
-                settings: settings);
+              currentFigure: '',
+              previousFigure: '',
+              nextFigure: '',
+              settings: settings,
+            );
           },
           act: (bloc) {
             when(() => bloc.voiceRecognitionBloc.state)
@@ -161,17 +162,20 @@ void main() async {
               flowNodeRepository,
             ).copyWith(mode: acroulette);
             return AcrouletteCommandRecognizedState(
-                currentFigure: '',
-                previousFigure: '',
-                nextFigure: '',
-                settings: settings);
+              currentFigure: '',
+              previousFigure: '',
+              nextFigure: '',
+              settings: settings,
+            );
           },
           act: (bloc) async {
             when(() => bloc.voiceRecognitionBloc.state)
                 .thenReturn(const VoiceRecognitionState(true));
             when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
             bloc.transitionBloc.add(InitFlowTransitionEvent(
-                flowNodeRepository.flowPositions(1), true));
+              flowNodeRepository.flowPositions(1),
+              true,
+            ));
             bloc.add(AcrouletteTransition(nextPosition));
             bloc.add(AcrouletteTransition(currentPosition));
             bloc.add(AcrouletteTransition(previousPosition));
@@ -212,24 +216,28 @@ void main() async {
       blocTest<AcrouletteBloc, BaseAcrouletteState>(
         'new Position ends in AcrouletteCommandRecognizedState with mode acroulette',
         build: () => acrouletteBloc,
+        seed: () {
+          AcrouletteSettings settings = AcrouletteBloc.generateInitialSettings(
+            settingsRepository,
+            flowNodeRepository,
+          ).copyWith(mode: washingMachine);
+          return AcrouletteCommandRecognizedState(
+            currentFigure: '',
+            previousFigure: '',
+            nextFigure: '',
+            settings: settings,
+          );
+        },
         act: (bloc) {
           when(() => bloc.voiceRecognitionBloc.state)
               .thenReturn(const VoiceRecognitionState(true));
           when(() => bloc.ttsBloc.speak(any())).thenAnswer((_) async {});
-          bloc.add(AcrouletteChangeMode(washingMachine));
           bloc.add(AcrouletteChangeMode(acroulette));
         },
         wait: const Duration(milliseconds: 100),
         expect: () => [
-          isA<AcrouletteFlowState>()
-              .having((state) => state.flowName, 'flowName', 'ninja side star'),
-          isA<AcrouletteCommandRecognizedState>()
-              .having((state) => state.currentFigure, 'currentFigure',
-                  'ninja side star')
-              .having((state) => state.nextFigure, 'nextFigure', 'reverse bird')
-              .having(
-                  (state) => state.previousFigure, 'previousFigure', 'buddha')
-              .having((state) => state.settings.mode, 'mode', washingMachine),
+          isA<AcrouletteChangedModeState>()
+              .having((state) => state.settings.mode, 'mode', acroulette),
           isA<AcrouletteCommandRecognizedState>()
               .having((state) => state.currentFigure, 'currentFigure',
                   isA<String>())
@@ -250,8 +258,8 @@ void main() async {
         },
         wait: const Duration(milliseconds: 100),
         expect: () => [
-          isA<AcrouletteFlowState>()
-              .having((state) => state.flowName, 'flowName', 'ninja side star'),
+          isA<AcrouletteChangedModeState>()
+              .having((state) => state.settings.mode, 'mode', washingMachine),
           isA<AcrouletteCommandRecognizedState>()
               .having((state) => state.currentFigure, 'currentFigure',
                   'ninja side star')

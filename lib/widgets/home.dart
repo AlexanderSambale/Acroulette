@@ -53,7 +53,8 @@ class _HomeState extends State<Home> {
                   builder: (context, snapshot) {
                     switch (state.runtimeType) {
                       case AcrouletteModelInitiatedState:
-                      case AcrouletteFlowState:
+                      case AcrouletteChangedModeState:
+                      case AcrouletteChangedMachineState:
                         if (snapshot.hasData) {
                           if (snapshot.data == "true") {
                             return const Loader();
@@ -174,7 +175,8 @@ Column getControls(
   switch (state.runtimeType) {
     case AcrouletteInitialState:
     case AcrouletteModelInitiatedState:
-    case AcrouletteFlowState:
+    case AcrouletteChangedModeState:
+    case AcrouletteChangedMachineState:
       {
         Color color = Colors.green;
         Color splashColor = Colors.greenAccent;

@@ -104,9 +104,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
         positions = flowPositions();
         transitionBloc.add(InitFlowTransitionEvent(positions, true));
       }
-      emit(AcrouletteFlowState(
+      emit(AcrouletteChangedModeState(
         settings: state.settings.copyWith(mode: event.mode),
-        flowName: positions.first,
       ));
     });
 
@@ -115,9 +114,8 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       transitionBloc.add(
         InitFlowTransitionEvent(flowPositions(), true),
       );
-      emit(AcrouletteFlowState(
+      emit(AcrouletteChangedMachineState(
         settings: state.settings.copyWith(machine: event.machine),
-        flowName: '',
       ));
     });
 

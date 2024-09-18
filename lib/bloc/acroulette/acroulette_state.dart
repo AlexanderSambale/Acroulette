@@ -60,13 +60,14 @@ class AcrouletteCommandRecognizedState extends BaseAcrouletteState {
       ];
 }
 
-class AcrouletteFlowState extends BaseAcrouletteState {
-  final String flowName;
-  const AcrouletteFlowState({
+class AcrouletteChangedMachineState extends BaseAcrouletteState {
+  const AcrouletteChangedMachineState({
     required super.settings,
-    required this.flowName,
   });
+}
 
-  @override
-  List<Object> get props => [settings, flowName];
+class AcrouletteChangedModeState extends BaseAcrouletteState {
+  const AcrouletteChangedModeState({
+    required super.settings,
+  });
 }
