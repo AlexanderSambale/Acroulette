@@ -37,7 +37,10 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
       : super(
           initialState ??
               AcrouletteInitialState(
-                settings: generateInitialSettings(settingsRepository),
+                settings: generateInitialSettings(
+                  settingsRepository,
+                  flowNodeRepository,
+                ),
               ),
         ) {
     on<AcrouletteStart>((event, emit) async {
@@ -206,15 +209,15 @@ class AcrouletteBloc extends Bloc<AcrouletteEvent, BaseAcrouletteState> {
   }
 
   static AcrouletteSettings generateInitialSettings(
-    SettingsRepository settingsRepository,
-  ) {
+      SettingsRepository settingsRepository,
+      FlowNodeRepository flowNodeRepository) {
     return AcrouletteSettings(
       rNextPosition: RegExp(settingsRepository.get(nextPosition)),
       rNewPosition: RegExp(settingsRepository.get(nextPosition)),
       rPreviousPosition: RegExp(settingsRepository.get(nextPosition)),
       rCurrentPosition: RegExp(settingsRepository.get(nextPosition)),
       mode: settingsRepository.get(appMode),
-      machine: settingsRepository.get(washingMachine),
+      machine: flowNodeRepository.flows.first.name,
     );
   }
 }

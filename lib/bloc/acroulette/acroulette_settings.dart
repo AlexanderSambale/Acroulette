@@ -1,5 +1,7 @@
-class AcrouletteSettings {
-  AcrouletteSettings({
+import 'package:equatable/equatable.dart';
+
+class AcrouletteSettings extends Equatable {
+  const AcrouletteSettings({
     required this.rNextPosition,
     required this.rNewPosition,
     required this.rPreviousPosition,
@@ -31,11 +33,14 @@ class AcrouletteSettings {
       machine: machine ?? this.machine,
     );
   }
-}
 
-/*   final RegExp get rNextPosition => RegExp(settingsRepository.get(nextPosition));
-  final RegExp get rNewPosition => RegExp(settingsRepository.get(newPosition));
-  final RegExp get rPreviousPosition =>
-      RegExp(settingsRepository.get(previousPosition));
-  final RegExp get rCurrentPosition =>
-      RegExp(settingsRepository.get(currentPosition)); */
+  @override
+  List<Object?> get props => [
+        rNextPosition,
+        rNewPosition,
+        rPreviousPosition,
+        rCurrentPosition,
+        mode,
+        machine,
+      ];
+}

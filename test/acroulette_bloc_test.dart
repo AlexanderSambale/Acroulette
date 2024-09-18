@@ -31,36 +31,42 @@ void main() async {
     late FlowNodeRepository flowNodeRepository;
     late SettingsRepository settingsRepository;
 
-    setUp(() async {
-      database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
-      storageProvider = await StorageProvider.create(database);
-      nodeRepository = NodeRepository(storageProvider);
-      flowNodeRepository = FlowNodeRepository(storageProvider);
-      settingsRepository = SettingsRepository(storageProvider);
-      await nodeRepository.initialize();
-      await flowNodeRepository.initialize();
-      await settingsRepository.initialize();
-      ttsBloc = MockFlutterTts();
-      voiceRecognitionBloc = MockVoiceRecognitionBloc();
-      when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
-      when(() => ttsBloc.notAvailable).thenReturn(true);
-      acrouletteBloc = AcrouletteBloc(
-        ttsBloc: ttsBloc,
-        nodeRepository: nodeRepository,
-        settingsRepository: settingsRepository,
-        flowNodeRepository: flowNodeRepository,
-        voiceRecognitionBloc: voiceRecognitionBloc,
-      );
+    setUp(() {
+      return Future(() async {
+        database = await $FloorAppDatabase.inMemoryDatabaseBuilder().build();
+        storageProvider = await StorageProvider.create(database);
+        nodeRepository = NodeRepository(storageProvider);
+        flowNodeRepository = FlowNodeRepository(storageProvider);
+        settingsRepository = SettingsRepository(storageProvider);
+        await nodeRepository.initialize();
+        await flowNodeRepository.initialize();
+        await settingsRepository.initialize();
+        ttsBloc = MockFlutterTts();
+        voiceRecognitionBloc = MockVoiceRecognitionBloc();
+        when(() => voiceRecognitionBloc.isDisabled).thenReturn(false);
+        when(() => ttsBloc.notAvailable).thenReturn(true);
+        acrouletteBloc = AcrouletteBloc(
+          ttsBloc: ttsBloc,
+          nodeRepository: nodeRepository,
+          settingsRepository: settingsRepository,
+          flowNodeRepository: flowNodeRepository,
+          voiceRecognitionBloc: voiceRecognitionBloc,
+        );
+      });
     });
 
-    tearDown(() async {
-      await database.close();
-      await acrouletteBloc.close();
+    tearDown(() {
+      return Future(() async {
+        await database.close();
+        await acrouletteBloc.close();
+      });
     });
 
     test('initial state is AcrouletteInitialState()', () {
-      AcrouletteSettings settings =
-          AcrouletteBloc.generateInitialSettings(settingsRepository);
+      AcrouletteSettings settings = AcrouletteBloc.generateInitialSettings(
+        settingsRepository,
+        flowNodeRepository,
+      );
       expect(acrouletteBloc.state, AcrouletteInitialState(settings: settings));
     });
 
@@ -69,8 +75,10 @@ void main() async {
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteStart()),
       expect: () {
-        AcrouletteSettings settings =
-            AcrouletteBloc.generateInitialSettings(settingsRepository);
+        AcrouletteSettings settings = AcrouletteBloc.generateInitialSettings(
+          settingsRepository,
+          flowNodeRepository,
+        );
         return [AcrouletteInitModel(settings: settings)];
       },
       verify: (bloc) async => expect(
@@ -85,8 +93,10 @@ void main() async {
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteStop()),
       expect: () {
-        AcrouletteSettings settings =
-            AcrouletteBloc.generateInitialSettings(settingsRepository);
+        AcrouletteSettings settings = AcrouletteBloc.generateInitialSettings(
+          settingsRepository,
+          flowNodeRepository,
+        );
         return [AcrouletteModelInitiatedState(settings: settings)];
       },
       verify: (bloc) async => expect(
@@ -101,8 +111,10 @@ void main() async {
       build: () => acrouletteBloc,
       act: (bloc) => bloc.add(AcrouletteInitModelEvent()),
       expect: () {
-        AcrouletteSettings settings =
-            AcrouletteBloc.generateInitialSettings(settingsRepository);
+        AcrouletteSettings settings = AcrouletteBloc.generateInitialSettings(
+          settingsRepository,
+          flowNodeRepository,
+        );
         return [AcrouletteModelInitiatedState(settings: settings)];
       },
     );
@@ -113,8 +125,10 @@ void main() async {
           build: () => acrouletteBloc,
           seed: () {
             AcrouletteSettings settings =
-                AcrouletteBloc.generateInitialSettings(settingsRepository)
-                    .copyWith(mode: acroulette);
+                AcrouletteBloc.generateInitialSettings(
+              settingsRepository,
+              flowNodeRepository,
+            ).copyWith(mode: acroulette);
             return AcrouletteCommandRecognizedState(
                 currentFigure: '',
                 previousFigure: '',
@@ -142,8 +156,10 @@ void main() async {
           build: () => acrouletteBloc,
           seed: () {
             AcrouletteSettings settings =
-                AcrouletteBloc.generateInitialSettings(settingsRepository)
-                    .copyWith(mode: acroulette);
+                AcrouletteBloc.generateInitialSettings(
+              settingsRepository,
+              flowNodeRepository,
+            ).copyWith(mode: acroulette);
             return AcrouletteCommandRecognizedState(
                 currentFigure: '',
                 previousFigure: '',
