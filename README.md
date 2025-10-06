@@ -101,3 +101,9 @@ flutter pub run flutter_oss_licenses:generate.dart
 ```bash
 flutter test
 ```
+
+## Check outdated dependencies
+
+```bash
+flutter pub outdated
+```
