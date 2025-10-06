@@ -33,6 +33,8 @@
             "32"
             "33"
             "34"
+            "35"
+            "36"
           ];
           abiVersions = [
             "armeabi-v7a"
@@ -47,6 +49,7 @@
             flutter
             jdk17
             androidSdk
+            sqlite
           ];
 
           # Set environment variables for Flutter and Android
